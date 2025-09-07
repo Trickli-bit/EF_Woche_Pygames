@@ -15,7 +15,7 @@ clock = pygame.time.Clock()
 
 entities_group = pygame.sprite.Group()  
 
-Bob = entities.Entity(500, 500, 64, 64, "center", (64,64), r"C:\Users\timon\OneDrive\Documents\Lerbermatt\GYM3\EF Info\Pygames\db6hy2w-4db8a954-a6e1-4e46-b202-2d2786241df4 (1).png", True, 0, 10, {"laufen": [0, 5, 20], "rennen": [6,10,10]})
+Bob = entities.EntityMovable(250, 250, pygame.Rect(0, 0, 64, 64), "midbottom", (64,64), r"pixilart-sprite.png", True, 0, 10, {"walking_w": [0, 1, 20, True], "walking_s": [2, 3, 20, True], "walking": [4, 5, 20, True]})
 
 entities_group.add(Bob)
     
@@ -37,14 +37,10 @@ while running:
 
     keys = pygame.key.get_pressed()
 
-    if keys[pygame.K_RIGHT]:
-        Bob.Animation.start_animation("laufen")
-
-
 
     screen.fill((255, 255, 255))
 
-    entities_group.update()
+    entities_group.update(keys)
     entities_group.draw(screen)
 
     

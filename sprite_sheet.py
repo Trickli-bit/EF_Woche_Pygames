@@ -14,7 +14,7 @@ class SpriteSheet(pygame.sprite.Sprite):
 
     def sprite_extraction(self, rectangle):
         """Lädt ein spezifischer Ausschnitt aus einem SpriteSheet
-        para: \t Rechteck mit Angaben x,y - width, hight (Tupel)
+        para: \t Rechteck mit Angaben x,y - width, height (Tupel)
         return: image (pygame.image)"""
         rect = pygame.Rect(rectangle)
         image = pygame.Surface(rect.size, pygame.SRCALPHA).convert_alpha()
@@ -29,7 +29,7 @@ class SpriteSheet(pygame.sprite.Sprite):
     
     def load_sprites(self, rect, image_count):
         """ Lädt eine Anzahl von Sprites -> image_count aus einem Spritesheet anhand der Grösse des einzelnen Sprite -> rect.
-        param:\t Rechteck zu bestimmung der Grösse eines Sprite (pygame.rect, Tupel mit (posx, posy, width, hight))\n
+        param:\t Rechteck zu bestimmung der Grösse eines Sprite (pygame.rect, Tupel mit (posx, posy, width, height))\n
         \t Anz. der Bilder (int)
         return: \t liste mit Sprites (list)"""
         tups = [(rect[0] + rect[2]*x, rect[1], rect[2], rect[3]) for x in range(image_count)]
@@ -51,7 +51,7 @@ class SpriteSheetAnimation(SpriteSheet):
 
         self.frames = self.load_sprites(rect, image_count)
         self.standardframe = self.frames[0]
-        self.loop = self.frames[3]
+        self.loop = True
         self.image = self.standardframe 
 
     def start_animation(self, animation_type):
@@ -62,6 +62,7 @@ class SpriteSheetAnimation(SpriteSheet):
             raise ValueError(f"Animation '{animation_type}' nicht definiert")
         self.active = True
         self.current_range = self.animations[animation_type]
+        self.loop = self.current_range[3]
         self.current_frame = self.current_range[0]
 
     def next_frame(self):
@@ -70,7 +71,7 @@ class SpriteSheetAnimation(SpriteSheet):
         if self.framecounter >= self.current_range[2]:
             self.framecounter = 0
             self.current_frame += 1
-            if self.current_frame >= self.current_range[1]:
+            if self.current_frame >= self.current_range[1] + 1:
                 if not self.loop:
                     self.stop_animation()
                 self.current_frame = self.current_range[0]
