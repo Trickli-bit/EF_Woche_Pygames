@@ -48,6 +48,8 @@ class SpriteSheetAnimation(SpriteSheet):
         self.animations = animations
         self.active = False
         self.framecounter = 0
+        self.current_frame = 0
+        self.current_range = [0,0,0,True]
 
         self.frames = self.load_sprites(rect, image_count)
         self.standardframe = self.frames[0]
@@ -79,9 +81,9 @@ class SpriteSheetAnimation(SpriteSheet):
         self.framecounter += 1
         return self.current_frame
     
-    def stop_animation(self):
+    def stop_animation(self, frame = 0):
         """ Stoppt die aktuelle Animation und setzt das Bild zurück auf den ersten Frame."""
-        self.image = self.frames[0]
+        self.image = self.frames[frame]
         self.active = False
     
     def update_image(self):

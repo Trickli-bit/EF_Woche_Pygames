@@ -11,6 +11,7 @@ class Entity(pygame.sprite.Sprite):
 
         self.rect_attach = rect_attach
         self.is_spritesheet = is_spritesheet
+        self.last_animation = (None, False) 
 
         if is_spritesheet:
             self.Animation = sprite_sheet.SpriteSheetAnimation(source, rect, ani_frames_count, ani_animations)
@@ -28,7 +29,6 @@ class Entity(pygame.sprite.Sprite):
         # Animation aktualisieren
         if self.is_spritesheet:
             self.Animation.update()
-            self.image = self.Animation.image
         
 
 
@@ -39,9 +39,15 @@ class EntityMovable(Entity):
             
     def __init__(self, pos_x, pos_y, rect, rect_attach, scale, source, is_spritesheet, base_sprite = 0, ani_frames_count=0, ani_animations={}):
         super().__init__(pos_x, pos_y, rect, rect_attach, scale, source, is_spritesheet, base_sprite, ani_frames_count, ani_animations)
+        
+        """Entität die sich bewegen kann. Erbt von Entity.
+        param: \t pos_x, pos_y, breite, höhe, Rechteck_attachment, Skalierung, Pfad, Ist_SpriteSheet?, Basis Sprite, Anz. Frames, Animationen in einem Dict mit {"Animationsname" : [start Frame, letztes Frame, geschwindigkeit, loop (bolean)] ---> Standart: "walking", "walking_s", "walking_w" -> Dabei soll immer ein Frame zuvor für das Standartframe sein.]}"""
+        # Afubau SpriteSheet Frame 1: standarfframe walking, 2-n walking animation, n+1: standardframe walking_s, n+2 - m walking_s animation, m+1: standardframe walking_w, m+2 - x walking_w animation
         self.dx = 0
         self.dy = 0
         self.speed = 3
+        self.flip = False
+        self.animation_name = None
 
     def animation_movement_adjustement(self, dx, dy):
         """
@@ -49,38 +55,44 @@ class EntityMovable(Entity):
         Erwartet Animationsnamen: 'walking', 'walking_s', 'walking_w'.
         Bei Bewegung nach links wird das Bild geflippt.
         Startet Animation nur, wenn sie sich ändert. Stoppt nur bei Stillstand.
+        param:\t dx, dy (int)
         """
-        animation_name = None
-        flip = False
+        
         if self.dx > 0:
-            animation_name = 'walking'
-            flip = False
+            self.animation_name = 'walking'
+            self.flip = False
         elif self.dx < 0:
-            animation_name = 'walking'
-            flip = True
+            self.animation_name = 'walking'
+            self.flip = True
         elif self.dy < 0:
-            animation_name = 'walking_w'
+            self.animation_name = 'walking_w'
         elif self.dy > 0:
-            animation_name = 'walking_s'
+            self.animation_name = 'walking_s'
 
         if self.is_spritesheet:
-            if not hasattr(self, '_last_animation'):
-                self._last_animation = None
-            if self.dx == 0 and self.dy == 0:
-                if self._last_animation is not None:
-                    self.Animation.stop_animation()
-                    self._last_animation = None
-            elif animation_name:
-                if self._last_animation != (animation_name, flip):
-                    self.Animation.start_animation(animation_name)
-                    self._last_animation = (animation_name, flip)
-                # Bild setzen und ggf. flippen
-                image = self.Animation.image
-                if flip:
-                    image = pygame.transform.flip(image, True, False)
-                self.image = image
 
+            if self.dx == 0 and self.dy == 0 and self.last_animation != (None, False):
+                self.last_animation = (None, self.flip)
+                self.Animation.stop_animation(self.Animation.current_range[0] -1)
+                self.image = self.Animation.image
+                if self.flip:
+                    self.image = pygame.transform.flip(self.image, True, False)
+                self.animation_name = None
+            else:
+                if self.last_animation != (self.animation_name, self.flip):
+                    self.Animation.stop_animation(self.Animation.current_range[0] -1)
+                    self.Animation.start_animation(self.animation_name)
+                    self.last_animation = (self.animation_name, self.flip)
+            self.image = self.Animation.image
+            if self.flip:
+                self.image = pygame.transform.flip(self.image, True, False)
+        
+                    
     def calculating_movement(self, keys):
+
+        """ Berechnet die Bewegung basierend auf den gedrückten Tasten.
+        param:\t keys (pygame.key.get_pressed()) """
+
         self.dx = self.dy = 0
         if keys[pygame.K_w] or keys[pygame.K_UP]:
             self.dy -= self.speed
@@ -99,7 +111,15 @@ class EntityMovable(Entity):
         self.rect.x += self.dx
         self.rect.y += self.dy
 
+    def collition(self):
+        
+
     def update(self, keys):
+
+        """ Aktualisiert die Position und Animation der beweglichen Entität.
+        param:\t keys (pygame.key.get_pressed()) """
+
+        super().update()
         self.rect.x += self.dx
         self.rect.y += self.dy
         self.calculating_movement(keys)
