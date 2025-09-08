@@ -1,17 +1,20 @@
 import pygame
 import sprite_sheet
+import Main.settings as settings
 
 class Entity(pygame.sprite.Sprite):
 
-    def __init__(self, pos_x, pos_y, rect, rect_attach, scale, source, is_spritesheet, base_sprite = 0, ani_frames_count = 0, ani_animations = {}):
+    def __init__(self, pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, base_sprite = 0, ani_frames_count = 0, ani_animations = {}):
         super().__init__()
 
         """Klasse zur Erstellung von Entitäten (Alle Dinge die ein Sprite besitzen und nicht zum Hintergrund gehören)
-        param: \t pos_x, pos_y, breite, höhe, Rechteck_attachment, Skalierung, Pfad, Ist_SpriteSheet?, Basis Sprite, Anz. Frames, Animationen in einem Dict mit {"Animationsname" : [1. Frame, letztes Frame, geschwindigkeit, loop (bolean)]}"""
+        param: \t pos_x, pos_y, breite, höhe, Rechteck_attachment, Skalierung, Pfad, Ist_SpriteSheet?, Solid?, Basis Sprite, Anz. Frames, Animationen in einem Dict mit {"Animationsname" : [1. Frame, letztes Frame, geschwindigkeit, loop (bolean)]}"""
 
         self.rect_attach = rect_attach
         self.is_spritesheet = is_spritesheet
         self.last_animation = (None, False) 
+        self.solid = solid
+
 
         if is_spritesheet:
             self.Animation = sprite_sheet.SpriteSheetAnimation(source, rect, ani_frames_count, ani_animations)
@@ -29,7 +32,6 @@ class Entity(pygame.sprite.Sprite):
         # Animation aktualisieren
         if self.is_spritesheet:
             self.Animation.update()
-        
 
 
  
@@ -37,8 +39,8 @@ class Entity(pygame.sprite.Sprite):
 class EntityMovable(Entity):
     
             
-    def __init__(self, pos_x, pos_y, rect, rect_attach, scale, source, is_spritesheet, base_sprite = 0, ani_frames_count=0, ani_animations={}):
-        super().__init__(pos_x, pos_y, rect, rect_attach, scale, source, is_spritesheet, base_sprite, ani_frames_count, ani_animations)
+    def __init__(self, pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, base_sprite = 0, ani_frames_count=0, ani_animations={}):
+        super().__init__(pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, base_sprite, ani_frames_count, ani_animations)
         
         """Entität die sich bewegen kann. Erbt von Entity.
         param: \t pos_x, pos_y, breite, höhe, Rechteck_attachment, Skalierung, Pfad, Ist_SpriteSheet?, Basis Sprite, Anz. Frames, Animationen in einem Dict mit {"Animationsname" : [start Frame, letztes Frame, geschwindigkeit, loop (bolean)] ---> Standart: "walking", "walking_s", "walking_w" -> Dabei soll immer ein Frame zuvor für das Standartframe sein.]}"""
@@ -48,14 +50,14 @@ class EntityMovable(Entity):
         self.speed = 3
         self.flip = False
         self.animation_name = None
+        self.solid_collision_direction = ""
 
-    def animation_movement_adjustement(self, dx, dy):
+    def animation_movement_adjustement(self):
         """
         Passt die Animation je nach Bewegungsrichtung an.
         Erwartet Animationsnamen: 'walking', 'walking_s', 'walking_w'.
         Bei Bewegung nach links wird das Bild geflippt.
         Startet Animation nur, wenn sie sich ändert. Stoppt nur bei Stillstand.
-        param:\t dx, dy (int)
         """
         
         if self.dx > 0:
@@ -87,34 +89,20 @@ class EntityMovable(Entity):
             if self.flip:
                 self.image = pygame.transform.flip(self.image, True, False)
         
-                    
-    def calculating_movement(self, keys):
 
-        """ Berechnet die Bewegung basierend auf den gedrückten Tasten.
-        param:\t keys (pygame.key.get_pressed()) """
+    def collition(self, pos_x=0, pos_y=0):
+        """ Bestimmt die Richtung der Kollision mit einem soliden Objekt.
+        param:\t pos_x, pos_y (Position des soliden Objekts)"""
+        if self.rect.x > pos_x + settings.SOLID_FRAME_HIGHT / 2:
+            self.solid_collision_direction = "right"
+        if self.rect.x < pos_x - settings.SOLID_FRAME_HIGHT / 2:
+            self.solid_collision_direction = "left"
+        if self.rect.y > pos_y + settings.SOLID_FRAME_HIGHT / 2:
+            self.solid_collision_direction = "down"
+        if self.rect.y < pos_y - settings.SOLID_FRAME_HIGHT / 2:
+            self.solid_collision_direction = "up"
 
-        self.dx = self.dy = 0
-        if keys[pygame.K_w] or keys[pygame.K_UP]:
-            self.dy -= self.speed
-        if keys[pygame.K_s] or keys[pygame.K_DOWN]:
-            self.dy += self.speed
-        if keys[pygame.K_a] or keys[pygame.K_LEFT]:
-            self.dx -= self.speed
-        if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
-            self.dx += self.speed
-
-        # Diagonalbewegung anpassen (optional, für gleichmäßige Geschwindigkeit)
-        if self.dx != 0 and self.dy != 0:
-            self.dx = int(self.dx / 1.4142)
-            self.dy = int(self.dy / 1.4142)
-
-        self.rect.x += self.dx
-        self.rect.y += self.dy
-
-    def collition(self):
-        
-
-    def update(self, keys):
+    def update(self, *args):
 
         """ Aktualisiert die Position und Animation der beweglichen Entität.
         param:\t keys (pygame.key.get_pressed()) """
@@ -122,5 +110,4 @@ class EntityMovable(Entity):
         super().update()
         self.rect.x += self.dx
         self.rect.y += self.dy
-        self.calculating_movement(keys)
-        self.animation_movement_adjustement(self.dx, self.dy)
+        self.animation_movement_adjustement()
