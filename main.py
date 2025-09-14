@@ -1,10 +1,11 @@
 import pygame
+import Main.settings as settings
 import Engine.entities as entities
-import settings
-import events
+import Main.events as events
 import Player.player as player
 import sys
 import time
+
 
 
 pygame.init()

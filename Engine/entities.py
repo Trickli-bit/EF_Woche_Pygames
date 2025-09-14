@@ -1,5 +1,5 @@
 import pygame
-import sprite_sheet
+import Engine.sprite_sheet as sprite_sheet
 import Main.settings as settings
 
 class Entity(pygame.sprite.Sprite):
