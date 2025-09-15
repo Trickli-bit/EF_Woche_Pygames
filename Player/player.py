@@ -1,8 +1,8 @@
 import pygame
 from Engine.entities import EntityMovable
 class Player(EntityMovable):
-    def __init__(self, pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, base_sprite=0, ani_frames_count=0, ani_animations=...):
-        super().__init__(pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, base_sprite, ani_frames_count, ani_animations)
+    def __init__(self, pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, fix = False, base_sprite=0, ani_frames_count=0, ani_animations=...):
+        super().__init__(pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, fix, base_sprite, ani_frames_count, ani_animations)
         
 
     def calculating_movement(self, keys):
@@ -25,15 +25,12 @@ class Player(EntityMovable):
             self.dx = int(self.dx / 1.4142)
             self.dy = int(self.dy / 1.4142)
 
-        self.rect.x += self.dx
 
 
-    def update(self, keys):
+    def update(self, dx = 0, dy = 0, keys = []):
 
         """ Aktualisiert die Position und Animation des Spielers.
         param:\t keys (pygame.key.get_pressed()) """
         super().update()
-        self.calculating_movement(keys)
-
-
-        self.rect.y += self.dy
+        if keys != []:
+            self.calculating_movement(keys)

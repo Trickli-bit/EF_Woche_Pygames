@@ -17,11 +17,13 @@ clock = pygame.time.Clock()
 
 entities_group = pygame.sprite.Group()  
 moving_entities_group = pygame.sprite.Group()
+playerGroup = pygame.sprite.GroupSingle()
 
-Bob = player.Player(500, 250, pygame.Rect(0, 0, 64, 64), "midbottom", (64,64), r"pixilart-sprite.png",True, True, 0, 10, {"walking_w": [0, 1, 20, True], "walking_s": [2, 3, 20, True], "walking": [4, 5, 20, True]})
+Player = player.Player(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 64, 64), "midbottom", (64,64), r"pixilart-sprite.png",True, True, True, 0, 10, {"walking_w": [0, 1, 20, True], "walking_s": [2, 3, 20, True], "walking": [4, 5, 20, True]})
 Wall = entities.Entity(250, 250, pygame.Rect(0, 0, 64, 64), "midbottom", (64,64), r"Wall.png", True, False)
+
 entities_group.add(Wall)
-moving_entities_group.add(Bob)
+playerGroup.add(Player)
         
 Colliton = events.Collision(entities_group, moving_entities_group)
 
@@ -45,11 +47,14 @@ while running:
 
     screen.fill((255, 255, 255))
 
-    entities_group.update(keys)
+    entities_group.update(-Player.dx, -Player.dy, keys)
     entities_group.draw(screen)
 
-    moving_entities_group.update(keys)
+    moving_entities_group.update(-Player.dx, -Player.dy, keys,)
     moving_entities_group.draw(screen)
+
+    playerGroup.update(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, keys)
+    playerGroup.draw(screen)
 
     
     pygame.display.update()

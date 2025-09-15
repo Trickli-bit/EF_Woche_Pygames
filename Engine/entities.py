@@ -4,16 +4,19 @@ import Main.settings as settings
 
 class Entity(pygame.sprite.Sprite):
 
-    def __init__(self, pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, base_sprite = 0, ani_frames_count = 0, ani_animations = {}):
+    def __init__(self, pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, fix = False, base_sprite = 0, ani_frames_count = 0, ani_animations = {}):
         super().__init__()
 
         """Klasse zur Erstellung von Entitäten (Alle Dinge die ein Sprite besitzen und nicht zum Hintergrund gehören)
-        param: \t pos_x, pos_y, breite, höhe, Rechteck_attachment, Skalierung, Pfad, Ist_SpriteSheet?, Solid?, Basis Sprite, Anz. Frames, Animationen in einem Dict mit {"Animationsname" : [1. Frame, letztes Frame, geschwindigkeit, loop (bolean)]}"""
+        param: \t pos_x, pos_y, (pos_x = 0, pos_y = 0, breite, höhe) Rechteck_attachment, Skalierung, Pfad, Ist_SpriteSheet?, Solid?, Basis Sprite, Anz. Frames, Animationen in einem Dict mit {"Animationsname" : [1. Frame, letztes Frame, geschwindigkeit, loop (bolean)]}"""
 
+        self.fix = fix
         self.rect_attach = rect_attach
         self.is_spritesheet = is_spritesheet
         self.last_animation = (None, False) 
         self.solid = solid
+        self.pos_x = pos_x
+        self.pos_y = pos_y
 
 
         if is_spritesheet:
@@ -26,12 +29,17 @@ class Entity(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, scale)
         self.rect = self.image.get_rect()
         
-        setattr(self.rect, self.rect_attach, (pos_x, pos_y))
+        setattr(self.rect, self.rect_attach, (self.pos_x, self.pos_y))
+        rect.x = self.pos_x
+        rect.y = self.pos_y
         
-    def update(self, *args):
+    def update(self, dx = 0, dy = 0, *args):
         # Animation aktualisieren
         if self.is_spritesheet:
             self.Animation.update()
+        if not self.fix:
+            self.rect.x += dx
+            self.rect.y += dy
 
 
  
@@ -39,8 +47,8 @@ class Entity(pygame.sprite.Sprite):
 class EntityMovable(Entity):
     
             
-    def __init__(self, pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, base_sprite = 0, ani_frames_count=0, ani_animations={}):
-        super().__init__(pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, base_sprite, ani_frames_count, ani_animations)
+    def __init__(self, pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, fix = False, base_sprite = 0, ani_frames_count=0, ani_animations={}):
+        super().__init__(pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, fix, base_sprite, ani_frames_count, ani_animations)
         
         """Entität die sich bewegen kann. Erbt von Entity.
         param: \t pos_x, pos_y, breite, höhe, Rechteck_attachment, Skalierung, Pfad, Ist_SpriteSheet?, Basis Sprite, Anz. Frames, Animationen in einem Dict mit {"Animationsname" : [start Frame, letztes Frame, geschwindigkeit, loop (bolean)] ---> Standart: "walking", "walking_s", "walking_w" -> Dabei soll immer ein Frame zuvor für das Standartframe sein.]}"""
@@ -102,12 +110,10 @@ class EntityMovable(Entity):
         if self.rect.y < pos_y - settings.SOLID_FRAME_HIGHT / 2:
             self.solid_collision_direction = "up"
 
-    def update(self, *args):
+    def update(self, dx = 0, dy = 0, *args):
 
         """ Aktualisiert die Position und Animation der beweglichen Entität.
         param:\t keys (pygame.key.get_pressed()) """
 
-        super().update()
-        self.rect.x += self.dx
-        self.rect.y += self.dy
+        super().update(dx, dy, *args)
         self.animation_movement_adjustement()
