@@ -1,5 +1,7 @@
 import pygame
 
+frames_dict = {}
+
 class SpriteSheet(pygame.sprite.Sprite):
 
     def __init__(self, filename):
@@ -37,7 +39,7 @@ class SpriteSheet(pygame.sprite.Sprite):
     
 class SpriteSheetAnimation(SpriteSheet):
 
-    def __init__(self, filename, rect, image_count, animations):
+    def __init__(self, filename, rect, image_count, animations, standardframe = 0):
         """ Erstellt die Sprites für eine Animation 
         param:\t Pfad zum Sprite (r"str) !Standard: 1. frame: Standard 
         param:\t Rechteck zur Bestimmung der Grösse eines Sprites (pygame.rect, Tupel mit (posx, posy, width, height))
@@ -51,8 +53,16 @@ class SpriteSheetAnimation(SpriteSheet):
         self.current_frame = 0
         self.current_range = [0,0,0,True]
 
-        self.frames = self.load_sprites(rect, image_count)
-        self.standardframe = self.frames[0]
+        print(frames_dict, filename)
+
+        if filename not in frames_dict:
+            print("new Animation", image_count)
+            self.frames = self.load_sprites(rect, image_count)
+            frames_dict[filename] = self.frames
+        else:
+            self.frames = frames_dict[filename]
+
+        self.standardframe = self.frames[standardframe]
         self.loop = True
         self.image = self.standardframe 
 
@@ -77,7 +87,6 @@ class SpriteSheetAnimation(SpriteSheet):
                 if not self.loop:
                     self.stop_animation()
                 self.current_frame = self.current_range[0]
-                print("reset")
         self.framecounter += 1
         return self.current_frame
     
