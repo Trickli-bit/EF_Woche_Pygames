@@ -109,6 +109,7 @@ while running:
     overlayGroup_2.draw(screen)
 
     Collition.update()
+    
     overlayGroup.update(-Player.dx, -Player.dy, keys,)
     overlayGroup.draw(screen)
 
