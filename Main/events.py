@@ -13,8 +13,6 @@ class Collision:
             if entity.solid and other.rect.colliderect(entity.rect):
                 other.collition(entity.rect.x , entity.rect.y)
 
-    
-
     def update(self):
         """ Aktualisiert die Kollisionen für alle beweglichen Entitäten."""
         for movable in self.movable_entities:
