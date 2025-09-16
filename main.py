@@ -29,7 +29,7 @@ Player = player.Player(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pyga
 entities_group.add()
 playerGroup.add(Player)
         
-Colliton = events.Collision(entities_group, moving_entities_group)
+Colliton = events.Collision(entities_group, moving_entities_group, playerGroup)
 
 # Run until the user asks to quit
 
@@ -55,8 +55,6 @@ while running:
 
     keys = pygame.key.get_pressed()
 
-    Colliton.update()
-
     floor_group.update(-Player.dx, -Player.dy, keys)
     floor_group.draw(screen)
 
@@ -69,6 +67,7 @@ while running:
     playerGroup.update(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, keys)
     playerGroup.draw(screen)
 
+    Colliton.update()
     
     pygame.display.update()
     clock.tick(60)
