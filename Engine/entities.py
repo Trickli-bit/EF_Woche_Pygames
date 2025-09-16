@@ -14,8 +14,10 @@ class Entity(pygame.sprite.Sprite):
 
         self.fix = fix
         self.rect_attach = rect_attach
+        self.scale = scale
         self.is_spritesheet = is_spritesheet
         self.last_animation = (None, False)
+        self.source = source
         self.solid = solid
         self.pos_x = pos_x
         self.pos_y = pos_y
@@ -77,7 +79,7 @@ class Entity(pygame.sprite.Sprite):
         if not self.fix:
             self.rect.x += dx
             self.rect.y += dy
-
+ 
 
 class EntityMovable(Entity):
             
