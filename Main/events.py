@@ -1,19 +1,39 @@
+
 class Collision:
-    """Kollisionsklasse, die Kollisionen zwischen Objekten behandelt."""
-    def __init__(self, entities, movable_entities):
-        """ Initialisiert die Kollisionsklasse mit festen und beweglichen Entitäten. 
-        param:\t entities (pygame.sprite.Group) - Gruppe der festen Entitäten"""
-        self.objects = entities  # args is a sequence of objects
+    """Kollisionsklasse für feste und bewegliche Objekte."""
+
+    def __init__(self, entities, movable_entities, playerGroup):
+        self.objects = entities
         self.movable_entities = movable_entities
+        self.playerGroup = playerGroup
 
     def collide_with_solid(self, other):
-        """ Überprüft und behandelt Kollisionen zwischen einer beweglichen Entität und festen Objekten.
-        param:\t other (EntityMovable) - die bewegliche Entität, die überprüft werden soll."""
+        """Überprüft Kollisionsrichtung für ein einzelnes bewegliches Objekt."""
+        other.solid_collision_direction = None
+        collision_offset = 16
+        coll_rect = other.rect.inflate(-collision_offset*2, -collision_offset*2)
         for entity in self.objects:
-            if entity.solid and other.rect.colliderect(entity.rect):
-                other.collition(entity.rect.x , entity.rect.y)
+            if entity.solid:
+                entity_rect = entity.rect.inflate(-collision_offset*2, -collision_offset*2)
+                if coll_rect.colliderect(entity_rect):
+                    other.collition(entity)
+                    break
 
     def update(self):
-        """ Aktualisiert die Kollisionen für alle beweglichen Entitäten."""
+        """Aktualisiert alle Kollisionen für Movable Entities und Player."""
         for movable in self.movable_entities:
             self.collide_with_solid(movable)
+        for player in self.playerGroup:
+            self.collide_with_solid(player)
+
+animation_to_add = None
+
+def checkAnimations(animation):
+    global animation_to_add
+    animation_to_add = animation
+    addingAnimation()
+    
+
+def addingAnimation():
+    global animation_to_add
+    return animation_to_add

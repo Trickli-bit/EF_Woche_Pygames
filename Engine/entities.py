@@ -1,3 +1,5 @@
+# Engine/entities.py  (ersetzt die Entity- und EntityMovable-Klassen)
+
 import pygame
 import Engine.sprite_sheet as sprite_sheet
 import Main.settings as settings
@@ -14,104 +16,193 @@ class Entity(pygame.sprite.Sprite):
         self.rect_attach = rect_attach
         self.scale = scale
         self.is_spritesheet = is_spritesheet
-        self.last_animation = (None, False) 
+        self.last_animation = (None, False)
         self.source = source
         self.solid = solid
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.ani_animations = ani_animations
 
+        # wichtig für späteres Rescaling / base-frame
+        self.scale = scale
+        self.base_sprite = base_sprite
+        self.ani_frames_count = ani_frames_count
+
         if is_spritesheet:
+            # Animation-Objekt pro-Instanz (frames werden intern gecached)
             self.Animation = sprite_sheet.SpriteSheetAnimation(source, rect, ani_frames_count, ani_animations, base_sprite)
-            self.image = self.Animation.frames[base_sprite]
+
+            # Setze das sichtbare Bild initial auf das base_sprite (so bleiben Tiles korrekt)
+            try:
+                base_img = self.Animation.frames[self.base_sprite]
+            except Exception:
+                # Fallback: das standardframe der Animation
+                base_img = getattr(self.Animation, "standardframe", self.Animation.frames[0])
+            self.image = pygame.transform.scale(base_img, self.scale)
         else:
             self.Animation = sprite_sheet.SpriteSheet(source)
             self.image = self.Animation.sprite_extraction(rect)
+            self.image = pygame.transform.scale(self.image, self.scale)
 
-        self.image = pygame.transform.scale(self.image, scale)
         self.rect = self.image.get_rect()
-        
         setattr(self.rect, self.rect_attach, (self.pos_x, self.pos_y))
         rect.x = self.pos_x
         rect.y = self.pos_y
         
     def update(self, dx = 0, dy = 0, *args):
-        # Animation aktualisieren
+        # Animation nur aktualisieren UND auf self.image übernehmen, wenn:
+        # - die Entität tatsächlich Animationen definiert hat (ani_animations != {})
+        #   -> normale animierbare Entitäten (z.B. NPCs, pick_up, Player)
+        # - ODER wenn eine Animation extern gestartet wurde und aktiv ist (sicherheit)
         if self.is_spritesheet:
-            if self.ani_animations != {}:
+            should_update_image = False
+            if self.ani_animations and len(self.ani_animations) > 0:
+                should_update_image = True
+            elif getattr(self.Animation, "active", False):
+                should_update_image = True
+
+            if should_update_image:
+                # Advance animation frames
                 self.Animation.update()
+                # Aktualisiere self.image nur für animierte Entities (so behalten statische Tiles ihr initial gesetztes Bild)
+                try:
+                    new_img = self.Animation.image
+                    new_img = pygame.transform.scale(new_img, self.scale)
+                    # Falls die Entität ein flip-Flag hat (movable entities), flip hier
+                    if getattr(self, "flip", False):
+                        new_img = pygame.transform.flip(new_img, True, False)
+                    self.image = new_img
+                except Exception:
+                    # keep current image on error
+                    pass
+
         if not self.fix:
             self.rect.x += dx
             self.rect.y += dy
  
 
 class EntityMovable(Entity):
-    
             
     def __init__(self, pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, fix = False, base_sprite = 0, ani_frames_count=0, ani_animations={}):
         super().__init__(pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, fix, base_sprite, ani_frames_count, ani_animations)
         
-        """Entität die sich bewegen kann. Erbt von Entity.
-        param: \t pos_x, pos_y, breite, höhe, Rechteck_attachment, Skalierung, Pfad, Ist_SpriteSheet?, Basis Sprite, Anz. Frames, Animationen in einem Dict mit {"Animationsname" : [start Frame, letztes Frame, geschwindigkeit, loop (bolean)] ---> Standart: "walking_a", "walking_d", "walking_s", "walking_w" -> Dabei soll immer ein Frame zuvor für das Standartframe sein.]}"""
-        # Afubau SpriteSheet Frame 1: standarfframe walking_a, 2-n walking animation_a, n+1: standartframe walking_d, n+2 - s animation_d, s+1: standardframe walking_s, s+2 - m walking_s animation, m+1: standardframe walking_w, m+2 - x walking_w animation
+        """Entität die sich bewegen kann. Erbt von Entity."""
         self.dx = 0
         self.dy = 0
         self.speed = 3
         self.flip = False
         self.animation_name = None
-        self.solid_collision_direction = ""
+        self.solid_collision_direction = None
 
     def animation_movement_adjustement(self):
         """
         Passt die Animation je nach Bewegungsrichtung an.
-        Erwartet Animationsnamen: 'walking', 'walking_s', 'walking_w'.
-        Bei Bewegung nach links wird das Bild geflippt.
-        Startet Animation nur, wenn sie sich ändert. Stoppt nur bei Stillstand.
+        - Wählt zuerst die gewünschte Richtung (desired).
+        - Wenn genau passende Animation (z.B. 'walking_a') existiert, nutze sie, kein Flip.
+        - Falls nur die Gegenrichtung existiert (z.B. nur 'walking_d' vorhanden),
+          nutze diese und flippe horizontal (nur für links/rechts).
+        - Wenn keine passende Animation existiert, ändere nichts.
         """
-        
+
+        # Bestimme Wunschrichtung
+        desired = None
         if self.dx > 0:
-            self.animation_name = 'walking_d'
+            desired = 'walking_d'
         elif self.dx < 0:
-            self.animation_name = 'walking_a'
+            desired = 'walking_a'
         elif self.dy < 0:
-            self.animation_name = 'walking_w'
+            desired = 'walking_w'
         elif self.dy > 0:
-            self.animation_name = 'walking_s'
+            desired = 'walking_s'
 
+        # Wähle Animation und ob wir flippen müssen
+        anim_to_start = None
+        flip_needed = False
+
+        if desired is not None:
+            # benutze direkte Animation, falls vorhanden
+            if desired in getattr(self, "ani_animations", {}):
+                anim_to_start = desired
+                flip_needed = False
+            else:
+                # fallback: versuche die Gegenrichtung (opposite)
+                opposite_map = {
+                    'walking_a': 'walking_d',
+                    'walking_d': 'walking_a',
+                    'walking_w': 'walking_s',
+                    'walking_s': 'walking_w'
+                }
+                opp = opposite_map.get(desired)
+                if opp and opp in getattr(self, "ani_animations", {}):
+                    anim_to_start = opp
+                    # Flip nur horizontal, nicht vertikal
+                    flip_needed = True if desired in ('walking_a', 'walking_d') else False
+
+        # setze flip-flag (wichtig falls vorher ein anderer Wert da war)
+        self.flip = flip_needed
+
+        # Wenn Spritesheet vorhanden: starte/stoppe Animationen korrekt und aktualisiere self.image
         if self.is_spritesheet:
-
+            # Stillstand -> Zurück auf Standframe
             if self.dx == 0 and self.dy == 0 and self.last_animation != (None, False):
                 self.last_animation = (None, self.flip)
-                print(self.Animation.current_range)
-                self.Animation.stop_animation(self.Animation.current_range[1]+1)
-                self.image = self.Animation.image
-                if self.flip:
-                    self.image = pygame.transform.flip(self.image, True, False)
+                # stoppe aktuelle Animation
+                try:
+                    self.Animation.stop_animation(self.Animation.current_range[1] + 1)
+                except Exception:
+                    pass
+                # setze das Image auf das, was Animation momentan liefert (skalieren & flip falls nötig)
+                try:
+                    img = self.Animation.image
+                    img = pygame.transform.scale(img, self.scale)
+                    if self.flip:
+                        img = pygame.transform.flip(img, True, False)
+                    self.image = img
+                except Exception:
+                    pass
                 self.animation_name = None
             else:
-                if self.last_animation != (self.animation_name, self.flip):
-                    self.Animation.stop_animation(self.Animation.current_range[1]+1)
-                    self.Animation.start_animation(self.animation_name)
-                    self.last_animation = (self.animation_name, self.flip)
-            self.image = self.Animation.image
-        
+                # Wenn eine Animation gewählt wurde: starte sie falls sie neu ist
+                if anim_to_start is not None:
+                    if self.last_animation != (anim_to_start, self.flip):
+                        try:
+                            self.Animation.stop_animation(self.Animation.current_range[1] + 1)
+                        except Exception:
+                            pass
+                        self.Animation.start_animation(anim_to_start)
+                        self.last_animation = (anim_to_start, self.flip)
+                # sync aktuelles Frame ins sichtbare Bild (auch wenn gleiche Animation läuft)
+                try:
+                    img = self.Animation.image
+                    img = pygame.transform.scale(img, self.scale)
+                    if self.flip:
+                        img = pygame.transform.flip(img, True, False)
+                    self.image = img
+                except Exception:
+                    pass
 
-    def collition(self, pos_x=0, pos_y=0):
-        """ Bestimmt die Richtung der Kollision mit einem soliden Objekt.
-        param:\t pos_x, pos_y (Position des soliden Objekts)"""
-        if self.rect.x > pos_x + settings.SOLID_FRAME_HIGHT / 2:
-            self.solid_collision_direction = "right"
-        if self.rect.x < pos_x - settings.SOLID_FRAME_HIGHT / 2:
-            self.solid_collision_direction = "left"
-        if self.rect.y > pos_y + settings.SOLID_FRAME_HIGHT / 2:
-            self.solid_collision_direction = "down"
-        if self.rect.y < pos_y - settings.SOLID_FRAME_HIGHT / 2:
-            self.solid_collision_direction = "up"
+    def collition(self, entity):
+        """Berechnet die Kollisionsrichtung basierend auf Rechtecksüberlappung."""
+        if not self.rect.colliderect(entity.rect):
+            self.solid_collision_direction = None
+            return
+
+        # Überlappung in X- und Y-Richtung
+        overlap_x = min(self.rect.right, entity.rect.right) - max(self.rect.left, entity.rect.left)
+        overlap_y = min(self.rect.bottom, entity.rect.bottom) - max(self.rect.top, entity.rect.top)
+
+        # Richtung bestimmen
+        if overlap_x < overlap_y:
+            if self.rect.centerx < entity.rect.centerx:
+                self.solid_collision_direction = "right"
+            else:
+                self.solid_collision_direction = "left"
+        else:
+            if self.rect.centery < entity.rect.centery:
+                self.solid_collision_direction = "down"
+            else:
+                self.solid_collision_direction = "up"
 
     def update(self, dx = 0, dy = 0, *args):
-
-        """ Aktualisiert die Position und Animation der beweglichen Entität.
-        param:\t keys (pygame.key.get_pressed()) """
-
         super().update(dx, dy, *args)
         self.animation_movement_adjustement()

@@ -43,92 +43,112 @@ class generateLandscape():
             data = [list(map(int, row)) for row in reader]
 
         return data
+    
+    def update_tiles(self, map_):
+        height = len(map_)-2
+        width = max((len(r) for r in map_), default=0)
 
-    def update_tiles(self, map):
-        """Ersetzt die grass-Zellen basierend auf Nachbarzellen. MADE BY COPILOT"""
-        height = len(self.map) -4
-        width = len(self.map[0]) if height > 0 else 0  
+        full = [row[:] + [0] * (width - len(row)) for row in map_]
+        new_map = [row[:] for row in full]
 
-        # Priorität: Je niedriger die Zahl, desto 'härter' der Übergang
-        # 5–8 sind Ecken, 1–4 Kanten
+        neigh8 = [(-1,0),(1,0),(0,-1),(0,1),(-1,-1),(-1,1),(1,-1),(1,1)]
 
+        def same_terrain(val, prefix):
+            if prefix == "F":
+                return val == 2 or (isinstance(val, str) and val.startswith("F"))
+            else:
+                return val == 3 or (isinstance(val, str) and val.startswith("W"))
 
-        # Bewegungsrichtungen für Nachbarn
-        transitions = [
-            (1, 0),    # unten
-            (0, 1),    # rechts
-            (-1, 0),   # oben
-            (0, -1),   # links
-            (1, 1),    # unten-rechts
-            (-1, -1),  # oben-links
-            (1, -1),   # unten-links
-            (-1, 1)    # oben-rechts
-        ]
-
-        transitions_dict = {
-            (1, 0): "t",
-            (0, 1): "l",
-            (-1, 0): "b",
-            (0, -1): "r",
-            (1, 1): "tl",
-            (-1, -1): "br",
-            (1, -1): "tr",
-            (-1, 1): "bl"
-        }
-
-     
-
-        # Neue Map erstellen
-        new_map = [row[:] for row in map]
-
-        print(new_map)
-                                
-        for y in range(height): 
-            for x in range(width): 
-                if map[y][x] == 2 or map[y][x] == 3: 
-                    for (dy, dx) in transitions: 
-                        ny, nx = y + dy, x + dx 
-                        if 0 <= ny < height and 0 <= nx < width :
-                            if map[ny][nx] == 0: 
-                                if map[y][x] == 2:
-                                    new_map[ny][nx] = "F"
-                                if map[y][x] == 3:
-                                    print("WWWWWWWWWWWWWWWW")
-                                    new_map[ny][nx] = "W"
-
-
-        print(new_map)
-
-
+        # Phase 1: F/W auf 0er Felder propagieren
         for y in range(height):
             for x in range(width):
-                if new_map[y][x] == "F" or new_map[y][x] == "W":
-                    for (dy, dx), mark in transitions_dict.items():
+                v = full[y][x]
+                if v == 2 or v == 3:
+                    p = "F" if v == 2 else "W"
+                    for dy, dx in neigh8:
                         ny, nx = y + dy, x + dx
-                        if 0 <= ny < height and 0 <= nx < width:
-                            if new_map[ny][nx] == 2 or new_map[ny][nx] == 3:
-                                if new_map[y][x] == "F":
-                                    new_map[y][x] = "F" + mark
-                                if new_map[y][x] == "W":
-                                    new_map[y][x] = "W" + mark
+                        if 0 <= ny < height and 0 <= nx < width and full[ny][nx] == 0:
+                            new_map[ny][nx] = p
+
+        # Tile-Code bestimmen
+        def get_tile_code(prefix, top, right, bottom, left, m, y, x):
+            def diag(dy, dx):
+                ny, nx = y+dy, x+dx
+                return 0 <= ny < len(m) and 0 <= nx < len(m[0]) and same_terrain(m[ny][nx], prefix)
+
+            top_left = diag(-1,-1)
+            top_right = diag(-1,1)
+            bottom_left = diag(1,-1)
+            bottom_right = diag(1,1)
+
+            # Normale äußere Ecken
+            if not top and not right: return prefix + "tr"
+            if not top and not left:  return prefix + "tl"
+            if not bottom and not right: return prefix + "br"
+            if not bottom and not left:  return prefix + "bl"
+
+            # Innere Ecken nur für W
+            if prefix == "W":
+                if top and left and not top_left: return "Wic_tl"
+                if top and right and not top_right: return "Wic_tr"
+                if bottom and left and not bottom_left: return "Wic_bl"
+                if bottom and right and not bottom_right: return "Wic_br"
+
+            # Kanten
+            if not top: return prefix + "t"
+            if not right: return prefix + "r"
+            if not bottom: return prefix + "b"
+            if not left: return prefix + "l"
+
+            # Innenbereich
+            return 2 if prefix == "F" else 3
+
+        def compute_once(m):
+            changed = False
+            out = [row[:] for row in m]
+            for y in range(height):
+                for x in range(width):
+                    cell = m[y][x]
+                    if cell == 0:
+                        continue
+
+                    if cell == 2 or (isinstance(cell, str) and cell.startswith("F")):
+                        prefix = "F"
+                    elif cell == 3 or (isinstance(cell, str) and cell.startswith("W")):
+                        prefix = "W"
+                    else:
+                        continue
+
+                    top    = same_terrain(m[y-1][x] if y > 0 else 0, prefix)
+                    right  = same_terrain(m[y][x+1] if x < width-1 else 0, prefix)
+                    bottom = same_terrain(m[y+1][x] if y < height-1 else 0, prefix)
+                    left   = same_terrain(m[y][x-1] if x > 0 else 0, prefix)
+
+                    new_code = get_tile_code(prefix, top, right, bottom, left, m, y, x)
+                    if new_code != cell:
+                        out[y][x] = new_code
+                        changed = True
+            return out, changed
+        
+
+        # Berechnung + Stabilisierung (3 Durchläufe)
+        new_map, _ = compute_once(new_map)
+        for _ in range(3):
+            new_map, changed = compute_once(new_map)
+            if not changed:
+                break
+
+        # Zeilenlängen wiederherstellen
+        for i, row in enumerate(map_):
+            new_map[i] = new_map[i][:len(row)]
 
         print(new_map)
 
+        return new_map
 
 
 
-        for y in range(height):
-            for x in range(width):
-                if new_map[y][x] == "w":
-                    for (dy, dx), mark in transitions_dict.items():
-                        ny, nx = y + dy, x + dx
-                        if 0 <= ny < height and 0 <= nx < width:
-                            if new_map[ny][nx] == 3:
-                                new_map[y][x] = "3" + mark
 
-
-        map = new_map
-        return map
 
     def generateGrass(self):
             self.horizontal_segment_counter = -1
@@ -171,7 +191,6 @@ class generateLandscape():
                 for elem in row:
                     self.horizontal_segment_counter += 1
                     if elem == 3:
-                        print("WALL")
                         self.entitygroup.add(Wall.Wall(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64, base_sprite=0))
                     if elem == "Wt":
                         self.entitygroup.add(Wall.Wall(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64, base_sprite=6))
@@ -189,7 +208,14 @@ class generateLandscape():
                         self.entitygroup.add(Wall.Wall(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64, base_sprite=3, flip=(False, True)))
                     if elem == "Wbl":
                         self.entitygroup.add(Wall.Wall(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64, base_sprite=4, flip = (False, True)))
-            
+                    if elem == "Wic_tl":
+                        self.entitygroup.add(Wall.Wall(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64, base_sprite=7, flip = (False, True)))
+                    if elem == "Wic_bl":
+                        self.entitygroup.add(Wall.Wall(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64, base_sprite=7, flip = (False, False)))
+                    if elem == "Wic_tr":
+                        self.entitygroup.add(Wall.Wall(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64, base_sprite=7, flip = (True, True)))
+                    if elem == "Wic_br":
+                        self.entitygroup.add(Wall.Wall(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64, base_sprite=7, flip = (True, False)))
 
             return self.entitygroup
 
@@ -199,8 +225,9 @@ inventoryItems = {}
 def addItemToInventory(item):
     """Funktion, die ein Item dem Inventar hinzufügt"""
     inventoryItems[item.name] = item.source
+    print(item.source)
     item.value += 1
-    updateToolbar()
+    return updateToolbar()
 
 def removeItemFromInventory(item):
     """Funktion, die ein Item vom Inventar entfernt"""
@@ -208,12 +235,7 @@ def removeItemFromInventory(item):
         if elem == item.name:
             del inventoryItems[item.name]
             item.value -= 1
-            updateToolbar()
-            break
-
-    inventoryItems[item.name] = item.source
-    item.value += 1
-    updateToolbar()
+            return updateToolbar()
 
 def GetNumberOfItems(item):
     """Funktion, die die Anzahl der Items im Inventar zurückgibt"""
@@ -221,10 +243,13 @@ def GetNumberOfItems(item):
     
 def updateToolbar():
     """Funktion, die die Toolbar aktualisiert"""
-    createToolbar(len(inventoryItems), 64, 6, 450)
-    for i in range (len(inventoryItems)):
-            itemField_group[i] = inventoryItems.values[i]
-            itemField_group[i].update_image()
+    overlayGroup = pygame.sprite.Group()
+    overlayGroup = createToolbar(len(inventoryItems), 64, 6, 450)
+    for i, value in enumerate(list(inventoryItems.values())):
+        slot = list(itemField_group)[i]
+        slot.source = value
+        slot.update_image()
+    return overlayGroup
 
 def createToolbar(slotCount, slotSize, edgeWidth, yPos):
     """Funktion, die eine Toolbar erstellt"""
