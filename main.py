@@ -26,10 +26,11 @@ Player = player.Player(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pyga
 
 Stick = collectable.Stick(50, 50)  # Erstelle ein Stick-Objekt an Position (300, 700), muss noch mit der Generation verbunden werden
 Rock = collectable.Rock(100, 100)
+Mushroom_juice = collectable.Mushroom_juice(150, 150)
 
 entities_group.add(Stick)  # Füge das Stick-Objekt zur Entitäten-Gruppe hinzu, damit es im Spiel erscheint
 entities_group.add(Rock)
-
+entities_group.add(Mushroom_juice)
 playerGroup.add(Player)
         
 Colliton = events.Collision(entities_group, moving_entities_group, playerGroup)
@@ -48,6 +49,7 @@ while running:
 
     Stick.collide_with_player(Player)  # Überprüfe, ob der Spieler den Stick eingesammelt hat(Kollisionsabfrage)
     Rock.collide_with_player(Player)  # Überprüfe, ob der Spieler den Rock eingesammelt hat(Kollisionsabfrage)
+    Mushroom_juice.collide_with_player(Player)
 
     if start_generation:
         Map = generation.generateLandscape(floor_group, entities_group)

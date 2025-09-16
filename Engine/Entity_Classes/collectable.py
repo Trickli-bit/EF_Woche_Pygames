@@ -47,4 +47,10 @@ class Rock(Collectable):
             
             self.name = "Rock"
             self.value = 1
-        
+
+class Mushroom_juice(Collectable):
+     def __init__(self, pos_x, pos_y, rect = pygame.Rect(0, 0, 64, 64), rect_attach = "topleft", scale = (64,64), source = r"Engine\Entity_Classes\Sprites_Entity_Classes\mushroo_juice.png", solid = False, is_spritesheet = False, base_sprite=0, ani_frames_count=0, ani_animations= {}):
+          super().__init__(pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, base_sprite, ani_frames_count, ani_animations)
+
+          self.name = "Mushroom_juice"
+          self.value = 1
