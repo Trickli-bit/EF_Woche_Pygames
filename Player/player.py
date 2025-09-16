@@ -7,7 +7,7 @@ class Player(EntityMovable):
         
         # Inventar als Attribut speichern
         self.name = "Player"  # optional, gut für Debug
-        self.item_dict = {"Stick": 0, "Rock": 0}
+        self.item_dict = {"Stick": 0, "Rock": 0, "Mushroom_juice": 0} #muss speter mit dem Inventar von Aiko abgeglichen werden!!!
         self.animations = ani_animations or {}
     def calculating_movement(self, keys):
 
@@ -43,10 +43,20 @@ class Player(EntityMovable):
         
 
 
-    def update(self, dx = 0, dy = 0, keys = []):
-
+    def update(self, dx = 0, dy = 0, keys = None):
         """ Aktualisiert die Position und Animation des Spielers.
         param:\t keys (pygame.key.get_pressed()) """
-        super().update()
-        if keys != []:
+        if keys is None:
+            keys = []
+
+        # 1) Berechne die Bewegung basierend auf Tastendrücken -> setzt self.dx / self.dy
+        if keys:
             self.calculating_movement(keys)
+
+        # 2) Trigger Animation basierend auf self.dx / self.dy (direkt, damit Animation korrekt gesetzt wird)
+        #    (ruft die Methode aus EntityMovable, die jetzt robuster mit Flip umgeht)
+        self.animation_movement_adjustement()
+
+        # 3) Danach das normale Update von Entity/EntityMovable ausführen.
+        #    Wichtig: wir übergeben die Parameter dx,dy wie vom main-loop erwartet
+        super().update(dx, dy, keys)

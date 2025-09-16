@@ -54,7 +54,6 @@ class SpriteSheetAnimation(SpriteSheet):
         self.current_range = [0,0,0,True]
 
         if filename not in frames_dict:
-            print("new Animation", image_count)
             self.frames = self.load_sprites(rect, image_count)
             frames_dict[filename] = self.frames
         else:
@@ -83,7 +82,9 @@ class SpriteSheetAnimation(SpriteSheet):
             self.current_frame += 1
             if self.current_frame >= self.current_range[1] + 1:
                 if not self.loop:
-                    self.stop_animation()
+                    print("stopping animation")
+
+                    self.stop_animation(self.current_range[1])
                 self.current_frame = self.current_range[0]
         self.framecounter += 1
         return self.current_frame
@@ -95,10 +96,13 @@ class SpriteSheetAnimation(SpriteSheet):
     
     def update_image(self):
         """ Aktualisiert das Bild (self.image) mit dem nächsten Frame der Animation."""
-        self.image = self.frames[self.next_frame()]
+        next_frame_int = self.next_frame()
+        print(next_frame_int, self.animations)
+        self.image = self.frames[next_frame_int]
 
     def update(self):
         """ Wird von pygame.sprite.Group() automatisch aufgerufen, um das Sprite zu aktualisieren.
         Führt update_image() aus."""
         if self.active == True:
             self.update_image()
+        

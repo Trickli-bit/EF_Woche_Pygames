@@ -1,3 +1,4 @@
+
 class Collision:
     """Kollisionsklasse für feste und bewegliche Objekte."""
 
@@ -24,3 +25,15 @@ class Collision:
             self.collide_with_solid(movable)
         for player in self.playerGroup:
             self.collide_with_solid(player)
+
+animation_to_add = None
+
+def checkAnimations(animation):
+    global animation_to_add
+    animation_to_add = animation
+    addingAnimation()
+    
+
+def addingAnimation():
+    global animation_to_add
+    return animation_to_add
