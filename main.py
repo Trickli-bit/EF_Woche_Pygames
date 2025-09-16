@@ -22,6 +22,7 @@ entities_group = pygame.sprite.Group()
 floor_group = pygame.sprite.Group()
 moving_entities_group = pygame.sprite.Group()
 playerGroup = pygame.sprite.GroupSingle()
+overlayGroup = pygame.sprite.Group()
 animationGroup = pygame.sprite.Group()
 overlayGroup_2= pygame.sprite.Group()
 
@@ -38,6 +39,7 @@ entities_group.add(Rock)
 overlayGroup_2.add(vigniette)
 
 playerGroup.add(Player)
+
         
 
 
@@ -48,15 +50,18 @@ Collition = events.Collision(entities_group, moving_entities_group, playerGroup)
 a = True
 start_generation = True
 
-print("GOOOOO")
-
 running = True
 while running:
 
     screen.fill((255, 255, 255))
 
-    Stick.collide_with_player(Player)  # Überprüfe, ob der Spieler den Stick eingesammelt hat(Kollisionsabfrage)
-    Rock.collide_with_player(Player)  # Überprüfe, ob der Spieler den Rock eingesammelt hat(Kollisionsabfrage)
+    new_overlay = Stick.collide_with_player(Player)
+    if new_overlay:
+        overlayGroup = new_overlay
+
+    new_overlay = Rock.collide_with_player(Player)
+    if new_overlay:
+        overlayGroup = new_overlay
 
     if start_generation:
         Map = generation.generateLandscape(floor_group, entities_group)
@@ -104,7 +109,9 @@ while running:
     overlayGroup_2.draw(screen)
 
     Collition.update()
-    
+    overlayGroup.update(-Player.dx, -Player.dy, keys,)
+    overlayGroup.draw(screen)
+
     pygame.display.update()
     clock.tick(60)
 

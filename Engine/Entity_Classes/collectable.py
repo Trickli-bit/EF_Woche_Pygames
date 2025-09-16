@@ -1,5 +1,6 @@
 import Engine.entities as entities
 import Main.events
+import Main.generation as generation
 import pygame
 import Player.player as player
 import Engine.Entity_Classes.animations as animations 
@@ -40,6 +41,7 @@ class Collectable(entities.Entity):
 
 
             self.kill()  # Entfernt das Collectable aus allen Sprite-Gruppen
+            return generation.addItemToInventory(self)
 
     def update(self, dx = 0, dy = 0, keys = []):
         super().update(dx, dy, keys)
