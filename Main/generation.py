@@ -193,28 +193,38 @@ class generateLandscape():
 
             return self.entitygroup
 
+
+inventoryItems = {}
+
 def addItemToInventory(item):
     """Funktion, die ein Item dem Inventar hinzufügt"""
-    for elem in itemField_group:
-        if elem.source == item.source:
-            elem.value += 1
-            updateItemCount(elem, elem.value)
+    inventoryItems[item.name] = item.source
+    item.value += 1
+    updateToolbar()
+
+def removeItemFromInventory(item):
+    """Funktion, die ein Item vom Inventar entfernt"""
+    for elem in inventoryItems:
+        if elem == item.name:
+            del inventoryItems[item.name]
+            item.value -= 1
+            updateToolbar()
             break
-    for elem in itemField_group:
-        if elem.source == r"EmptyIcon.png":
-            fillSlotWithItem(elem, item)
-            updateItemCount(elem, 1)
-            break
 
-def updateItemCount(slot, itemCount):
-    """Funktion, die die Anzahl der Items in einem Slot aktualisiert und anzeigt"""
-    slot.value = itemCount
+    inventoryItems[item.name] = item.source
+    item.value += 1
+    updateToolbar()
 
-def fillSlotWithItem(slot, item):
-    """Funktion, die ein Item in einen Slot füllt"""
-    slot.source = item.source
-    slot.update_image()
-
+def GetNumberOfItems(item):
+    """Funktion, die die Anzahl der Items im Inventar zurückgibt"""
+    return item.value
+    
+def updateToolbar():
+    """Funktion, die die Toolbar aktualisiert"""
+    createToolbar(len(inventoryItems), 64, 6, 450)
+    for i in range (len(inventoryItems)):
+            itemField_group[i] = inventoryItems.values[i]
+            itemField_group[i].update_image()
 
 def createToolbar(slotCount, slotSize, edgeWidth, yPos):
     """Funktion, die eine Toolbar erstellt"""

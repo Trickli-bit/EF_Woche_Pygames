@@ -24,7 +24,7 @@ playerGroup = pygame.sprite.GroupSingle()
 overlayGroup = pygame.sprite.Group()
 
 Player = player.Player(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 64, 64), "midbottom", (64, 64), r"Player\player.png",True, True, True, 0, 21, {"walking_a": [0, 3, 5, True], "walking_d": [5, 8, 5, True], "walking_s": [10, 15, 5, True], "walking_w": [17, 19, 5, True]})
-
+ExampleIcon = player.Player(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 64, 64), "midbottom", (64, 64), r"IconExample.png", False, False, True)
 
 
 entities_group.add()
@@ -74,7 +74,7 @@ while running:
     overlayGroup.update(-Player.dx, -Player.dy, keys,)
     overlayGroup.draw(screen)
 
-    generation.addItemToInventory(Wall)
+    generation.addItemToInventory(ExampleIcon)
     
     pygame.display.update()
     clock.tick(60)
