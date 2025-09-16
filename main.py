@@ -4,7 +4,8 @@ import Engine.entities as entities
 import Main.events as events
 import Player.player as player
 import Main.generation as generation
-import Engine.Entity_Classes.floor as Floor 
+import Engine.Entity_Classes.floor as Floor
+import Engine.Entity_Classes.interactable as interactable
 import sys
 import time
 
@@ -23,10 +24,11 @@ moving_entities_group = pygame.sprite.Group()
 playerGroup = pygame.sprite.GroupSingle()
 
 Player = player.Player(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 64, 64), "midbottom", (64, 64), r"Player\player.png",True, True, True, 0, 17, {"walking_a": [0, 3, 5, True], "walking_d": [4, 7, 5, True], "walking_s": [8, 13, 5, True], "walking_w": [14, 16, 5, True]})
+Axecrafter = interactable.interactables(0, 0, pygame.Rect(0, 0, 64, 64), "topleft", (64,64), r"Engine\Entity_Classes\Sprites_Entity_Classes\pixilart-sprite (6).png", True, False, "Axe", "stick", "stone", "air", "air", False, 0, 8, {"Craft_Axe" : [0, 7, 5, False]})
 
 
 
-entities_group.add()
+entities_group.add(Axecrafter)
 playerGroup.add(Player)
         
 Colliton = events.Collision(entities_group, moving_entities_group)
@@ -68,7 +70,6 @@ while running:
     playerGroup.update(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, keys)
     playerGroup.draw(screen)
 
-    
     pygame.display.update()
     clock.tick(60)
 

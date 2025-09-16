@@ -1,5 +1,6 @@
 import pygame
 import Engine.entities as entities
+import Main.events as events
 
 placeholderitem = True
 """Platzhalter für eine Überprüfung, ob das Invertar ein oder mehrere Items hat"""
@@ -10,7 +11,7 @@ def placeholderfunction2(item):
     """Platzhalter für eine Funktion, die Items dem Inventar hinzufügt"""
 
 class interactables(entities.Entity):
-    def __init__(self, pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, output = "air", input1 = "air", input2 = "air", input3 = "air", input4 = "air", fix = False, base_sprite = 0, ani_frames_count = 0, ani_animations = {}):
+    def __init__(self, pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, output, input1 = "air", input2 = "air", input3 = "air", input4 = "air", fix = True, base_sprite = 0, ani_frames_count = 0, ani_animations = {}):
         super().__init__(pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, fix, base_sprite, ani_frames_count, ani_animations)
         self.input1 = input1
         self.input2 = input2
@@ -47,3 +48,5 @@ class interactables(entities.Entity):
                 placeholderfunction1(self.input3)
                 placeholderfunction1(self.input4)
                 placeholderfunction2(self.output)
+
+Axecrafter = interactables(0, 0, pygame.Rect(0, 0, 64, 64), "topleft", (64,64), r"Engine\Entity_Classes\Sprites_Entity_Classes\pixilart-sprite (6).png", True, False, "Axe", "stick", "stone", "air", "air", False, 0, 8, {"Craft_Axe" : [0, 7, 5, False]})
