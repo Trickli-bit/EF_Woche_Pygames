@@ -30,14 +30,15 @@ vigniette = entities.Entity(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2,
 
 Player = player.Player(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 64, 64), "midbottom", (64, 64), r"Player\player.png",True, True, True, 0, 21, {"walking_a": [0, 3, 5, True], "walking_d": [5, 8, 5, True], "walking_s": [10, 15, 5, True], "walking_w": [17, 19, 5, True]})
 
-Stick = collectable.Stick(50, 50)  # Erstelle ein Stick-Objekt an Position (300, 700), muss noch mit der Generation verbunden werden
-Rock = collectable.Rock(100, 100)
+Stick = collectable.Stick(100, 50)  # Erstelle ein Stick-Objekt an Position (300, 700), muss noch mit der Generation verbunden werden
+Rock = collectable.Rock(100, 150)
+Mushroom_juice = collectable.Mushroom_juice(100, 250)
 
 entities_group.add(Stick)  # Füge das Stick-Objekt zur Entitäten-Gruppe hinzu, damit es im Spiel erscheint
 entities_group.add(Rock)
+entities_group.add(Mushroom_juice)
 
 overlayGroup_2.add(vigniette)
-
 playerGroup.add(Player)
 
         
@@ -62,6 +63,11 @@ while running:
     new_overlay = Rock.collide_with_player(Player)
     if new_overlay:
         overlayGroup = new_overlay
+
+    new_overlay = Mushroom_juice.collide_with_player(Player)
+    if new_overlay:
+        overlayGroup = new_overlay
+
 
     if start_generation:
         Map = generation.generateLandscape(floor_group, entities_group)

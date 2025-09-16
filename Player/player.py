@@ -7,7 +7,7 @@ class Player(EntityMovable):
         
         # Inventar als Attribut speichern
         self.name = "Player"  # optional, gut für Debug
-        self.item_dict = {"Stick": 0, "Rock": 0}
+        self.item_dict = {"Stick": 0, "Rock": 0, "Mushroom_juice": 0} #muss speter mit dem Inventar von Aiko abgeglichen werden!!!
         self.animations = ani_animations or {}
     def calculating_movement(self, keys):
 
