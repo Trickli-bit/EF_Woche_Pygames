@@ -23,7 +23,7 @@ floor_group = pygame.sprite.Group()
 moving_entities_group = pygame.sprite.Group()
 playerGroup = pygame.sprite.GroupSingle()
 animationGroup = pygame.sprite.Group()
-overlayGroup= pygame.sprite.Group()
+overlayGroup_2= pygame.sprite.Group()
 
 vigniette = entities.Entity(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), "center", (settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), r"vigniette.png",False, False, False, 0, 0, {})
 
@@ -35,7 +35,7 @@ Rock = collectable.Rock(100, 100)
 entities_group.add(Stick)  # Füge das Stick-Objekt zur Entitäten-Gruppe hinzu, damit es im Spiel erscheint
 entities_group.add(Rock)
 
-overlayGroup.add(vigniette)
+overlayGroup_2.add(vigniette)
 
 playerGroup.add(Player)
         
@@ -101,7 +101,7 @@ while running:
     playerGroup.update(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, keys)
     playerGroup.draw(screen)
 
-    overlayGroup.draw(screen)
+    overlayGroup_2.draw(screen)
 
     Collition.update()
     
