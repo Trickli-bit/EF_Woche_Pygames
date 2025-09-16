@@ -53,6 +53,7 @@ start_generation = True
 running = True
 while running:
 
+
     screen.fill((255, 255, 255))
 
     new_overlay = Stick.collide_with_player(Player)
