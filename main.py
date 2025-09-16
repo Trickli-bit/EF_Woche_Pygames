@@ -7,7 +7,7 @@ import Main.generation as generation
 import Engine.Entity_Classes.floor as Floor 
 import sys
 import time
-
+import Engine.Entity_Classes.collectable as collectable
 
 
 pygame.init()
@@ -24,7 +24,11 @@ playerGroup = pygame.sprite.GroupSingle()
 
 Player = player.Player(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 64, 64), "midbottom", (64, 64), r"Player\player.png",True, True, True, 0, 21, {"walking_a": [0, 3, 5, True], "walking_d": [5, 8, 5, True], "walking_s": [10, 15, 5, True], "walking_w": [17, 19, 5, True]})
 
+Stick = collectable.Stick(300, 700)  # Erstelle ein Stick-Objekt an Position (300, 700), muss noch mit der Generation verbunden werden
+Rock = collectable.Rock(500, 300)
 
+entities_group.add(Stick)  # Füge das Stick-Objekt zur Entitäten-Gruppe hinzu, damit es im Spiel erscheint
+entities_group.add(Rock)
 
 entities_group.add()
 playerGroup.add(Player)
@@ -42,6 +46,9 @@ running = True
 while running:
 
     screen.fill((255, 255, 255))
+
+    Stick.collide_with_player(Player)  # Überprüfe, ob der Spieler den Stick eingesammelt hat(Kollisionsabfrage)
+    Rock.collide_with_player(Player)  # Überprüfe, ob der Spieler den Rock eingesammelt hat(Kollisionsabfrage)
 
     if start_generation:
         Map = generation.generateLandscape(floor_group, entities_group)

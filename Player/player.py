@@ -1,10 +1,14 @@
 import pygame
 from Engine.entities import EntityMovable
+
 class Player(EntityMovable):
     def __init__(self, pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, fix = False, base_sprite=0, ani_frames_count=0, ani_animations=...):
         super().__init__(pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, fix, base_sprite, ani_frames_count, ani_animations)
         
-
+        # Inventar als Attribut speichern
+        self.name = "Player"  # optional, gut für Debug
+        self.item_dict = {"Stick": 0, "Rock": 0}
+        self.animations = ani_animations or {}
     def calculating_movement(self, keys):
 
         """ Berechnet die Bewegung basierend auf den gedrückten Tasten.
