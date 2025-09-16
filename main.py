@@ -54,7 +54,6 @@ start_generation = True
 running = True
 while running:
 
-
     screen.fill((255, 255, 255))
 
     new_overlay = Stick.collide_with_player(Player)
@@ -64,7 +63,11 @@ while running:
     new_overlay = Rock.collide_with_player(Player)
     if new_overlay:
         overlayGroup = new_overlay
-    Mushroom_juice.collide_with_player(Player)
+
+    new_overlay = Mushroom_juice.collide_with_player(Player)
+    if new_overlay:
+        overlayGroup = new_overlay
+
 
     if start_generation:
         Map = generation.generateLandscape(floor_group, entities_group)
