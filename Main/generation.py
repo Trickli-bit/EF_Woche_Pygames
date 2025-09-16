@@ -225,8 +225,9 @@ inventoryItems = {}
 def addItemToInventory(item):
     """Funktion, die ein Item dem Inventar hinzufügt"""
     inventoryItems[item.name] = item.source
+    print(item.source)
     item.value += 1
-    updateToolbar()
+    return updateToolbar()
 
 def removeItemFromInventory(item):
     """Funktion, die ein Item vom Inventar entfernt"""
@@ -234,12 +235,7 @@ def removeItemFromInventory(item):
         if elem == item.name:
             del inventoryItems[item.name]
             item.value -= 1
-            updateToolbar()
-            break
-
-    inventoryItems[item.name] = item.source
-    item.value += 1
-    updateToolbar()
+            return updateToolbar()
 
 def GetNumberOfItems(item):
     """Funktion, die die Anzahl der Items im Inventar zurückgibt"""
@@ -247,10 +243,13 @@ def GetNumberOfItems(item):
     
 def updateToolbar():
     """Funktion, die die Toolbar aktualisiert"""
-    createToolbar(len(inventoryItems), 64, 6, 450)
-    for i in range (len(inventoryItems)):
-            itemField_group[i] = inventoryItems.values[i]
-            itemField_group[i].update_image()
+    overlayGroup = pygame.sprite.Group()
+    overlayGroup = createToolbar(len(inventoryItems), 64, 6, 450)
+    for i, value in enumerate(list(inventoryItems.values())):
+        slot = list(itemField_group)[i]
+        slot.source = value
+        slot.update_image()
+    return overlayGroup
 
 def createToolbar(slotCount, slotSize, edgeWidth, yPos):
     """Funktion, die eine Toolbar erstellt"""

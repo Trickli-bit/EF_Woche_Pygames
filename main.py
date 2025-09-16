@@ -41,15 +41,18 @@ Colliton = events.Collision(entities_group, moving_entities_group, playerGroup)
 a = True
 start_generation = True
 
-overlayGroup = generation.createToolbar(9, 64, 6, 450)
-
 running = True
 while running:
 
     screen.fill((255, 255, 255))
 
-    Stick.collide_with_player(Player)  # Überprüfe, ob der Spieler den Stick eingesammelt hat(Kollisionsabfrage)
-    Rock.collide_with_player(Player)  # Überprüfe, ob der Spieler den Rock eingesammelt hat(Kollisionsabfrage)
+    new_overlay = Stick.collide_with_player(Player)
+    if new_overlay:
+        overlayGroup = new_overlay
+
+    new_overlay = Rock.collide_with_player(Player)
+    if new_overlay:
+        overlayGroup = new_overlay
 
     if start_generation:
         Map = generation.generateLandscape(floor_group, entities_group)
@@ -78,7 +81,7 @@ while running:
     Colliton.update()
     overlayGroup.update(-Player.dx, -Player.dy, keys,)
     overlayGroup.draw(screen)
-    
+
     pygame.display.update()
     clock.tick(60)
 

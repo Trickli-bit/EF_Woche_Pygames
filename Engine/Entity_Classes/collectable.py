@@ -1,5 +1,6 @@
 import Engine.entities as entities
 import Main.events
+import Main.generation as generation
 import pygame
 import Player.player as player
 
@@ -32,6 +33,7 @@ class Collectable(entities.Entity):
             player_obj.item_dict[self.name] = player_obj.item_dict.get(self.name, 0) + self.value
             print(f"[DEBUG] {player_obj} hat {self.name} eingesammelt! Inventar: {player_obj.item_dict}")
             self.kill()  # Entfernt das Collectable aus allen Sprite-Gruppen
+            return generation.addItemToInventory(self)
 
 class Stick(Collectable):
      def __init__(self, pos_x, pos_y, rect = pygame.Rect(0, 0, 64, 64), rect_attach = "topleft", scale = (64,64), source = r"Engine\Entity_Classes\Sprites_Entity_Classes\stock-pixilart (2).png", solid = False, is_spritesheet = False, base_sprite=0, ani_frames_count=0, ani_animations= {}):
