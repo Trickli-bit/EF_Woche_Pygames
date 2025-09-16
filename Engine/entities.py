@@ -18,12 +18,9 @@ class Entity(pygame.sprite.Sprite):
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.ani_animations = ani_animations
-        print(ani_frames_count)
-
 
         if is_spritesheet:
             self.Animation = sprite_sheet.SpriteSheetAnimation(source, rect, ani_frames_count, ani_animations, base_sprite)
-            print("This is: ", base_sprite, self.pos_x, self.pos_y)
             self.image = self.Animation.frames[base_sprite]
         else:
             self.Animation = sprite_sheet.SpriteSheet(source)
@@ -85,14 +82,15 @@ class EntityMovable(Entity):
 
             if self.dx == 0 and self.dy == 0 and self.last_animation != (None, False):
                 self.last_animation = (None, self.flip)
-                self.Animation.stop_animation(self.Animation.current_range[0])
+                print(self.Animation.current_range)
+                self.Animation.stop_animation(self.Animation.current_range[1]+1)
                 self.image = self.Animation.image
                 if self.flip:
                     self.image = pygame.transform.flip(self.image, True, False)
                 self.animation_name = None
             else:
                 if self.last_animation != (self.animation_name, self.flip):
-                    self.Animation.stop_animation(self.Animation.current_range[0])
+                    self.Animation.stop_animation(self.Animation.current_range[1]+1)
                     self.Animation.start_animation(self.animation_name)
                     self.last_animation = (self.animation_name, self.flip)
             self.image = self.Animation.image

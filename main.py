@@ -22,7 +22,7 @@ floor_group = pygame.sprite.Group()
 moving_entities_group = pygame.sprite.Group()
 playerGroup = pygame.sprite.GroupSingle()
 
-Player = player.Player(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 64, 64), "midbottom", (64, 64), r"Player\player.png",True, True, True, 0, 17, {"walking_a": [0, 3, 5, True], "walking_d": [4, 7, 5, True], "walking_s": [8, 13, 5, True], "walking_w": [14, 16, 5, True]})
+Player = player.Player(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 64, 64), "midbottom", (64, 64), r"Player\player.png",True, True, True, 0, 21, {"walking_a": [0, 3, 5, True], "walking_d": [5, 8, 5, True], "walking_s": [10, 15, 5, True], "walking_w": [17, 19, 5, True]})
 
 
 
@@ -44,8 +44,9 @@ while running:
     screen.fill((255, 255, 255))
 
     if start_generation:
-        Map = generation.generateLandscape(floor_group)
-        Map.generateElements()
+        Map = generation.generateLandscape(floor_group, entities_group)
+        Map.generateGrass()
+        Map.generateWall()
         start_generation = False
 
     for event in pygame.event.get():
