@@ -24,7 +24,7 @@ moving_entities_group = pygame.sprite.Group()
 playerGroup = pygame.sprite.GroupSingle()
 
 Player = player.Player(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 64, 64), "midbottom", (64, 64), r"Player\player.png",True, True, True, 0, 17, {"walking_a": [0, 3, 5, True], "walking_d": [4, 7, 5, True], "walking_s": [8, 13, 5, True], "walking_w": [14, 16, 5, True]})
-Axecrafter = interactable.interactables(0, 0, pygame.Rect(0, 0, 64, 64), "topleft", (64,64), r"Engine\Entity_Classes\Sprites_Entity_Classes\pixilart-sprite (6).png", True, False, "Axe", "stick", "stone", "air", "air", False, 0, 8, {"Craft_Axe" : [0, 7, 5, False]})
+Axecrafter = interactable.interactables(0, 0, pygame.Rect(0, 0, 64, 64), "topleft", (64,64), r"Engine\Entity_Classes\Sprites_Entity_Classes\pixilart-sprite (6).png", True, True, "Axe", "stick", "stone", "air", "air", False, 0, 8, {"Craft_Axe" : [0, 7, 5, False]}, "Craft_Axe")
 
 
 
@@ -37,6 +37,7 @@ Colliton = events.Collision(entities_group, moving_entities_group)
 
 a = True
 start_generation = True
+has_axe = False
 
 print("GOOOOO")
 
@@ -69,6 +70,10 @@ while running:
 
     playerGroup.update(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, keys)
     playerGroup.draw(screen)
+
+    if Player.rect.colliderect(Axecrafter.rect) and has_axe == False:
+        Axecrafter.interact()
+        has_axe = True
 
     pygame.display.update()
     clock.tick(60)
