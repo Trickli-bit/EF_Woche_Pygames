@@ -10,3 +10,7 @@ class InventorySlot(entities.Entity):
         self.rect = rect
         self.scale = scale
         self.source = source
+
+    def update_image(self):
+        """Funktion, die das Bild neu lädt basierend auf self.source und self.scale."""
+        self.image = pygame.transform.scale(pygame.image.load(self.source), self.scale)

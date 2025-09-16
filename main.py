@@ -22,7 +22,7 @@ playerGroup = pygame.sprite.GroupSingle()
 overlayGroup = pygame.sprite.Group()
 
 Player = player.Player(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 64, 64), "midbottom", (64,64), r"pixilart-sprite.png",True, True, True, 0, 10, {"walking_w": [0, 1, 20, True], "walking_s": [2, 3, 20, True], "walking": [4, 5, 20, True]})
-Wall = entities.Entity(250, 250, pygame.Rect(0, 0, 64, 64), "midbottom", (64,64), r"Wall.png", True, False)
+Wall = entities.Entity(250, 250, pygame.Rect(0, 0, 64, 64), "midbottom", (64,64), r"IconExample.png", True, False)
 
 entities_group.add(Wall)
 playerGroup.add(Player)
@@ -36,11 +36,10 @@ Colliton = events.Collision(entities_group, moving_entities_group)
 a = True
 start_generation = True
 
+overlayGroup = generation.createToolbar(9, 64, 6, 450)
+
 running = True
 while running:
-
-    if start_generation:
-        overlayGroup = generation.createInventorySlots(overlayGroup, overlayGroup, 64, 9, 5)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -64,6 +63,7 @@ while running:
     overlayGroup.update(-Player.dx, -Player.dy, keys,)
     overlayGroup.draw(screen)
 
+    generation.addItemToInventory(Wall)
     
     pygame.display.update()
     clock.tick(60)
