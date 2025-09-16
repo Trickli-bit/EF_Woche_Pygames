@@ -4,6 +4,7 @@ import Engine.entities as entities
 import Main.events as events
 import Player.player as player
 import Main.generation as generation
+import Engine.Entity_Classes.floor as Floor 
 import sys
 import time
 
@@ -17,19 +18,20 @@ screen = pygame.display.set_mode([settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT]
 clock = pygame.time.Clock()
 
 entities_group = pygame.sprite.Group()  
+floor_group = pygame.sprite.Group()
 moving_entities_group = pygame.sprite.Group()
 playerGroup = pygame.sprite.GroupSingle()
 overlayGroup = pygame.sprite.Group()
 
-Player = player.Player(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 64, 64), "midbottom", (64,64), r"pixilart-sprite.png",True, True, True, 0, 10, {"walking_w": [0, 1, 20, True], "walking_s": [2, 3, 20, True], "walking": [4, 5, 20, True]})
-Wall = entities.Entity(250, 250, pygame.Rect(0, 0, 64, 64), "midbottom", (64,64), r"IconExample.png", True, False)
+Player = player.Player(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 64, 64), "midbottom", (64, 64), r"Player\player.png",True, True, True, 0, 21, {"walking_a": [0, 3, 5, True], "walking_d": [5, 8, 5, True], "walking_s": [10, 15, 5, True], "walking_w": [17, 19, 5, True]})
 
-entities_group.add(Wall)
+
+
+entities_group.add()
 playerGroup.add(Player)
 
         
 Colliton = events.Collision(entities_group, moving_entities_group)
-
 
 # Run until the user asks to quit
 
@@ -41,6 +43,14 @@ overlayGroup = generation.createToolbar(9, 64, 6, 450)
 running = True
 while running:
 
+    screen.fill((255, 255, 255))
+
+    if start_generation:
+        Map = generation.generateLandscape(floor_group, entities_group)
+        Map.generateGrass()
+        Map.generateWall()
+        start_generation = False
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -49,7 +59,8 @@ while running:
 
     Colliton.update()
 
-    screen.fill((255, 255, 255))
+    floor_group.update(-Player.dx, -Player.dy, keys)
+    floor_group.draw(screen)
 
     entities_group.update(-Player.dx, -Player.dy, keys)
     entities_group.draw(screen)
