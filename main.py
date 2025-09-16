@@ -22,8 +22,9 @@ entities_group = pygame.sprite.Group()
 floor_group = pygame.sprite.Group()
 moving_entities_group = pygame.sprite.Group()
 playerGroup = pygame.sprite.GroupSingle()
+overlayGroup = pygame.sprite.Group()
 animationGroup = pygame.sprite.Group()
-overlayGroup= pygame.sprite.Group()
+overlayGroup_2= pygame.sprite.Group()
 
 vigniette = entities.Entity(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), "center", (settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), r"vigniette.png",False, False, False, 0, 0, {})
 
@@ -36,7 +37,10 @@ Mushroom_juice = collectable.Mushroom_juice(150, 150)
 entities_group.add(Stick)  # Füge das Stick-Objekt zur Entitäten-Gruppe hinzu, damit es im Spiel erscheint
 entities_group.add(Rock)
 
+overlayGroup_2.add(vigniette)
+
 playerGroup.add(Player)
+
         
 
 
@@ -47,16 +51,14 @@ Collition = events.Collision(entities_group, moving_entities_group, playerGroup)
 a = True
 start_generation = True
 
-print("GOOOOO")
-
 running = True
 while running:
+
 
     screen.fill((255, 255, 255))
 
     Stick.collide_with_player(Player)  # Überprüfe, ob der Spieler den Stick eingesammelt hat(Kollisionsabfrage)
     Rock.collide_with_player(Player)  # Überprüfe, ob der Spieler den Rock eingesammelt hat(Kollisionsabfrage)
-    Mushroom_juice.collide_with_player(Player)
 
     if start_generation:
         Map = generation.generateLandscape(floor_group, entities_group)
@@ -101,10 +103,13 @@ while running:
     playerGroup.update(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, keys)
     playerGroup.draw(screen)
 
-    overlayGroup.draw(screen)
+    overlayGroup_2.draw(screen)
 
     Collition.update()
     
+    overlayGroup.update(-Player.dx, -Player.dy, keys,)
+    overlayGroup.draw(screen)
+
     pygame.display.update()
     clock.tick(60)
 
