@@ -8,7 +8,7 @@ import Engine.Entity_Classes.floor as Floor
 import Engine.Entity_Classes.interactable as interactable
 import sys
 import time
-
+import Engine.Entity_Classes.collectable as collectable
 
 
 pygame.init()
@@ -26,12 +26,16 @@ playerGroup = pygame.sprite.GroupSingle()
 Player = player.Player(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 64, 64), "midbottom", (64, 64), r"Player\player.png",True, True, True, 0, 17, {"walking_a": [0, 3, 5, True], "walking_d": [4, 7, 5, True], "walking_s": [8, 13, 5, True], "walking_w": [14, 16, 5, True]})
 Axecrafter = interactable.interactables(0, 0, pygame.Rect(0, 0, 64, 64), "topleft", (64,64), r"Engine\Entity_Classes\Sprites_Entity_Classes\pixilart-sprite (6).png", True, True, "Axe", "stick", "stone", "air", "air", False, 0, 8, {"Craft_Axe" : [0, 7, 5, False]}, "Craft_Axe")
 
+Stick = collectable.Stick(50, 50)  # Erstelle ein Stick-Objekt an Position (300, 700), muss noch mit der Generation verbunden werden
+Rock = collectable.Rock(100, 100)
 
+entities_group.add(Stick)  # Füge das Stick-Objekt zur Entitäten-Gruppe hinzu, damit es im Spiel erscheint
+entities_group.add(Rock)
 
 entities_group.add(Axecrafter)
 playerGroup.add(Player)
         
-Colliton = events.Collision(entities_group, moving_entities_group)
+Colliton = events.Collision(entities_group, moving_entities_group, playerGroup)
 
 # Run until the user asks to quit
 
@@ -46,9 +50,13 @@ while running:
 
     screen.fill((255, 255, 255))
 
+    Stick.collide_with_player(Player)  # Überprüfe, ob der Spieler den Stick eingesammelt hat(Kollisionsabfrage)
+    Rock.collide_with_player(Player)  # Überprüfe, ob der Spieler den Rock eingesammelt hat(Kollisionsabfrage)
+
     if start_generation:
-        Map = generation.generateLandscape(floor_group)
-        Map.generateElements()
+        Map = generation.generateLandscape(floor_group, entities_group)
+        Map.generateGrass()
+        Map.generateWall()
         start_generation = False
 
     for event in pygame.event.get():
@@ -56,8 +64,6 @@ while running:
             running = False
 
     keys = pygame.key.get_pressed()
-
-    Colliton.update()
 
     floor_group.update(-Player.dx, -Player.dy, keys)
     floor_group.draw(screen)
@@ -71,6 +77,8 @@ while running:
     playerGroup.update(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, keys)
     playerGroup.draw(screen)
 
+    Colliton.update()
+    
     if Player.rect.colliderect(Axecrafter.rect) and has_axe == False:
         Axecrafter.interact()
         has_axe = True

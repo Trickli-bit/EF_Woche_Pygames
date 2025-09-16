@@ -53,8 +53,6 @@ class SpriteSheetAnimation(SpriteSheet):
         self.current_frame = 0
         self.current_range = [0,0,0,True]
 
-        print(frames_dict, filename)
-
         if filename not in frames_dict:
             print("new Animation", image_count)
             self.frames = self.load_sprites(rect, image_count)

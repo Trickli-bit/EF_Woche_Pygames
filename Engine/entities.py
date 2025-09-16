@@ -18,12 +18,9 @@ class Entity(pygame.sprite.Sprite):
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.ani_animations = ani_animations
-        print(ani_frames_count)
-
 
         if is_spritesheet:
             self.Animation = sprite_sheet.SpriteSheetAnimation(source, rect, ani_frames_count, ani_animations, base_sprite)
-            print("This is: ", base_sprite, self.pos_x, self.pos_y)
             self.image = self.Animation.frames[base_sprite]
         else:
             self.Animation = sprite_sheet.SpriteSheet(source)
@@ -62,7 +59,7 @@ class EntityMovable(Entity):
         self.speed = 3
         self.flip = False
         self.animation_name = None
-        self.solid_collision_direction = ""
+        self.solid_collision_direction = None
 
     def animation_movement_adjustement(self):
         """
@@ -85,30 +82,41 @@ class EntityMovable(Entity):
 
             if self.dx == 0 and self.dy == 0 and self.last_animation != (None, False):
                 self.last_animation = (None, self.flip)
-                self.Animation.stop_animation(self.Animation.current_range[0])
+                print(self.Animation.current_range)
+                self.Animation.stop_animation(self.Animation.current_range[1]+1)
                 self.image = self.Animation.image
                 if self.flip:
                     self.image = pygame.transform.flip(self.image, True, False)
                 self.animation_name = None
             else:
                 if self.last_animation != (self.animation_name, self.flip):
-                    self.Animation.stop_animation(self.Animation.current_range[0])
+                    self.Animation.stop_animation(self.Animation.current_range[1]+1)
                     self.Animation.start_animation(self.animation_name)
                     self.last_animation = (self.animation_name, self.flip)
             self.image = self.Animation.image
         
 
-    def collition(self, pos_x=0, pos_y=0):
-        """ Bestimmt die Richtung der Kollision mit einem soliden Objekt.
-        param:\t pos_x, pos_y (Position des soliden Objekts)"""
-        if self.rect.x > pos_x + settings.SOLID_FRAME_HIGHT / 2:
-            self.solid_collision_direction = "right"
-        if self.rect.x < pos_x - settings.SOLID_FRAME_HIGHT / 2:
-            self.solid_collision_direction = "left"
-        if self.rect.y > pos_y + settings.SOLID_FRAME_HIGHT / 2:
-            self.solid_collision_direction = "down"
-        if self.rect.y < pos_y - settings.SOLID_FRAME_HIGHT / 2:
-            self.solid_collision_direction = "up"
+    def collition(self, entity):
+        """Berechnet die Kollisionsrichtung basierend auf Rechtecksüberlappung."""
+        if not self.rect.colliderect(entity.rect):
+            self.solid_collision_direction = None
+            return
+
+        # Überlappung in X- und Y-Richtung
+        overlap_x = min(self.rect.right, entity.rect.right) - max(self.rect.left, entity.rect.left)
+        overlap_y = min(self.rect.bottom, entity.rect.bottom) - max(self.rect.top, entity.rect.top)
+
+        # Richtung bestimmen
+        if overlap_x < overlap_y:
+            if self.rect.centerx < entity.rect.centerx:
+                self.solid_collision_direction = "right"
+            else:
+                self.solid_collision_direction = "left"
+        else:
+            if self.rect.centery < entity.rect.centery:
+                self.solid_collision_direction = "down"
+            else:
+                self.solid_collision_direction = "up"
 
     def update(self, dx = 0, dy = 0, *args):
 
