@@ -241,47 +241,59 @@ class generateLandscape():
 
 
 inventoryItems = {}
+itemField_group = pygame.sprite.Group()
+toolField_group = pygame.sprite.Group()
+slotCount = 8
 
-def addItemToInventory(item):
+def addItemToInventory(collectable):
     """Funktion, die ein Item dem Inventar hinzufügt"""
-    inventoryItems[item.name] = item.source
-    return updateToolbar()
+    if len(itemField_group) <= slotCount and len(toolField_group) <= slotCount:
+        inventoryItems[collectable.name] = collectable.source
+        return updateInventory()
 
-def removeItemFromInventory(itemName):
+def removeItemFromInventory(collectableName):
     """Funktion, die ein Item vom Inventar entfernt"""
     for elem in inventoryItems:
-        if elem == itemName:
-            inventoryItems.pop(itemName)
-            return updateToolbar()
+        if elem == collectableName:
+            inventoryItems.pop(collectableName)
+            return updateInventory()
 
-def GetNumberOfItems(itemName):
+def GetNumberOfItems(collectableName):
     """Funktion, die die Anzahl der Items im Inventar zurückgibt"""
     itemcount = -1
     for elem in inventoryItems:
-        if elem == itemName:
+        if elem == collectableName:
             itemcount += 1
     return itemcount
     
-def updateToolbar():
+def updateInventory():
     """Funktion, die die Toolbar aktualisiert"""
     overlayGroup = pygame.sprite.Group()
-    overlayGroup = createToolbar(len(inventoryItems), 64, 6, 450)
+    overlayGroup = createItembar(len(itemField_group), 64, 6, 450)
+    overlayGroup = createToolbar(len(toolField_group), 64, 6, 450)
     for i, value in enumerate(list(inventoryItems.values())):
-        slot = list(itemField_group)[i]
-        slot.source = value
-        slot.update_image()
+        if i < len(itemField_group):
+            slot = list(itemField_group)[i]
+            slot.source = value
+            slot.update_image()
+    for i, value in enumerate(list(inventoryItems.values())):
+        if i < len(toolField_group):
+            slot = list(toolField_group)[i]
+            slot.source = value
+            slot.update_image()
+    print("INVETORYITEMS: ", inventoryItems)
     return overlayGroup
 
-def createToolbar(slotCount, slotSize, edgeWidth, yPos):
+# Itemsinventar
+def createItembar(slotCount, slotSize, edgeWidth, yPos):
     """Funktion, die eine Toolbar erstellt"""
     global itemField_group
-    itemField_group = pygame.sprite.Group()
     slots_group = pygame.sprite.Group()
-    slots_group = createInventorySlots(slots_group, slotSize, slotCount, edgeWidth, yPos)
-    itemField_group = createInventoryItemFields(itemField_group, slotSize, slotCount, edgeWidth, yPos)
+    slots_group = createInventorySlotsHorizontal(slots_group, slotSize, slotCount, edgeWidth, yPos)
+    itemField_group = createInventoryItemFieldsHorizontal(itemField_group, slotSize, slotCount, edgeWidth, yPos)
     return pygame.sprite.Group(slots_group, itemField_group)
 
-def createInventorySlots(slots_group, slotSize, slotCount, edgeWidth, yPos):
+def createInventorySlotsHorizontal(slots_group, slotSize, slotCount, edgeWidth, yPos):
     """Funktion, die eine Liste von Inventar Slots erstellt und sie nebeneinander platziert \t SlotSize: float für die Grösse des Slots"""
     for i in range(slotCount):
         currentSlotSize = (i)*(slotSize)
@@ -289,7 +301,7 @@ def createInventorySlots(slots_group, slotSize, slotCount, edgeWidth, yPos):
         slots_group.add(slot)
     return pygame.sprite.Group(slots_group)
 
-def createInventoryItemFields(itemField_group, slotSize, slotCount, edgeWidth, yPos):
+def createInventoryItemFieldsHorizontal(itemField_group, slotSize, slotCount, edgeWidth, yPos):
     """Funktion, die eine Liste von Inventar Felder fürs spätere füllen erstellt und sie in den Item Slots platziert"""
     iconSize = slotSize - 2*edgeWidth
     for i in range(slotCount):
@@ -297,3 +309,29 @@ def createInventoryItemFields(itemField_group, slotSize, slotCount, edgeWidth, y
         itemField = inventory.InventorySlot((settings.SCREEN_WIDTH//2)-((slotCount/2)*slotSize) + currentIconSize + edgeWidth, (settings.SCREEN_WIDTH//2) + edgeWidth - yPos, pygame.Rect(0, 0, 64, 64), (iconSize, iconSize), r"EmptyIcon.png")
         itemField_group.add(itemField)
     return pygame.sprite.Group(itemField_group)
+
+# Toolsinventar
+def createToolbar(slotCount, slotSize, edgeWidth, xPos):
+    """Funktion, die eine Toolbar erstellt"""
+    global toolField_group
+    slots_group = pygame.sprite.Group()
+    slots_group = createInventorySlotsHorizontal(slots_group, slotSize, slotCount, edgeWidth, xPos)
+    toolField_group = createInventoryItemFieldsHorizontal(toolField_group, slotSize, slotCount, edgeWidth, xPos)
+    return pygame.sprite.Group(slots_group, toolField_group)
+
+def createInventorySlotsVertical(slots_group, slotSize, slotCount, edgeWidth, xPos):
+    """Funktion, die eine Liste von Inventar Slots erstellt und sie nebeneinander platziert \t SlotSize: float für die Grösse des Slots"""
+    for i in range(slotCount):
+        currentSlotSize = (i)*(slotSize)
+        slot = inventory.InventorySlot(((settings.SCREEN_WIDTH//2) - xPos, settings.SCREEN_WIDTH//2)-((slotCount/2)*slotSize) + currentSlotSize, pygame.Rect(0, 0, 64, 64), (slotSize, slotSize), r"InventorySlot.png")
+        slots_group.add(slot)
+    return pygame.sprite.Group(slots_group)
+
+def createInventoryItemFieldsVertical(toolField_group, slotSize, slotCount, edgeWidth, xPos):
+    """Funktion, die eine Liste von Inventar Felder fürs spätere füllen erstellt und sie in den Item Slots platziert"""
+    iconSize = slotSize - 2*edgeWidth
+    for i in range(slotCount):
+        currentIconSize = i*(slotSize)
+        toolField = inventory.InventorySlot((settings.SCREEN_WIDTH//2) + edgeWidth - xPos, (settings.SCREEN_WIDTH//2)-((slotCount/2)*slotSize) + currentIconSize + edgeWidth, pygame.Rect(0, 0, 64, 64), (iconSize, iconSize), r"EmptyIcon.png")
+        toolField_group.add(toolField)
+    return pygame.sprite.Group(toolField_group)
