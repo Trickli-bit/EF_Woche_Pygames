@@ -29,9 +29,10 @@ overlayGroup_2= pygame.sprite.Group()
 
 vigniette = entities.Entity(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), "center", (settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), r"vigniette.png",False, False, False, 0, 0, {})
 
-Player = player.Player(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 64, 64), "midbottom", (64, 64), r"Player\player.png",True, True, True, 0, 21, {"walking_a": [0, 3, 5, True], "walking_d": [5, 8, 5, True], "walking_s": [10, 15, 5, True], "walking_w": [17, 19, 5, True]})
+Player = player.Player(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 64, 64), "midbottom", (64, 64), r"Player\player.png",True, True, True, 13, 21, {"walking_a": [0, 3, 5, True], "walking_d": [5, 8, 5, True], "walking_s": [10, 15, 5, True], "walking_w": [17, 19, 5, True]})
 Axecrafter = interactable.interactables(0, 0, pygame.Rect(0, 0, 64, 64), "topleft", (64,64), r"Engine\Entity_Classes\Sprites_Entity_Classes\pixilart-sprite (6).png", True, True, "Axe", "Stick", "Rock", "air", "air", False, 0, 8, {"Craft_Axe" : [0, 7, 5, False]}, "Craft_Axe")
 StartAnimation = entities.Entity(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 256, 256), "center", (512, 512), r"StartAnimation.png", False, True, False, 0, 10, {"Start": [1, 9, 10, False]} )
+PoI = entities.Entity(settings.SCREEN_HEIGHT//2 + 50, settings.SCREEN_WIDTH//2 + 50, pygame.Rect(0,0, 64, 64), "center", (64, 64), r"Main\PoI.png", False, True, False, 0, 3, {"PoI": [0, 2, 10, True]})
 start_animation_counter = 0
 
 Stick = collectable.Stick(100, 50)  # Erstelle ein Stick-Objekt an Position (300, 700), muss noch mit der Generation verbunden werden
@@ -39,7 +40,8 @@ Rock = collectable.Rock(100, 150)
 Mushroom_juice = collectable.Mushroom_juice(100, 250)
 
 entities_group.add(Stick)  # Füge das Stick-Objekt zur Entitäten-Gruppe hinzu, damit es im Spiel erscheint
-entities_group.add(Rock)
+entities_group.add(Rock, PoI)
+PoI.Animation.start_animation("PoI")
 entities_group.add(Mushroom_juice)
 
 overlayGroup_2.add(vigniette)
