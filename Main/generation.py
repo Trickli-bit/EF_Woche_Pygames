@@ -237,9 +237,24 @@ def removeItemFromInventory(item):
             item.value -= 1
             return updateToolbar()
 
+def removeItemFromInventoryWithStr(item):
+    """Funktion, die ein Item vom Inventar entfernt"""
+    for elem in inventoryItems:
+        if elem == item:
+            inventoryItems.pop(item)
+            return updateToolbar()
+
 def GetNumberOfItems(item):
     """Funktion, die die Anzahl der Items im Inventar zurückgibt"""
     return item.value
+
+def GetNumberofItemsWithStr(item):
+    """Funktion, die die Anzahl der Items im Inventar zurückgibt"""
+    itemcount = -1
+    for elem in inventoryItems:
+        if elem == item:
+            itemcount += 1
+    return itemcount
     
 def updateToolbar():
     """Funktion, die die Toolbar aktualisiert"""
