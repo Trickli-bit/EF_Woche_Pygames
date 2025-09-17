@@ -1,5 +1,3 @@
-import pygame
-import generation
-
-Map = generation.generateLandscape("Main/mapCSV.csv")
-Map.generate_map()
+a  = [[], []]
+print(len(a))
+for elem in len()

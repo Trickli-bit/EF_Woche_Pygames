@@ -17,7 +17,6 @@ class Entity(pygame.sprite.Sprite):
         self.scale = scale
         self.is_spritesheet = is_spritesheet
         self.last_animation = (None, False)
-        self.source = source
         self.solid = solid
         self.pos_x = pos_x
         self.pos_y = pos_y
@@ -44,10 +43,15 @@ class Entity(pygame.sprite.Sprite):
             self.image = self.Animation.sprite_extraction(rect)
             self.image = pygame.transform.scale(self.image, self.scale)
 
+
         self.rect = self.image.get_rect()
         setattr(self.rect, self.rect_attach, (self.pos_x, self.pos_y))
-        rect.x = self.pos_x
-        rect.y = self.pos_y
+        if self.rect_attach == "topleft":
+            self.rect.x = self.pos_x
+            self.rect.y = self.pos_y
+        else:
+            rect.x = self.pos_x
+            rect.y = self.pos_y
         
     def update(self, dx = 0, dy = 0, *args):
         # Animation nur aktualisieren UND auf self.image übernehmen, wenn:
@@ -79,7 +83,6 @@ class Entity(pygame.sprite.Sprite):
         if not self.fix:
             self.rect.x += dx
             self.rect.y += dy
- 
 
 class EntityMovable(Entity):
             
