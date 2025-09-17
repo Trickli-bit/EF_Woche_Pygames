@@ -29,20 +29,15 @@ overlayGroup_2= pygame.sprite.Group()
 
 vigniette = entities.Entity(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), "center", (settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), r"vigniette.png",False, False, False, 0, 0, {})
 
-Player = player.Player(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 64, 64), "midbottom", (64, 64), r"Player\player.png",True, True, True, 13, 21, {"walking_a": [0, 3, 5, True], "walking_d": [5, 8, 5, True], "walking_s": [10, 15, 5, True], "walking_w": [17, 19, 5, True]})
-Axecrafter = interactable.interactables(0, 0, pygame.Rect(0, 0, 64, 64), "topleft", (64,64), r"Engine\Entity_Classes\Sprites_Entity_Classes\pixilart-sprite (6).png", True, True, "Axe", "Stick", "Rock", "air", "air", False, 0, 8, {"Craft_Axe" : [0, 7, 5, False]}, "Craft_Axe")
-StartAnimation = entities.Entity(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 256, 256), "center", (512, 512), r"StartAnimation.png", False, True, False, 0, 10, {"Start": [1, 9, 10, False]} )
+Player = player.Player(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 64, 64), "midbottom", (96, 96), r"Player\player.png",True, True, True, 13, 21, {"walking_a": [0, 3, 5, True], "walking_d": [5, 8, 5, True], "walking_s": [10, 15, 5, True], "walking_w": [17, 19, 5, True]})
+Axecrafter = interactable.interactables(2200,1600, pygame.Rect(0, 0, 64, 64), "topleft", (128,128), r"Engine\Entity_Classes\Sprites_Entity_Classes\pixilart-sprite (6).png", True, True, "Axe", "Stick", "Rock", "air", "air", False, 0, 8, {"Craft_Axe" : [0, 7, 10, False]}, "Craft_Axe")
+StartAnimation = entities.Entity(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 450, 256), "center", (900, 512), r"StartAnimation.png", False, True, False, 0, 14, {"Start": [1, 13, 10, False]} )
 PoI = entities.Entity(settings.SCREEN_HEIGHT//2 + 50, settings.SCREEN_WIDTH//2 + 50, pygame.Rect(0,0, 64, 64), "center", (64, 64), r"Main\PoI.png", False, True, False, 0, 3, {"PoI": [0, 2, 10, True]})
 start_animation_counter = 0
 
-Stick = collectable.Stick(100, 50)  # Erstelle ein Stick-Objekt an Position (300, 700), muss noch mit der Generation verbunden werden
-Rock = collectable.Rock(100, 150)
-Mushroom_juice = collectable.Mushroom_juice(100, 250)
 
-entities_group.add(Stick)  # Füge das Stick-Objekt zur Entitäten-Gruppe hinzu, damit es im Spiel erscheint
-entities_group.add(Rock, PoI)
 PoI.Animation.start_animation("PoI")
-entities_group.add(Mushroom_juice)
+
 
 overlayGroup_2.add(vigniette)
 entities_group.add(Axecrafter)
@@ -62,7 +57,6 @@ maingame = False
 start_generation = False
 start_startanimation = True 
 
-print("GOOOOO")
 
 running = True
 while running:
@@ -77,13 +71,9 @@ while running:
 
     screen.fill((255, 255, 255))
 
-    Stick.collide_with_player(Player)
-    Rock.collide_with_player(Player)
-    Mushroom_juice.collide_with_player(Player)
 
     if start_startanimation:
         screen.fill((0,0,0))
-        print(start_animation_counter)
         start_generation = False
         animationGroup.update()
         animationGroup.draw(screen)
@@ -91,14 +81,14 @@ while running:
         if start_animation_counter == 300:
             StartAnimation.Animation.start_animation("Start")
             StartAnimation.base_sprite = 8
-        if start_animation_counter == 390:
+        
+        if start_animation_counter == 430:
             start_animation_counter = 0
             animationGroup.remove(StartAnimation)
             start_startanimation = False
             start_generation = True
             maingame = True
-            Player.dx = 2800
-            Player.dy = 1600
+            
         
         
 
@@ -107,12 +97,17 @@ while running:
         Map = generation.generateLandscape(floor_group, entities_group)
         Map.generateGrass()
         Map.generateWall()
+        a = Map.generateItems()
+        for element in a: 
+            entities_group.add(a)
+        Player.dx = settings.MIDDLE_X
+        Player.dy = settings.MIDDLE_Y
+
         sounds.play_background_music()
         start_generation = False
 
     if maingame:
 
-        print(Player.dx, Player.dy)
 
         floor_group.update(-Player.dx, -Player.dy, keys)
         floor_group.draw(screen)
@@ -142,17 +137,16 @@ while running:
         playerGroup.draw(screen)
 
         overlayGroup_2.draw(screen)
-
         Collition.update()
         
         overlayGroup.update(-Player.dx, -Player.dy, keys,)
         overlayGroup.draw(screen)
 
-    overlayGroup = generation.updateToolbar()
+        overlayGroup = generation.updateToolbar()
 
 
-    if Player.rect.colliderect(Axecrafter.rect) and Axecrafter.has_tool == False:
-        Axecrafter.interact()
+        if Player.rect.colliderect(Axecrafter.rect) and Axecrafter.has_tool == False:
+            Axecrafter.interact()
 
     pygame.display.update()
     clock.tick(60)

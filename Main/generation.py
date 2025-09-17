@@ -5,6 +5,7 @@ import pygame
 import Engine.Entity_Classes.inventorySlot as inventory
 import Main.settings as settings
 import random
+import Engine.Entity_Classes.collectable as collectable
 
 class generateLandscape():
     """Liest eine CSV-Datei ein und erstellt eine 2D-Liste der Werte."""
@@ -221,22 +222,29 @@ class generateLandscape():
             return self.entitygroup
     
 
-    """
+    
     def generateItems(self):
+        a = []
+        print("generate STICK AND ROCKS")
         self.horizontal_segment_counter = -1
         self.vertical_segment_counter = -1
-        for row in self.map_wall:
+        print("THIS IS", self.map_wall)
+        for row in range(len(self.map_wall)):
             self.horizontal_segment_counter = -1
             self.vertical_segment_counter += 1
-            for elem in row:
+            for elem in range(len(self.map_wall[row])):
                 self.horizontal_segment_counter += 1
-                if elem != 3:
-                    if random.randint(0,100) <= 5:
-                        if random.randint (0,100) <= 20:
-                            self.entitygroup.add()
-    """
+                if self.map_wall[row][elem] == 0:
+                    if self.map[row][elem] == 0:
+                        if random.randint(0,100) <= 5:
+                            if random.randint (0,100) <= 20:
+                                print("generate Rock", self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64)
+                                a.append(collectable.Rock(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64))
+                            else:
+                                print("generate Stick", self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64)
+                                a.append(collectable.Stick(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64))
 
-
+        return a
 
 
 
