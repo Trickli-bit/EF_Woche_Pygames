@@ -142,8 +142,7 @@ while running:
         overlayGroup.update(-Player.dx, -Player.dy, keys,)
         overlayGroup.draw(screen)
 
-        overlayGroup = generation.updateToolbar()
-
+        overlayGroup = generation.updateToolbar()        
 
         if Player.rect.colliderect(Axecrafter.rect) and Axecrafter.has_tool == False:
             Axecrafter.interact()

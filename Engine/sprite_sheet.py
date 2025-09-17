@@ -97,7 +97,6 @@ class SpriteSheetAnimation(SpriteSheet):
     def update_image(self):
         """ Aktualisiert das Bild (self.image) mit dem nächsten Frame der Animation."""
         next_frame_int = self.next_frame()
-        print(next_frame_int, self.animations)
         self.image = self.frames[next_frame_int]
 
     def update(self):

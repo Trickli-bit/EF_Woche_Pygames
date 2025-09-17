@@ -185,26 +185,47 @@ class EntityMovable(Entity):
                     pass
 
     def collition(self, entity):
-        """Berechnet die Kollisionsrichtung basierend auf Rechtecksüberlappung."""
-        if not self.rect.colliderect(entity.rect):
-            self.solid_collision_direction = None
-            return
+        """Berechnet die Kollisionsrichtung"""
 
-        # Überlappung in X- und Y-Richtung
-        overlap_x = min(self.rect.right, entity.rect.right) - max(self.rect.left, entity.rect.left)
-        overlap_y = min(self.rect.bottom, entity.rect.bottom) - max(self.rect.top, entity.rect.top)
+        # Richtung bestimmen und Entität anhalten
+        print(self.dy)
+        if self.dx == 0 and self.dy < 0:
+            self.dy = 0
+            self.solid_collision_direction = "up"
+        # nach oben
+        elif self.dx == 0 and self.dy > 0:
+            self.dy = 0
+            self.solid_collision_direction = "down"
+        # nach unten
+        elif self.dx > 0 and self.dy == 0:
+            self.dx = 0
+            self.solid_collision_direction = "right"
+        # nach links
+        elif self.dx < 0 and self.dy == 0:
+            self.dx = 0
+            self.solid_collision_direction = "left"
+        # nach rechts
+        elif self.dx > 0 and self.dy > 0:
+            self.dx = 0
+            self.dy = 0
+            self.solid_collision_direction = "leftdown"
+        # nach links unten
+        elif self.dx < 0 and self.dy > 0:
+            self.dx = 0
+            self.dy = 0
+            self.solid_collision_direction = "leftup"
+        # nach links oben
+        elif self.dx > 0 and self.dy < 0:
+            self.dx = 0
+            self.dy = 0
+            self.solid_collision_direction = "rightdown"
+        # nach rechts unten
+        elif self.dx < 0 and self.dy < 0:
+            self.dx = 0
+            self.dy = 0
+            self.solid_collision_direction = "rightup"
+        # nach rechts oben
 
-        # Richtung bestimmen
-        if overlap_x < overlap_y:
-            if self.rect.centerx < entity.rect.centerx:
-                self.solid_collision_direction = "right"
-            else:
-                self.solid_collision_direction = "left"
-        else:
-            if self.rect.centery < entity.rect.centery:
-                self.solid_collision_direction = "down"
-            else:
-                self.solid_collision_direction = "up"
 
     def update(self, dx = 0, dy = 0, *args):
         super().update(dx, dy, *args)

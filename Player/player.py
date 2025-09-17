@@ -28,18 +28,6 @@ class Player(EntityMovable):
         if self.dx != 0 and self.dy != 0:
             self.dx = int(self.dx / 1.4142)
             self.dy = int(self.dy / 1.4142)
-
-        wall_direction = self.solid_collision_direction
-        if wall_direction == "left" and self.dx < 0:
-            self.dx = 0
-        if wall_direction == "right" and self.dx > 0:
-            self.dx = 0
-        if wall_direction == "down" and self.dy > 0:
-            self.dy = 0
-        if wall_direction == "up" and self.dy < 0:
-            self.dy = 0
-
-    
         
 
 
