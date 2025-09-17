@@ -48,6 +48,12 @@ class interactables(entities.Entity):
                 self.Animation.start_animation(self.ani_name)
                 self.has_tool = True
 
+    def update(self, dx=0, dy=0, *args):
+        print(self.rect.x, self.rect.y)
+        return super().update(dx, dy, *args)
+        
+
+
 #class resources(entities.Entity):
 #    def __init__(self, pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, drop = "air", fix = True, base_sprite = 0, ani_frames_count = 0, ani_animations = {}, ani_name = ""):
 #        super().__init__(pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, fix, base_sprite, ani_frames_count, ani_animations)
