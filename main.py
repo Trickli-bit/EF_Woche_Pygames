@@ -53,7 +53,6 @@ Collition = events.Collision(entities_group, moving_entities_group, playerGroup)
 
 a = True
 start_generation = True
-has_axe = False
 
 print("GOOOOO")
 
@@ -125,10 +124,11 @@ while running:
     overlayGroup.update(-Player.dx, -Player.dy, keys,)
     overlayGroup.draw(screen)
 
+    overlayGroup = generation.updateToolbar()
 
-    if Player.rect.colliderect(Axecrafter.rect) and has_axe == False:
+
+    if Player.rect.colliderect(Axecrafter.rect) and Axecrafter.has_tool == False:
         Axecrafter.interact()
-        has_axe = True
 
     pygame.display.update()
     clock.tick(60)
