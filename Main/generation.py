@@ -252,8 +252,9 @@ inventoryCollectables = {}
 
 def addItemToInventory(item):
     """Funktion, die ein Item dem Inventar hinzufügt"""
-    inventoryCollectables[item] = item.name
-    return updateInventory()
+    if len(itemField_group) < 11 and len(toolField_group) < 3:
+        inventoryCollectables[item] = item.name
+        return updateInventory()
 
 def removeItemFromInventory(itemName):
     """Funktion, die ein Item vom Inventar entfernt"""

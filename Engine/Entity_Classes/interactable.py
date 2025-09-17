@@ -26,12 +26,14 @@ class interactables(entities.Entity):
                         generation.removeItemFromInventory(self.input1)
                         self.Animation.start_animation(self.ani_name)
                         generation.addItemToInventory(collectable.Axe(5000, 5000))
+                        self.has_tool = True
                 else:
                     if generation.GetNumberOfItems(self.input1) >= 0 and generation.GetNumberOfItems(self.input2) >= 0:
                         generation.removeItemFromInventory(self.input1)
                         generation.removeItemFromInventory(self.input2)
                         self.Animation.start_animation(self.ani_name)
                         generation.addItemToInventory(collectable.Axe(5000, 5000))
+                        self.has_tool = True
             else:
                 if generation.GetNumberOfItems(self.input1) >= 0 and generation.GetNumberOfItems(self.input2) >= 0 and generation.GetNumberOfItems(self.input3) >= 0:
                     generation.removeItemFromInventory(self.input1)
@@ -39,6 +41,7 @@ class interactables(entities.Entity):
                     generation.removeItemFromInventory(self.input3)
                     self.Animation.start_animation(self.ani_name)
                     generation.addItemToInventory(collectable.Axe(5000, 5000))
+                    self.has_tool = True
                         
         else:
             if generation.GetNumberOfItems(self.input1) >= 0 and generation.GetNumberOfItems(self.input2) >= 0 and generation.GetNumberOfItems(self.input3) >= 0 and generation.GetNumberOfItems(self.input4) >= 0:
@@ -48,6 +51,7 @@ class interactables(entities.Entity):
                 generation.removeItemFromInventory(self.input4)
                 self.Animation.start_animation(self.ani_name)
                 generation.addItemToInventory(collectable.Axe(5000, 5000))
+                self.has_tool = True
 
     def update(self, dx=0, dy=0, *args):
         print(self.rect.x, self.rect.y)
