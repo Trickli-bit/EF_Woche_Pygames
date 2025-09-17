@@ -5,6 +5,7 @@ import pygame
 import Player.player as player
 import Engine.Entity_Classes.animations as animations 
 import Main.events as events
+import Main.sounds as sounds
 
 # collectable.py (relevanter Ausschnitt)
 class Collectable(entities.Entity):
@@ -49,6 +50,7 @@ class Collectable(entities.Entity):
 
 
 
+            sounds.play_bubble_pop()
             self.kill()  # Entfernt das Collectable aus allen Sprite-Gruppen
             return generation.addItemToInventory(self)
         
@@ -107,11 +109,6 @@ class Mushroom_juice(Collectable):
         self.function = "Item"
         self.value = 1   
 
-<<<<<<< HEAD
-          self.name = "Mushroom_juice"
-          self.value = 1
-
-=======
 class Axe(Collectable):
     def __init__(self, pos_x, pos_y, rect=pygame.Rect(0,0,64,64), rect_attach="topleft",
                  scale=(64,64), source=r"Engine\Entity_Classes\Sprites_Entity_Classes\Axe.png",
@@ -126,4 +123,3 @@ class Axe(Collectable):
         self.name = "Axe"
         self.function = "Tool"
         self.value = 1
->>>>>>> 44c7f18b3c3616449932db95e3f936293542d890

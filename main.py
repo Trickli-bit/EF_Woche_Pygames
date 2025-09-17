@@ -62,6 +62,8 @@ running = True
 while running:
 
     
+
+    
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -146,6 +148,7 @@ while running:
 
 
         if Player.rect.colliderect(Axecrafter.rect) and Axecrafter.has_tool == False:
+            sounds.play_crafting_axe()
             Axecrafter.interact()
 
     pygame.display.update()

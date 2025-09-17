@@ -2,6 +2,7 @@ import pygame
 import Engine.entities as entities
 import Main.generation as generation
 import Engine.Entity_Classes.collectable as collectable
+import Main.sounds as sounds
 
 
 class interactables(entities.Entity):
@@ -24,21 +25,29 @@ class interactables(entities.Entity):
                 if self.input2 == "air":
                     if generation.GetNumberOfItems(self.input1) >= 0:
                         generation.removeItemFromInventory(self.input1)
+                        sounds.play_crafting_axe()
                         self.Animation.start_animation(self.ani_name)
+                        
                         generation.addItemToInventory(collectable.Axe(5000, 5000))
+                        
+
                 else:
                     if generation.GetNumberOfItems(self.input1) >= 0 and generation.GetNumberOfItems(self.input2) >= 0:
                         generation.removeItemFromInventory(self.input1)
                         generation.removeItemFromInventory(self.input2)
+                        sounds.play_crafting_axe()
                         self.Animation.start_animation(self.ani_name)
                         generation.addItemToInventory(collectable.Axe(5000, 5000))
+                        
             else:
                 if generation.GetNumberOfItems(self.input1) >= 0 and generation.GetNumberOfItems(self.input2) >= 0 and generation.GetNumberOfItems(self.input3) >= 0:
                     generation.removeItemFromInventory(self.input1)
                     generation.removeItemFromInventory(self.input2)
                     generation.removeItemFromInventory(self.input3)
+                    sounds.play_crafting_axe()
                     self.Animation.start_animation(self.ani_name)
                     generation.addItemToInventory(collectable.Axe(5000, 5000))
+                    
                         
         else:
             if generation.GetNumberOfItems(self.input1) >= 0 and generation.GetNumberOfItems(self.input2) >= 0 and generation.GetNumberOfItems(self.input3) >= 0 and generation.GetNumberOfItems(self.input4) >= 0:
@@ -46,8 +55,10 @@ class interactables(entities.Entity):
                 generation.removeItemFromInventory(self.input2)
                 generation.removeItemFromInventory(self.input3)
                 generation.removeItemFromInventory(self.input4)
+                sounds.play_crafting_axe()
                 self.Animation.start_animation(self.ani_name)
                 generation.addItemToInventory(collectable.Axe(5000, 5000))
+                
 
     def update(self, dx=0, dy=0, *args):
         print(self.rect.x, self.rect.y)
