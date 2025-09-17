@@ -61,17 +61,9 @@ while running:
 
     screen.fill((255, 255, 255))
 
-    new_overlay = Stick.collide_with_player(Player)
-    if new_overlay:
-        overlayGroup = new_overlay
-
-    new_overlay = Rock.collide_with_player(Player)
-    if new_overlay:
-        overlayGroup = new_overlay
-
-    new_overlay = Mushroom_juice.collide_with_player(Player)
-    if new_overlay:
-        overlayGroup = new_overlay
+    Stick.collide_with_player(Player)
+    Rock.collide_with_player(Player)
+    Mushroom_juice.collide_with_player(Player)
 
 
     if start_generation:

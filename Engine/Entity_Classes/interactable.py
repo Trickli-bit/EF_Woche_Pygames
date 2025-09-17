@@ -21,30 +21,30 @@ class interactables(entities.Entity):
         if self.input4 == "air":
             if self.input3 == "air":
                 if self.input2 == "air":
-                    if generation.GetNumberofItemsWithStr(self.input1) >= 0:
-                        generation.removeItemFromInventoryWithStr(self.input1)
+                    if generation.GetNumberOfItems(self.input1) >= 0:
+                        generation.removeItemFromInventory(self.input1)
                         self.Animation.start_animation(self.ani_name)
                         self.has_tool = True
                 else:
-                    if generation.GetNumberofItemsWithStr(self.input1) >= 0 and generation.GetNumberofItemsWithStr(self.input2) >= 0:
-                        generation.removeItemFromInventoryWithStr(self.input1)
-                        generation.removeItemFromInventoryWithStr(self.input2)
+                    if generation.GetNumberOfItems(self.input1) >= 0 and generation.GetNumberOfItems(self.input2) >= 0:
+                        generation.removeItemFromInventory(self.input1)
+                        generation.removeItemFromInventory(self.input2)
                         self.Animation.start_animation(self.ani_name)
                         self.has_tool = True
             else:
-                if generation.GetNumberofItemsWithStr(self.input1) >= 0 and generation.GetNumberofItemsWithStr(self.input2) >= 0 and generation.GetNumberofItemsWithStr(self.input3) >= 0:
-                    generation.removeItemFromInventoryWithStr(self.input1)
-                    generation.removeItemFromInventoryWithStr(self.input2)
-                    generation.removeItemFromInventoryWithStr(self.input3)
+                if generation.GetNumberOfItems(self.input1) >= 0 and generation.GetNumberOfItems(self.input2) >= 0 and generation.GetNumberOfItems(self.input3) >= 0:
+                    generation.removeItemFromInventory(self.input1)
+                    generation.removeItemFromInventory(self.input2)
+                    generation.removeItemFromInventory(self.input3)
                     self.Animation.start_animation(self.ani_name)
                     self.has_tool = True
                         
         else:
-            if generation.GetNumberofItemsWithStr(self.input1) >= 0 and generation.GetNumberofItemsWithStr(self.input2) >= 0 and generation.GetNumberofItemsWithStr(self.input3) >= 0 and generation.GetNumberofItemsWithStr(self.input4) >= 0:
-                generation.removeItemFromInventoryWithStr(self.input1)
-                generation.removeItemFromInventoryWithStr(self.input2)
-                generation.removeItemFromInventoryWithStr(self.input3)
-                generation.removeItemFromInventoryWithStr(self.input4)
+            if generation.GetNumberOfItems(self.input1) >= 0 and generation.GetNumberOfItems(self.input2) >= 0 and generation.GetNumberOfItems(self.input3) >= 0 and generation.GetNumberOfItems(self.input4) >= 0:
+                generation.removeItemFromInventory(self.input1)
+                generation.removeItemFromInventory(self.input2)
+                generation.removeItemFromInventory(self.input3)
+                generation.removeItemFromInventory(self.input4)
                 self.Animation.start_animation(self.ani_name)
                 self.has_tool = True
 

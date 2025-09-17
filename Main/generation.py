@@ -225,34 +225,20 @@ inventoryItems = {}
 def addItemToInventory(item):
     """Funktion, die ein Item dem Inventar hinzufügt"""
     inventoryItems[item.name] = item.source
-    print(item.source)
-    item.value += 1
     return updateToolbar()
 
-def removeItemFromInventory(item):
+def removeItemFromInventory(itemName):
     """Funktion, die ein Item vom Inventar entfernt"""
     for elem in inventoryItems:
-        if elem == item.name:
-            del inventoryItems[item.name]
-            item.value -= 1
+        if elem == itemName:
+            inventoryItems.pop(itemName)
             return updateToolbar()
 
-def removeItemFromInventoryWithStr(item):
-    """Funktion, die ein Item vom Inventar entfernt"""
-    for elem in inventoryItems:
-        if elem == item:
-            inventoryItems.pop(item)
-            return updateToolbar()
-
-def GetNumberOfItems(item):
-    """Funktion, die die Anzahl der Items im Inventar zurückgibt"""
-    return item.value
-
-def GetNumberofItemsWithStr(item):
+def GetNumberOfItems(itemName):
     """Funktion, die die Anzahl der Items im Inventar zurückgibt"""
     itemcount = -1
     for elem in inventoryItems:
-        if elem == item:
+        if elem == itemName:
             itemcount += 1
     return itemcount
     
