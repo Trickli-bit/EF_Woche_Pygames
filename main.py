@@ -57,6 +57,7 @@ maingame = False
 start_generation = False
 start_startanimation = True 
 
+cooldown = 6
 
 running = True
 while running:
@@ -122,6 +123,13 @@ while running:
             if hasattr(anim, "Animation") and anim.Animation.active == False:
                 anim.kill()
 
+        if keys[pygame.K_q]:
+            cooldown -= 1
+            if cooldown <= 0 and len(generation.itemField_group) > 0:
+                entities_group.add(generation.dropItemFromInventory())
+                cooldown = 6
+                
+            print("ITEMFIELD_GROUP", generation.itemField_group, cooldown > 0 and len(generation.inventoryCollectables) > 0)
 
         entities_group.update(-Player.dx, -Player.dy, keys)
         entities_group.draw(screen)
