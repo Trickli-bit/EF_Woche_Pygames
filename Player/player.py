@@ -1,6 +1,6 @@
 import pygame
 from Engine.entities import EntityMovable
-
+import Main.sounds as sounds
 class Player(EntityMovable):
     def __init__(self, pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, fix = False, base_sprite=0, ani_frames_count=0, ani_animations=...):
         super().__init__(pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, fix, base_sprite, ani_frames_count, ani_animations)
@@ -47,6 +47,11 @@ class Player(EntityMovable):
         if wall_direction == "up" and self.dy < 0:
             self.dy = 0
 
+        if self.dx != 0 or self.dy != 0:
+            sounds.play_walking_main_character()
+
+        if not (self.dx != 0 or self.dy != 0):
+            sounds.stop_walking_main_character()
     def attack(self):
         print(self.ready_to_attack)
         if self.ready_to_attack:
@@ -73,3 +78,5 @@ class Player(EntityMovable):
         # 3) Danach das normale Update von Entity/EntityMovable ausführen.
         #    Wichtig: wir übergeben die Parameter dx,dy wie vom main-loop erwartet
         super().update(dx, dy, keys)
+
+    
