@@ -29,6 +29,8 @@ overlayGroup_2= pygame.sprite.Group()
 vigniette = entities.Entity(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), "center", (settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), r"vigniette.png",False, False, False, 0, 0, {})
 
 Player = player.Player(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 64, 64), "midbottom", (64, 64), r"Player\player.png",True, True, True, 0, 21, {"walking_a": [0, 3, 5, True], "walking_d": [5, 8, 5, True], "walking_s": [10, 15, 5, True], "walking_w": [17, 19, 5, True]})
+StartAnimation = entities.Entity(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 256, 256), "center", (512, 512), r"StartAnimation.png", False, True, False, 0, 10, {"Start": [1, 9, 10, False]} )
+start_animation_counter = 0
 
 Stick = collectable.Stick(100, 50)  # Erstelle ein Stick-Objekt an Position (300, 700), muss noch mit der Generation verbunden werden
 Rock = collectable.Rock(100, 150)
@@ -41,6 +43,8 @@ entities_group.add(Mushroom_juice)
 overlayGroup_2.add(vigniette)
 playerGroup.add(Player)
 
+animationGroup.add(StartAnimation)
+
         
 
 
@@ -49,10 +53,20 @@ Collition = events.Collision(entities_group, moving_entities_group, playerGroup)
 # Run until the user asks to quit
 
 addable = True
-start_generation = True
+maingame = False
+start_generation = False
+start_startanimation = True 
 
 running = True
 while running:
+
+    
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+
+    keys = pygame.key.get_pressed()
 
     screen.fill((255, 255, 255))
 
@@ -68,6 +82,24 @@ while running:
     if new_overlay:
         overlayGroup = new_overlay
 
+    if start_startanimation:
+        screen.fill((0,0,0))
+        print(start_animation_counter)
+        start_generation = False
+        animationGroup.update()
+        animationGroup.draw(screen)
+        start_animation_counter += 1
+        if start_animation_counter == 300:
+            StartAnimation.Animation.start_animation("Start")
+            StartAnimation.base_sprite = 8
+        if start_animation_counter == 400:
+            start_animation_counter = 0
+            start_startanimation = False
+            start_generation = True
+            maingame = True
+        
+        
+
 
     if start_generation:
         Map = generation.generateLandscape(floor_group, entities_group)
@@ -76,48 +108,43 @@ while running:
         sounds.play_background_music()
         start_generation = False
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-
-    keys = pygame.key.get_pressed()
+    if maingame:
 
 
-    floor_group.update(-Player.dx, -Player.dy, keys)
-    floor_group.draw(screen)
 
-    addable = events.addingAnimation()
-    if addable is not None:
-        animationGroup.add(addable)
-        addable.Animation.start_animation("pick_up")
-        events.animation_to_add = None
-        addable = None
+        floor_group.update(-Player.dx, -Player.dy, keys)
+        floor_group.draw(screen)
 
-    for anim in animationGroup.sprites():
-        # Wenn eine Animation existiert und inactive ist, entferne das Sprite
-        if hasattr(anim, "Animation") and anim.Animation.active == False:
-            # Hier kill() um sicher aus allen Gruppen entfernt zu werden
-            anim.kill()
+        addable = events.addingAnimation()
+        if addable is not None:
+            animationGroup.add(addable)
+            addable.Animation.start_animation("pick_up")
+            events.animation_to_add = None
+            addable = None
+
+        for anim in animationGroup.sprites():
+            if hasattr(anim, "Animation") and anim.Animation.active == False:
+                anim.kill()
 
 
-    entities_group.update(-Player.dx, -Player.dy, keys)
-    entities_group.draw(screen)
+        entities_group.update(-Player.dx, -Player.dy, keys)
+        entities_group.draw(screen)
 
-    moving_entities_group.update(-Player.dx, -Player.dy, keys)
-    moving_entities_group.draw(screen)
+        moving_entities_group.update(-Player.dx, -Player.dy, keys)
+        moving_entities_group.draw(screen)
 
-    animationGroup.update(-Player.dx, -Player.dy, keys)
-    animationGroup.draw(screen)
+        animationGroup.update(-Player.dx, -Player.dy, keys)
+        animationGroup.draw(screen)
 
-    playerGroup.update(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, keys)
-    playerGroup.draw(screen)
+        playerGroup.update(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, keys)
+        playerGroup.draw(screen)
 
-    overlayGroup_2.draw(screen)
+        overlayGroup_2.draw(screen)
 
-    Collition.update()
-    
-    overlayGroup.update(-Player.dx, -Player.dy, keys,)
-    overlayGroup.draw(screen)
+        Collition.update()
+        
+        overlayGroup.update(-Player.dx, -Player.dy, keys,)
+        overlayGroup.draw(screen)
 
     pygame.display.update()
     clock.tick(60)
