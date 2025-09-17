@@ -250,6 +250,19 @@ class generateLandscape():
 
 inventoryCollectables = {}
 
+def dropItemFromInventory():
+    """Funktion, die ein Item vom Inventar entfernt und es auf der Map ablegt"""
+    for i in range (len(inventoryCollectables)):
+        j = len(inventoryCollectables) - i - 1
+        keys = list(inventoryCollectables.keys())
+        if keys[j].function == "Item":
+            removeItemFromInventory(keys[j].name)
+            if keys[j].name == "Stick":
+                collectable_to_drop = collectable.Stick((settings.SCREEN_WIDTH)/2, (settings.SCREEN_HEIGHT)/2)
+            elif keys[j].name == "Rock":
+                collectable_to_drop = collectable.Rock((settings.SCREEN_WIDTH)/2, (settings.SCREEN_HEIGHT)/2)
+            return collectable_to_drop
+
 def addItemToInventory(item):
     """Funktion, die ein Item dem Inventar hinzufügt"""
     if len(itemField_group) < 11 and len(toolField_group) < 3:
