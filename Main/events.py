@@ -1,3 +1,6 @@
+import Engine.Entity_Classes.collectable as collectable
+import Player.player as player
+
 
 class Collision:
     """Kollisionsklasse für feste und bewegliche Objekte."""
@@ -19,12 +22,21 @@ class Collision:
                     other.collition(entity)
                     break
 
+    def collition_with_collectable(self):
+        for entity in self.objects:
+            if isinstance(entity, collectable.Collectable):
+                for player in self.playerGroup:
+                    entity.collide_with_player(player)
+
     def update(self):
         """Aktualisiert alle Kollisionen für Movable Entities und Player."""
         for movable in self.movable_entities:
             self.collide_with_solid(movable)
         for player in self.playerGroup:
             self.collide_with_solid(player)
+        for player in self.playerGroup:
+            if hasattr(player, "rect"):
+                self.collition_with_collectable()
 
 animation_to_add = None
 

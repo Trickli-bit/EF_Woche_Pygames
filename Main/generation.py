@@ -4,6 +4,8 @@ import Engine.Entity_Classes.Wall as Wall
 import pygame
 import Engine.Entity_Classes.inventorySlot as inventory
 import Main.settings as settings
+import random
+import Engine.Entity_Classes.collectable as collectable
 
 class generateLandscape():
     """Liest eine CSV-Datei ein und erstellt eine 2D-Liste der Werte."""
@@ -218,6 +220,32 @@ class generateLandscape():
                         self.entitygroup.add(Wall.Wall(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64, base_sprite=7, flip = (True, False)))
 
             return self.entitygroup
+    
+
+    
+    def generateItems(self):
+        a = []
+        print("generate STICK AND ROCKS")
+        self.horizontal_segment_counter = -1
+        self.vertical_segment_counter = -1
+        print("THIS IS", self.map_wall)
+        for row in range(len(self.map_wall)):
+            self.horizontal_segment_counter = -1
+            self.vertical_segment_counter += 1
+            for elem in range(len(self.map_wall[row])):
+                self.horizontal_segment_counter += 1
+                if self.map_wall[row][elem] == 0:
+                    if self.map[row][elem] == 0:
+                        if random.randint(0,100) <= 5:
+                            if random.randint (0,100) <= 20:
+                                print("generate Rock", self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64)
+                                a.append(collectable.Rock(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64))
+                            else:
+                                print("generate Stick", self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64)
+                                a.append(collectable.Stick(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64))
+
+        return a
+
 
 
 inventoryItems = {}
@@ -225,34 +253,20 @@ inventoryItems = {}
 def addItemToInventory(item):
     """Funktion, die ein Item dem Inventar hinzufügt"""
     inventoryItems[item.name] = item.source
-    print(item.source)
-    item.value += 1
     return updateToolbar()
 
-def removeItemFromInventory(item):
+def removeItemFromInventory(itemName):
     """Funktion, die ein Item vom Inventar entfernt"""
     for elem in inventoryItems:
-        if elem == item.name:
-            del inventoryItems[item.name]
-            item.value -= 1
+        if elem == itemName:
+            inventoryItems.pop(itemName)
             return updateToolbar()
 
-def removeItemFromInventoryWithStr(item):
-    """Funktion, die ein Item vom Inventar entfernt"""
-    for elem in inventoryItems:
-        if elem == item:
-            inventoryItems.pop(item)
-            return updateToolbar()
-
-def GetNumberOfItems(item):
-    """Funktion, die die Anzahl der Items im Inventar zurückgibt"""
-    return item.value
-
-def GetNumberofItemsWithStr(item):
+def GetNumberOfItems(itemName):
     """Funktion, die die Anzahl der Items im Inventar zurückgibt"""
     itemcount = -1
     for elem in inventoryItems:
-        if elem == item:
+        if elem == itemName:
             itemcount += 1
     return itemcount
     

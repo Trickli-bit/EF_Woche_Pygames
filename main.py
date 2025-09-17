@@ -29,20 +29,21 @@ overlayGroup_2= pygame.sprite.Group()
 
 vigniette = entities.Entity(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), "center", (settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), r"vigniette.png",False, False, False, 0, 0, {})
 
-Player = player.Player(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 64, 64), "midbottom", (64, 64), r"Player\player.png",True, True, True, 0, 17, {"walking_a": [0, 3, 5, True], "walking_d": [4, 7, 5, True], "walking_s": [8, 13, 5, True], "walking_w": [14, 16, 5, True]})
-Axecrafter = interactable.interactables(0, 0, pygame.Rect(0, 0, 64, 64), "topleft", (64,64), r"Engine\Entity_Classes\Sprites_Entity_Classes\pixilart-sprite (6).png", True, True, "Axe", "Stick", "Rock", "air", "air", False, 0, 8, {"Craft_Axe" : [0, 7, 7, False]}, "Craft_Axe")
+Player = player.Player(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 64, 64), "midbottom", (96, 96), r"Player\player.png",True, True, True, 13, 21, {"walking_a": [0, 3, 5, True], "walking_d": [5, 8, 5, True], "walking_s": [10, 15, 5, True], "walking_w": [17, 19, 5, True]})
+Axecrafter = interactable.interactables(2200,1600, pygame.Rect(0, 0, 64, 64), "topleft", (128,128), r"Engine\Entity_Classes\Sprites_Entity_Classes\pixilart-sprite (6).png", True, True, "Axe", "Stick", "Rock", "air", "air", False, 0, 8, {"Craft_Axe" : [0, 7, 10, False]}, "Craft_Axe")
+StartAnimation = entities.Entity(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 450, 256), "center", (900, 512), r"StartAnimation.png", False, True, False, 0, 14, {"Start": [1, 13, 10, False]} )
+PoI = entities.Entity(settings.SCREEN_HEIGHT//2 + 50, settings.SCREEN_WIDTH//2 + 50, pygame.Rect(0,0, 64, 64), "center", (64, 64), r"Main\PoI.png", False, True, False, 0, 3, {"PoI": [0, 2, 10, True]})
+start_animation_counter = 0
 
-Stick = collectable.Stick(100, 50)  # Erstelle ein Stick-Objekt an Position (300, 700), muss noch mit der Generation verbunden werden
-Rock = collectable.Rock(100, 150)
-Mushroom_juice = collectable.Mushroom_juice(100, 250)
 
-entities_group.add(Stick)  # Füge das Stick-Objekt zur Entitäten-Gruppe hinzu, damit es im Spiel erscheint
-entities_group.add(Rock)
-entities_group.add(Mushroom_juice)
+PoI.Animation.start_animation("PoI")
+
 
 overlayGroup_2.add(vigniette)
 entities_group.add(Axecrafter)
 playerGroup.add(Player)
+
+animationGroup.add(StartAnimation)
 
         
 
@@ -52,83 +53,100 @@ Collition = events.Collision(entities_group, moving_entities_group, playerGroup)
 # Run until the user asks to quit
 
 addable = True
-start_generation = True
+maingame = False
+start_generation = False
+start_startanimation = True 
 
-print("GOOOOO")
 
 running = True
 while running:
 
+    
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+
+    keys = pygame.key.get_pressed()
+
     screen.fill((255, 255, 255))
 
-    new_overlay = Stick.collide_with_player(Player)
-    if new_overlay:
-        overlayGroup = new_overlay
 
-    new_overlay = Rock.collide_with_player(Player)
-    if new_overlay:
-        overlayGroup = new_overlay
-
-    new_overlay = Mushroom_juice.collide_with_player(Player)
-    if new_overlay:
-        overlayGroup = new_overlay
+    if start_startanimation:
+        screen.fill((0,0,0))
+        start_generation = False
+        animationGroup.update()
+        animationGroup.draw(screen)
+        start_animation_counter += 1
+        if start_animation_counter == 300:
+            StartAnimation.Animation.start_animation("Start")
+            StartAnimation.base_sprite = 8
+        
+        if start_animation_counter == 430:
+            start_animation_counter = 0
+            animationGroup.remove(StartAnimation)
+            start_startanimation = False
+            start_generation = True
+            maingame = True
+            
+        
+        
 
 
     if start_generation:
         Map = generation.generateLandscape(floor_group, entities_group)
         Map.generateGrass()
         Map.generateWall()
+        a = Map.generateItems()
+        for element in a: 
+            entities_group.add(a)
+        Player.dx = settings.MIDDLE_X
+        Player.dy = settings.MIDDLE_Y
+
         sounds.play_background_music()
         start_generation = False
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-
-    keys = pygame.key.get_pressed()
+    if maingame:
 
 
-    floor_group.update(-Player.dx, -Player.dy, keys)
-    floor_group.draw(screen)
+        floor_group.update(-Player.dx, -Player.dy, keys)
+        floor_group.draw(screen)
 
-    addable = events.addingAnimation()
-    if addable is not None:
-        animationGroup.add(addable)
-        addable.Animation.start_animation("pick_up")
-        events.animation_to_add = None
-        addable = None
+        addable = events.addingAnimation()
+        if addable is not None:
+            animationGroup.add(addable)
+            addable.Animation.start_animation("pick_up")
+            events.animation_to_add = None
+            addable = None
 
-    for anim in animationGroup.sprites():
-        # Wenn eine Animation existiert und inactive ist, entferne das Sprite
-        if hasattr(anim, "Animation") and anim.Animation.active == False:
-            # Hier kill() um sicher aus allen Gruppen entfernt zu werden
-            anim.kill()
+        for anim in animationGroup.sprites():
+            if hasattr(anim, "Animation") and anim.Animation.active == False:
+                anim.kill()
 
 
-    entities_group.update(-Player.dx, -Player.dy, keys)
-    entities_group.draw(screen)
+        entities_group.update(-Player.dx, -Player.dy, keys)
+        entities_group.draw(screen)
 
-    moving_entities_group.update(-Player.dx, -Player.dy, keys)
-    moving_entities_group.draw(screen)
+        moving_entities_group.update(-Player.dx, -Player.dy, keys)
+        moving_entities_group.draw(screen)
 
-    animationGroup.update(-Player.dx, -Player.dy, keys)
-    animationGroup.draw(screen)
+        animationGroup.update(-Player.dx, -Player.dy, keys)
+        animationGroup.draw(screen)
 
-    playerGroup.update(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, keys)
-    playerGroup.draw(screen)
+        playerGroup.update(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, keys)
+        playerGroup.draw(screen)
 
-    overlayGroup_2.draw(screen)
+        overlayGroup_2.draw(screen)
+        Collition.update()
+        
+        overlayGroup.update(-Player.dx, -Player.dy, keys,)
+        overlayGroup.draw(screen)
 
-    Collition.update()
-    
-    overlayGroup.update(-Player.dx, -Player.dy, keys,)
-    overlayGroup.draw(screen)
-
-    overlayGroup = generation.updateToolbar()
+        overlayGroup = generation.updateToolbar()
 
 
-    if Player.rect.colliderect(Axecrafter.rect) and Axecrafter.has_tool == False:
-        Axecrafter.interact()
+        if Player.rect.colliderect(Axecrafter.rect) and Axecrafter.has_tool == False:
+            Axecrafter.interact()
 
     pygame.display.update()
     clock.tick(60)

@@ -6,15 +6,23 @@ import Player.player as player
 import Engine.Entity_Classes.animations as animations 
 import Main.events as events
 
+# collectable.py (relevanter Ausschnitt)
 class Collectable(entities.Entity):
-    def __init__(self, pos_x, pos_y, rect, rect_attach, scale = (64,64), source = None, solid = False, is_spritesheet = False, base_sprite = 0, ani_frames_count = 0, ani_animations = {}):
-        super().__init__(pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, base_sprite, ani_frames_count, ani_animations)
-
-        self.name = "Collectable"  # Basisname
+    def __init__(self, pos_x, pos_y, rect, rect_attach,
+                 scale=(64,64), source=None, solid=False, is_spritesheet=False,
+                 fix=False, base_sprite=0, ani_frames_count=0, ani_animations={}):
+        super().__init__(
+            pos_x=pos_x, pos_y=pos_y, rect=rect, rect_attach=rect_attach,
+            scale=scale, source=source, solid=solid, is_spritesheet=is_spritesheet,
+            fix=fix, base_sprite=base_sprite, ani_frames_count=ani_frames_count,
+            ani_animations=ani_animations
+        )
         self.value = 0
-        self.collected = False  # Ob das Objekt schon gesammelt wurde
-        self.pick_up = None  # Platzhalter für die Aufsammel-Animation
-    
+        self.collected = False
+        self.pick_up = None
+        self.source = source
+        print("getting created")
+
 
     def collide_with_player(self, player_obj):
         """
@@ -45,28 +53,49 @@ class Collectable(entities.Entity):
 
     def update(self, dx = 0, dy = 0, keys = []):
         super().update(dx, dy, keys)
+        
 
          
 
 
 class Stick(Collectable):
-     def __init__(self, pos_x, pos_y, rect = pygame.Rect(0, 0, 64, 64), rect_attach = "topleft", scale = (64,64), source = r"Engine\Entity_Classes\Sprites_Entity_Classes\stock-pixilart (2).png", solid = False, is_spritesheet = False, base_sprite=0, ani_frames_count=0, ani_animations= {}):
-          super().__init__(pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, base_sprite, ani_frames_count, ani_animations)
-          
-          self.name = "Stick"
-          self.value = 1
-        
+    def __init__(self, pos_x, pos_y, rect=pygame.Rect(0,0,64,64), rect_attach="topleft",
+                 scale=(64,64), source=r"Engine\Entity_Classes\Sprites_Entity_Classes\stock-pixilart (2).png",
+                 solid=False, is_spritesheet=False, fix=False,
+                 base_sprite=0, ani_frames_count=0, ani_animations={}):
+        super().__init__(
+            pos_x=pos_x, pos_y=pos_y, rect=rect, rect_attach=rect_attach,
+            scale=scale, source=source, solid=solid, is_spritesheet=is_spritesheet,
+            fix=fix, base_sprite=base_sprite, ani_frames_count=ani_frames_count,
+            ani_animations=ani_animations
+        )
+        self.name = "Stick"
+        self.value = 1
 
 class Rock(Collectable):
-        def __init__(self, pos_x, pos_y, rect = pygame.Rect(0, 0, 64, 64), rect_attach = "topleft", scale = (64,64), source = r"Engine\Entity_Classes\Sprites_Entity_Classes\stein-pixilart (5).png", solid = False, is_spritesheet = False, base_sprite=0, ani_frames_count=0, ani_animations= {}):
-            super().__init__(pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, base_sprite, ani_frames_count, ani_animations)
-            
-            self.name = "Rock"
-            self.value = 1
+    def __init__(self, pos_x, pos_y, rect=pygame.Rect(0,0,64,64), rect_attach="topleft",
+                 scale=(64,64), source=r"Engine\Entity_Classes\Sprites_Entity_Classes\stein-pixilart (5).png",
+                 solid=False, is_spritesheet=False, fix=False,
+                 base_sprite=0, ani_frames_count=0, ani_animations={}):
+        super().__init__(
+            pos_x=pos_x, pos_y=pos_y, rect=rect, rect_attach=rect_attach,
+            scale=scale, source=source, solid=solid, is_spritesheet=is_spritesheet,
+            fix=fix, base_sprite=base_sprite, ani_frames_count=ani_frames_count,
+            ani_animations=ani_animations
+        )
+        self.name = "Rock"
+        self.value = 1
 
 class Mushroom_juice(Collectable):
-     def __init__(self, pos_x, pos_y, rect = pygame.Rect(0, 0, 64, 64), rect_attach = "topleft", scale = (64,64), source = r"Engine\Entity_Classes\Sprites_Entity_Classes\mushroo_juice.png", solid = False, is_spritesheet = False, base_sprite=0, ani_frames_count=0, ani_animations= {}):
-          super().__init__(pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, base_sprite, ani_frames_count, ani_animations)
-
-          self.name = "Mushroom_juice"
-          self.value = 1
+    def __init__(self, pos_x, pos_y, rect=pygame.Rect(0,0,64,64), rect_attach="topleft",
+                 scale=(64,64), source=r"Engine\Entity_Classes\Sprites_Entity_Classes\mushroo_juice.png",
+                 solid=False, is_spritesheet=False, fix=False,
+                 base_sprite=0, ani_frames_count=0, ani_animations={}):
+        super().__init__(
+            pos_x=pos_x, pos_y=pos_y, rect=rect, rect_attach=rect_attach,
+            scale=scale, source=source, solid=solid, is_spritesheet=is_spritesheet,
+            fix=fix, base_sprite=base_sprite, ani_frames_count=ani_frames_count,
+            ani_animations=ani_animations
+        )
+        self.name = "Mushroom_juice"
+        self.value = 1   
