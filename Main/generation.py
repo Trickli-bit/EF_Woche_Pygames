@@ -4,6 +4,7 @@ import Engine.Entity_Classes.Wall as Wall
 import pygame
 import Engine.Entity_Classes.inventorySlot as inventory
 import Main.settings as settings
+import random
 
 class generateLandscape():
     """Liest eine CSV-Datei ein und erstellt eine 2D-Liste der Werte."""
@@ -218,6 +219,25 @@ class generateLandscape():
                         self.entitygroup.add(Wall.Wall(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64, base_sprite=7, flip = (True, False)))
 
             return self.entitygroup
+    
+
+    """
+    def generateItems(self):
+        self.horizontal_segment_counter = -1
+        self.vertical_segment_counter = -1
+        for row in self.map_wall:
+            self.horizontal_segment_counter = -1
+            self.vertical_segment_counter += 1
+            for elem in row:
+                self.horizontal_segment_counter += 1
+                if elem != 3:
+                    if random.randint(0,100) <= 5:
+                        if random.randint (0,100) <= 20:
+                            self.entitygroup.add()
+    """
+
+
+
 
 
 inventoryItems = {}
