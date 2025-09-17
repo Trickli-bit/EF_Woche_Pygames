@@ -1,7 +1,8 @@
 
 import Engine.entities as entites
+import Main.settings as settings
 
-class Turtle(entites.Entity):
+class Turtle(entites.EntityMovable):
     def __init__(self, pos_x, pos_y, rect=(0, 0, 64, 64), rect_attach="topleft",
                  scale=(128, 128),
                  source=r"Engine\Entity_Classes\Sprites_Entity_Classes\Turtle.png",
@@ -25,6 +26,8 @@ class Turtle(entites.Entity):
         # Bewegungsrichtung
         self.direction = "right"
         self.speed = 2
+        self.dead = False
+        self.dead_counter = 0
 
     def movement(self):
         dx, dy = 0, 0
@@ -50,10 +53,37 @@ class Turtle(entites.Entity):
                 self.direction = "right"
         
         return dx, dy
+    
+    def die(self):
+        self.dead_counter += 1
+        self.dead = True
+        print(self.dead_counter)
+        if self.direction == "right":
+            self.Animation.start_animation("burning_d")
+        if self.direction == "left":
+            self.Animation.start_animation("burning_a")
+        if self.direction == "up":
+            self.Animation.start_animation("burning_w")
+        if self.direction == "down":
+            self.Animation.start_animation("burning_s")
+        if self.dead_counter == 120:
+            self.kill()
 
     def update(self, dx=0, dy=0, *args):
-        dx, dy = self.movement()
-        return super().update(dx, dy, *args)
+        if not self.dead:
+            dtx, dty = self.movement()
+        else:
+            dtx, dty = 0, 0
+            self.direction == ""
+            self.die()
+        print(dx,dy, self.start_x, self.start_y)
+        self.start_x += dx
+        self.start_y += dy
+        self.dx = dtx
+        self.dy = dty
+        super().update(dx + dtx, dy + dty, *args)
+
+        
 
 
         

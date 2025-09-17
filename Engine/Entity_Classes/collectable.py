@@ -21,35 +21,37 @@ class Collectable(entities.Entity):
         self.collected = False
         self.pick_up = None
         self.source = source
+        self.should_pick_up = True
         print("getting created")
 
 
     def collide_with_player(self, player_obj):
-        """
-        Prüft, ob der Spieler das Collectable berührt.
-        Nur wenn die Rechtecke überlappen und das Objekt noch nicht gesammelt wurde.
-        """
-        if self.collected:
-            pass
-            return  # Schon gesammelt, nichts tun
+        if self.should_pick_up:
+            """
+            Prüft, ob der Spieler das Collectable berührt.
+            Nur wenn die Rechtecke überlappen und das Objekt noch nicht gesammelt wurde.
+            """
+            if self.collected:
+                pass
+                return  # Schon gesammelt, nichts tun
 
-        if not isinstance(player_obj, player.Player):
-             pass
-            #return  # Nur Player kann sammeln
+            if not isinstance(player_obj, player.Player):
+                pass
+                #return  # Nur Player kann sammeln
 
-        # Kollisionsprüfung mit Rechtecken
-        if self.rect.colliderect(player_obj.rect):
-            print("COLLITION")
-            self.collected = True
-            player_obj.item_dict[self.name] = player_obj.item_dict.get(self.name, 0) + self.value
-            print(f"[DEBUG] {player_obj} hat {self.name} eingesammelt! Inventar: {player_obj.item_dict}")
-            self.pick_up = animations.pick_up_animation(self.rect.centerx, self.rect.centery)
-            events.checkAnimations(self.pick_up)
+            # Kollisionsprüfung mit Rechtecken
+            if self.rect.colliderect(player_obj.rect):
+                print("COLLITION")
+                self.collected = True
+                player_obj.item_dict[self.name] = player_obj.item_dict.get(self.name, 0) + self.value
+                print(f"[DEBUG] {player_obj} hat {self.name} eingesammelt! Inventar: {player_obj.item_dict}")
+                self.pick_up = animations.pick_up_animation(self.rect.centerx, self.rect.centery)
+                events.checkAnimations(self.pick_up)
 
 
 
-            self.kill()  # Entfernt das Collectable aus allen Sprite-Gruppen
-            return generation.addItemToInventory(self)
+                self.kill()  # Entfernt das Collectable aus allen Sprite-Gruppen
+                return generation.addItemToInventory(self)
 
     def update(self, dx = 0, dy = 0, keys = []):
         super().update(dx, dy, keys)

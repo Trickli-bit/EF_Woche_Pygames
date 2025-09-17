@@ -9,6 +9,9 @@ class Player(EntityMovable):
         self.name = "Player"  # optional, gut für Debug
         self.item_dict = {"Stick": 0, "Rock": 0, "Mushroom_juice": 0} #muss speter mit dem Inventar von Aiko abgeglichen werden!!!
         self.animations = ani_animations or {}
+        self.ready_to_attack = False
+        self.attaking_objects = []
+
     def calculating_movement(self, keys):
 
         """ Berechnet die Bewegung basierend auf den gedrückten Tasten.
@@ -23,6 +26,10 @@ class Player(EntityMovable):
             self.dx -= self.speed
         if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
             self.dx += self.speed
+        if keys[pygame.K_SPACE]:
+            print("Attack")
+            self.attack()
+
 
         # Diagonalbewegung anpassen (optional, für gleichmäßige Geschwindigkeit)
         if self.dx != 0 and self.dy != 0:
@@ -30,6 +37,7 @@ class Player(EntityMovable):
             self.dy = int(self.dy / 1.4142)
 
         wall_direction = self.solid_collision_direction
+        
         if wall_direction == "left" and self.dx < 0:
             self.dx = 0
         if wall_direction == "right" and self.dx > 0:
@@ -39,7 +47,12 @@ class Player(EntityMovable):
         if wall_direction == "up" and self.dy < 0:
             self.dy = 0
 
-    
+    def attack(self):
+        print(self.ready_to_attack)
+        if self.ready_to_attack:
+            for entity in self.attaking_objects:
+                entity.die()
+                self.ready_to_attack = False
         
 
 

@@ -7,6 +7,7 @@ import Main.settings as settings
 import random
 import Engine.Entity_Classes.collectable as collectable
 
+
 class generateLandscape():
     """Liest eine CSV-Datei ein und erstellt eine 2D-Liste der Werte."""
     def __init__(self, spritegroup, entitygroup):
@@ -15,6 +16,7 @@ class generateLandscape():
 
         self.map = self.readCSV("Main/mapCSV.csv")
         self.map_wall = self.readCSV("Main/mapCSVWall.csv")
+        self.map_laser = self.readCSV("Main/mapCSVInteractables.csv")
         self.spritegroup = spritegroup
         self.entitygroup = entitygroup
         
@@ -144,8 +146,6 @@ class generateLandscape():
         for i, row in enumerate(map_):
             new_map[i] = new_map[i][:len(row)]
 
-        print(new_map)
-
         return new_map
 
 
@@ -218,17 +218,12 @@ class generateLandscape():
                         self.entitygroup.add(Wall.Wall(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64, base_sprite=7, flip = (True, True)))
                     if elem == "Wic_br":
                         self.entitygroup.add(Wall.Wall(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64, base_sprite=7, flip = (True, False)))
-
-            return self.entitygroup
     
 
     
     def generateItems(self):
-        a = []
-        print("generate STICK AND ROCKS")
         self.horizontal_segment_counter = -1
         self.vertical_segment_counter = -1
-        print("THIS IS", self.map_wall)
         for row in range(len(self.map_wall)):
             self.horizontal_segment_counter = -1
             self.vertical_segment_counter += 1
@@ -238,14 +233,63 @@ class generateLandscape():
                     if self.map[row][elem] == 0:
                         if random.randint(0,100) <= 5:
                             if random.randint (0,100) <= 20:
-                                print("generate Rock", self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64)
-                                a.append(collectable.Rock(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64))
+                                self.entitygroup.add(collectable.Rock(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64))
                             else:
-                                print("generate Stick", self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64)
-                                a.append(collectable.Stick(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64))
+                                self.entitygroup.add(collectable.Stick(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64))
+       
 
-        return a
+        self.horizontal_segment_counter = -1
+        self.vertical_segment_counter = -1
+        for row in range(len(self.map_laser)):
+                self.horizontal_segment_counter = -1
+                self.vertical_segment_counter += 1
+                for elem in range(len(self.map_laser[row])):
+                    self.horizontal_segment_counter += 1
+                    if self.map_laser[row][elem] == 4:
+                        self.entitygroup.add(Wall.Laser_v(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64))
+                    if self.map_laser[row][elem] == 5:
+                        self.entitygroup.add(Wall.Laser_h(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64))
+        
 
+        return self.entitygroup
+
+    def generatePrices(self):
+        item = None
+        self.horizontal_segment_counter = -1
+        self.vertical_segment_counter = -1
+        for row in range(len(self.map_laser)):
+                self.horizontal_segment_counter = -1
+                self.vertical_segment_counter += 1
+                for elem in range(len(self.map_laser[row])):
+                    self.horizontal_segment_counter += 1
+                    if self.map_laser[row][elem] == 4:
+                        print("adding Laser")
+                        self.entitygroup.add(Wall.Laser_v(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64))
+                    if self.map_laser[row][elem] == 6 or self.map_laser[row][elem] == 7 or self.map_laser[row][elem] == 8:
+                        self.item = None
+                        self.entitygroup.add(inventory.PriceInventorySlot(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64))
+                        if self.map_laser[row][elem] == 6:
+                            item = self.generateItemsIntoSlots("Rock", self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64)
+                        if self.map_laser[row][elem] == 7:
+                            item = self.generateItemsIntoSlots("Stick", self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64)
+                        if self.map_laser[row][elem] == 9:
+                            item = self.generateItemsIntoSlots("Mushroom_juice", self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64)
+                        if item is not None:
+                            self.entitygroup.add(item)
+                            item.should_pick_up = False
+
+        return self.entitygroup
+
+    def generateItemsIntoSlots(self, item, pos_x, pos_y):
+        if item == "Rock":
+            item = collectable.Rock(pos_x, pos_y)
+        if item == "Stick":
+            item = collectable.Stick(pos_x, pos_y)
+        if item == "Mushroom_juice":
+            item = collectable.Mushroom_juice(pos_x, pos_y)
+        return item
+
+        
 
 
 inventoryItems = {}

@@ -82,7 +82,6 @@ class SpriteSheetAnimation(SpriteSheet):
             self.current_frame += 1
             if self.current_frame >= self.current_range[1] + 1:
                 if not self.loop:
-                    print("stopping animation")
 
                     self.stop_animation(self.current_range[1])
                 self.current_frame = self.current_range[0]
@@ -97,7 +96,6 @@ class SpriteSheetAnimation(SpriteSheet):
     def update_image(self):
         """ Aktualisiert das Bild (self.image) mit dem nächsten Frame der Animation."""
         next_frame_int = self.next_frame()
-        print(next_frame_int, self.animations)
         self.image = self.frames[next_frame_int]
 
     def update(self):
