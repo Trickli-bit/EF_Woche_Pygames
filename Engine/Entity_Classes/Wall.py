@@ -102,24 +102,76 @@ class Laser_v(entities.Entity):
         self.Animation.start_animation("standard")
 
         self.near_items = []
+        self.dying = False
+        self.dying_counter = 0
 
     def die(self, entities):
         # Mittelpunkt des Screens
         center_x = settings.SCREEN_WIDTH // 2
         center_y = settings.SCREEN_HEIGHT // 2
-        max_distance = 64*5  # 300 Blöcke in Pixeln
+        max_distance = 1000  # 300 Blöcke in Pixeln
 
         # Variable für Ergebnis
 
         for entity in entities:
             if isinstance(entity, collectable.Collectable):
                 if entity.should_pick_up == False:
-                    dx = abs(entity.pos_x - center_x)
-                    dy = abs(entity.pos_y - center_y)
+                    dx = abs(entity.rect.x - center_x)
+                    dy = abs(entity.rect.y - center_y)
                     d = ((dy)**2 + (dx)**2)**(0.5)
 
                     # Prüfen, ob innerhalb von 300 Blöcken in beide Richtungen
                     if d <= max_distance:
                         if (entity.name, entity) not in self.near_items:
                             self.near_items.append((entity.name, entity))
-                        break  # optional, wenn nur wissen willst, ob mindestens eins in der Nähe ist
+
+        amount_stick_before = generation.GetNumberOfItems("Stick") + 1
+        amount_rock_before = generation.GetNumberOfItems("Rock") + 1
+        amount_mushroom_juice_before = generation.GetNumberOfItems("Mushroom_juice") + 1
+
+        amount_stick_after = 1
+        amount_rock_after = 1
+        amount_mushroom_juice_after = 1
+
+
+        for element in self.near_items:
+            if "Stick" in element:
+                amount_stick_after = amount_stick_before -1
+            if "Rock" in element:
+                amount_rock_after = amount_rock_before -1
+            if "Mushroom_juice" in element:
+                amount_mushroom_juice_after = amount_mushroom_juice_before -1
+
+        if amount_stick_after >= 0 and amount_rock_after >= 0 and amount_mushroom_juice_after >= 0:
+            print("price is payable")
+            print("differences", amount_stick_after - amount_stick_before, amount_rock_after - amount_rock_before, amount_mushroom_juice_after - amount_mushroom_juice_before)
+            for i in range(amount_stick_before - amount_stick_after):
+                print("remove Stick")
+                generation.removeItemFromInventory("Stick")
+            for i in range(amount_rock_before - amount_rock_after):
+                print("Remove Rock")
+                generation.removeItemFromInventory("Rock")
+            for i in range(amount_mushroom_juice_before - amount_mushroom_juice_after):
+                generation.removeItemFromInventory("Mushroom_juice")
+            self.dying = True
+         
+            
+            for entity in entities:
+            # Check if entity is a laser (both horizontal and vertical)
+                if isinstance(entity, (Laser_h, Laser_v)):
+                    print("FOUND")
+                    if entity is not self:  # Don't deactivate the current laser twice
+                        dx = entity.rect.centerx - self.rect.centerx
+                        dy = entity.rect.centery - self.rect.centery
+                        distance = (dx**2 + dy**2) ** 0.5
+                        if distance <= 400:
+                            print("DIYING")
+                            entity.dying = True
+
+    def update(self, dx=0, dy=0, *args):
+        super().update(dx, dy, *args)
+        if self.dying:
+            self.dying_counter += 1
+            self.Animation.start_animation("turn_off_laser")
+            if self.dying_counter == 50:
+                self.kill()
