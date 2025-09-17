@@ -42,6 +42,9 @@ class Collectable(entities.Entity):
 
             self.kill()  # Entfernt das Collectable aus allen Sprite-Gruppen
             return generation.addItemToInventory(self)
+        
+    def zur_gruppe_hinzufuegen(self, gruppe):
+            gruppe.add(self)
 
     def update(self, dx = 0, dy = 0, keys = []):
         super().update(dx, dy, keys)
@@ -70,3 +73,4 @@ class Mushroom_juice(Collectable):
 
           self.name = "Mushroom_juice"
           self.value = 1
+
