@@ -1,3 +1,10 @@
+import Engine.Entity_Classes.collectable as collectable
+import Player.player as player
+import Engine.Entity_Classes.npc as npc
+import Engine.Entity_Classes.inventorySlot as inventory
+import pygame
+import Engine.Entity_Classes.Wall as wall
+
 
 class Collision:
     """Kollisionsklasse für feste und bewegliche Objekte."""
@@ -19,12 +26,32 @@ class Collision:
                     other.collition(entity)
                     break
 
+    def collition_with_collectable(self):
+        for entity in self.objects:
+            if isinstance(entity, collectable.Collectable):
+                for player in self.playerGroup:
+                    entity.collide_with_player(player)
+                    
+            if isinstance(entity, npc.Turtle):
+                for player in self.playerGroup:
+                    if player.rect.colliderect(entity.rect):
+                        player.ready_to_attack = True
+                        player.attaking_objects.append(entity)
+
+            if isinstance(entity, wall.Laser_h) or isinstance(entity, wall.Laser_v):
+                if player.rect.colliderect(entity.rect):
+                    entity.die(self.objects)
+
+
     def update(self):
         """Aktualisiert alle Kollisionen für Movable Entities und Player."""
         for movable in self.movable_entities:
             self.collide_with_solid(movable)
         for player in self.playerGroup:
             self.collide_with_solid(player)
+        for player in self.playerGroup:
+            if hasattr(player, "rect"):
+                self.collition_with_collectable()
 
 animation_to_add = None
 
