@@ -1,6 +1,7 @@
 import pygame
 import Engine.entities as entities
 import Main.generation as generation
+import Engine.Entity_Classes.collectable as collectable
 
 
 class interactables(entities.Entity):
@@ -24,20 +25,20 @@ class interactables(entities.Entity):
                     if generation.GetNumberOfItems(self.input1) >= 0:
                         generation.removeItemFromInventory(self.input1)
                         self.Animation.start_animation(self.ani_name)
-                        self.has_tool = True
+                        generation.addItemToInventory(collectable.Axe(5000, 5000))
                 else:
                     if generation.GetNumberOfItems(self.input1) >= 0 and generation.GetNumberOfItems(self.input2) >= 0:
                         generation.removeItemFromInventory(self.input1)
                         generation.removeItemFromInventory(self.input2)
                         self.Animation.start_animation(self.ani_name)
-                        self.has_tool = True
+                        generation.addItemToInventory(collectable.Axe(5000, 5000))
             else:
                 if generation.GetNumberOfItems(self.input1) >= 0 and generation.GetNumberOfItems(self.input2) >= 0 and generation.GetNumberOfItems(self.input3) >= 0:
                     generation.removeItemFromInventory(self.input1)
                     generation.removeItemFromInventory(self.input2)
                     generation.removeItemFromInventory(self.input3)
                     self.Animation.start_animation(self.ani_name)
-                    self.has_tool = True
+                    generation.addItemToInventory(collectable.Axe(5000, 5000))
                         
         else:
             if generation.GetNumberOfItems(self.input1) >= 0 and generation.GetNumberOfItems(self.input2) >= 0 and generation.GetNumberOfItems(self.input3) >= 0 and generation.GetNumberOfItems(self.input4) >= 0:
@@ -46,7 +47,7 @@ class interactables(entities.Entity):
                 generation.removeItemFromInventory(self.input3)
                 generation.removeItemFromInventory(self.input4)
                 self.Animation.start_animation(self.ani_name)
-                self.has_tool = True
+                generation.addItemToInventory(collectable.Axe(5000, 5000))
 
     def update(self, dx=0, dy=0, *args):
         print(self.rect.x, self.rect.y)
