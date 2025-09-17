@@ -48,7 +48,7 @@ Collition = events.Collision(entities_group, moving_entities_group, playerGroup)
 
 # Run until the user asks to quit
 
-a = True
+addable = True
 start_generation = True
 
 running = True
@@ -86,12 +86,12 @@ while running:
     floor_group.update(-Player.dx, -Player.dy, keys)
     floor_group.draw(screen)
 
-    a = events.addingAnimation()
-    if a is not None:
-        animationGroup.add(a)
-        a.Animation.start_animation("pick_up")
+    addable = events.addingAnimation()
+    if addable is not None:
+        animationGroup.add(addable)
+        addable.Animation.start_animation("pick_up")
         events.animation_to_add = None
-        a = None
+        addable = None
 
     for anim in animationGroup.sprites():
         # Wenn eine Animation existiert und inactive ist, entferne das Sprite
