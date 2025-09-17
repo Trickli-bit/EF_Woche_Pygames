@@ -232,7 +232,7 @@ class generateLandscape():
                 if self.map_wall[row][elem] == 0:
                     if self.map[row][elem] == 0:
                         if random.randint(0,100) <= 5:
-                            if random.randint (0,100) <= 20:
+                            if random.randint (0,100) <= 40:
                                 self.entitygroup.add(collectable.Rock(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64))
                             else:
                                 self.entitygroup.add(collectable.Stick(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64))
@@ -262,9 +262,6 @@ class generateLandscape():
                 self.vertical_segment_counter += 1
                 for elem in range(len(self.map_laser[row])):
                     self.horizontal_segment_counter += 1
-                    if self.map_laser[row][elem] == 4:
-                        print("adding Laser")
-                        self.entitygroup.add(Wall.Laser_v(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64))
                     if self.map_laser[row][elem] == 6 or self.map_laser[row][elem] == 7 or self.map_laser[row][elem] == 8:
                         self.item = None
                         self.entitygroup.add(inventory.PriceInventorySlot(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64))
