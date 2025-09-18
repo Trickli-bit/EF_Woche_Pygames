@@ -8,15 +8,16 @@ class Wall(entities.Entity):
     def __init__(self, pos_x, pos_y, rect = pygame.Rect(0,0,64,64), rect_attach = "topleft", scale = (64, 64), source = r"Engine\Entity_Classes\Sprites_Entity_Classes\Wall.png", solid = True, is_spritesheet = True, fix = False, base_sprite=0, ani_frames_count=8, ani_animations={}, flip = (False, False)):
         super().__init__(pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, fix, base_sprite, ani_frames_count, ani_animations)
 
-        if flip is not (False, False):
+        if flip != (False, False):
             self.image = pygame.transform.flip(self.image, flip[0], flip[1])
 
 class Water(entities.Entity):
     def __init__(self, pos_x, pos_y, rect = pygame.Rect(0, 0, 64, 64), rect_attach = "topleft", scale = (64, 64), source = r"Engine\Entity_Classes\Sprites_Entity_Classes\Water.png", solid = True, is_spritesheet = True, fix=False, base_sprite=0, ani_frames_count=8, ani_animations={}, flip = (False, False)):
         super().__init__(pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, fix, base_sprite, ani_frames_count, ani_animations)
 
-        if flip is not (False, False):
+        if flip != (False, False):
             self.image = pygame.transform.flip(self.image, flip[0], flip[1])
+            
 class Laser_h(entities.Entity):
     def __init__(self, pos_x, pos_y, rect = pygame.Rect(0,0,64,64), rect_attach = "topleft", scale = (64, 64), source = r"Engine\Entity_Classes\Sprites_Entity_Classes\Laser_h.png", solid = True, is_spritesheet = True, fix = False, base_sprite=0, ani_frames_count=5, ani_animations={"turn_off_laser": [3, 6, 14, False], "standard": [0,1, 3, True]}):
         super().__init__(pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, fix, base_sprite, ani_frames_count, ani_animations)
