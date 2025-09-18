@@ -66,6 +66,7 @@ cooldown = 6
 Vignette = True
 BigMap = False
 Recipe = False
+RedPoint = False
 
 running = True
 while running:
