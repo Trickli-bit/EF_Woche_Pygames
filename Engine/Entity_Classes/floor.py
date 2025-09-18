@@ -11,11 +11,6 @@ class Grass(Floor):
         
         super().__init__(pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, fix, base_sprite, 6, ani_animations)
 
-        
-
-        if not hasattr(self, "image") or self.image is None:
-            print("WARNUNG: Kein Bild für Grass!")
-
         if flip is not (False, False):
             self.image = pygame.transform.flip(self.image, flip[0], flip[1])
 

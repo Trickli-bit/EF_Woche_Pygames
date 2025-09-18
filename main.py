@@ -37,8 +37,6 @@ PoI = entities.Entity(settings.SCREEN_HEIGHT//2 + 50, settings.SCREEN_WIDTH//2 +
 start_animation_counter = 0
 Turtle = npc.Turtle(2400, 1800, width_blocks=4, height_blocks=4)
 
-
-
 overlayGroup_2.add(vigniette, PoI)
 
 playerGroup.add(Player)
@@ -46,9 +44,6 @@ playerGroup.add(Player)
 entities_group.add(Axecrafter, )
 
 animationGroup.add(StartAnimation)
-
-        
-
 
 Collition = events.Collision(entities_group, moving_entities_group, playerGroup)
 
@@ -63,19 +58,14 @@ cooldown = 6
 
 running = True
 while running:
-
-    
-
     
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
-
     keys = pygame.key.get_pressed()
 
     screen.fill((255, 255, 255))
-
 
     if start_startanimation:
         screen.fill((0,0,0))
@@ -92,11 +82,7 @@ while running:
             animationGroup.remove(StartAnimation)
             start_startanimation = False
             start_generation = True
-            maingame = True
-            
-        
-        
-
+            maingame = True  
 
     if start_generation:
         Map = generation.generateLandscape(floor_group, entities_group)
@@ -111,7 +97,6 @@ while running:
         start_generation = False
 
     if maingame:
-
 
         floor_group.update(-Player.dx, -Player.dy, keys)
         floor_group.draw(screen)
@@ -132,8 +117,6 @@ while running:
             if cooldown <= 0 and len(generation.itemField_group) > 0:
                 entities_group.add(generation.dropItemFromInventory())
                 cooldown = 6
-                
-            print("ITEMFIELD_GROUP", generation.itemField_group, cooldown > 0 and len(generation.inventoryCollectables) > 0)
 
         entities_group.update(-Player.dx, -Player.dy, keys)
         entities_group.draw(screen)
@@ -161,6 +144,5 @@ while running:
 
     pygame.display.update()
     clock.tick(60)
-
 
 pygame.quit()
