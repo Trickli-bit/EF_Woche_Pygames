@@ -3,7 +3,7 @@ import pygame
 import Main.settings as settings
 import Engine.Entity_Classes.collectable as collectable
 import Main.generation as generation
-
+import Main.sounds as sounds
 class Wall(entities.Entity):
     def __init__(self, pos_x, pos_y, rect = pygame.Rect(0,0,64,64), rect_attach = "topleft", scale = (64, 64), source = r"Engine\Entity_Classes\Sprites_Entity_Classes\Wall.png", solid = True, is_spritesheet = True, fix = False, base_sprite=0, ani_frames_count=8, ani_animations={}, flip = (False, False)):
         super().__init__(pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, fix, base_sprite, ani_frames_count, ani_animations)
@@ -20,11 +20,13 @@ class Laser_h(entities.Entity):
         self.dying = False
         self.dying_counter = 0
 
-    def die(self, entities):
+    def die(self, entities): #Laser wird deaktiviert
         # Mittelpunkt des Screens
         center_x = settings.SCREEN_WIDTH // 2
         center_y = settings.SCREEN_HEIGHT // 2
         max_distance = 1000  # 300 Blöcke in Pixeln
+        #sounds.laser_aus()  #Sound abspielen, wenn der Laser deaktiviert wird
+
 
         # Variable für Ergebnis
 

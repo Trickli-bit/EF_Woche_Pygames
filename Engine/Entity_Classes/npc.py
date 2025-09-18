@@ -76,7 +76,7 @@ class Turtle(entites.EntityMovable):
             dtx, dty = 0, 0
             self.direction == ""
             self.die()
-        print(dx,dy, self.start_x, self.start_y)
+        #print(dx,dy, self.start_x, self.start_y)
         self.start_x += dx
         self.start_y += dy
         self.dx = dtx

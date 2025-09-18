@@ -45,6 +45,7 @@ class Collectable(entities.Entity):
             if self.rect.colliderect(player_obj.rect):
                 print("COLLITION")
                 self.collected = True
+                sounds.play_bubble_pop()
                 player_obj.item_dict[self.name] = player_obj.item_dict.get(self.name, 0) + self.value
                 print(f"[DEBUG] {player_obj} hat {self.name} eingesammelt! Inventar: {player_obj.item_dict}")
                 self.pick_up = animations.pick_up_animation(self.rect.centerx, self.rect.centery)
@@ -52,7 +53,8 @@ class Collectable(entities.Entity):
 
 
 
-            sounds.play_bubble_pop()
+                
+               
                 self.kill()  # Entfernt das Collectable aus allen Sprite-Gruppen
                 return generation.addItemToInventory(self)
         

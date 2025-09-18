@@ -4,6 +4,7 @@ import Engine.Entity_Classes.npc as npc
 import Engine.Entity_Classes.inventorySlot as inventory
 import pygame
 import Engine.Entity_Classes.Wall as wall
+import Main.sounds as sounds
 
 
 class Collision:
@@ -40,6 +41,7 @@ class Collision:
 
             if isinstance(entity, wall.Laser_h) or isinstance(entity, wall.Laser_v):
                 if player.rect.colliderect(entity.rect):
+                    sounds.laser_aus()  #Sound abspielen, wenn der Laser deaktiviert wird
                     entity.die(self.objects)
 
 

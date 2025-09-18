@@ -65,7 +65,7 @@ class interactables(entities.Entity):
                 self.has_tool = True
 
     def update(self, dx=0, dy=0, *args):
-        print(self.rect.x, self.rect.y)
+        #print(self.rect.x, self.rect.y)
         return super().update(dx, dy, *args)
         
 
