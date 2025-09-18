@@ -51,13 +51,12 @@ class Collision:
                         player.attaking_objects.append(entity)
             if isinstance(entity, wall.Laser_h) or isinstance(entity, wall.Laser_v):
                 if player.rect.colliderect(entity.rect):
-                    sounds.laser_aus()  #Sound abspielen, wenn der Laser deaktiviert wird
+                    
                     entity.die(self.objects)
 
             if isinstance(entity, interactable.interactables):
                 for player in self.playerGroup:
                     if player.rect.colliderect(entity.rect) and entity.has_tool == False:
-                        sounds.play_crafting_axe()
                         entity.interact()
 
 

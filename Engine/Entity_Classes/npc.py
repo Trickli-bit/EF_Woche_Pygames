@@ -22,7 +22,6 @@ class Turtle(entites.EntityMovable):
         self.start_x = pos_x
         self.start_y = pos_y
 
-
         # Bewegungsrichtung
         self.direction = "right"
         self.speed = 2
@@ -57,7 +56,6 @@ class Turtle(entites.EntityMovable):
     def die(self):
         self.dead_counter += 1
         self.dead = True
-        print(self.dead_counter)
         if self.direction == "right":
             self.Animation.start_animation("burning_d")
         if self.direction == "left":

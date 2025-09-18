@@ -11,6 +11,12 @@ class Wall(entities.Entity):
         if flip is not (False, False):
             self.image = pygame.transform.flip(self.image, flip[0], flip[1])
 
+class Water(entities.Entity):
+    def __init__(self, pos_x, pos_y, rect = pygame.Rect(0, 0, 64, 64), rect_attach = "topleft", scale = (64, 64), source = r"Engine\Entity_Classes\Sprites_Entity_Classes\Water.png", solid = True, is_spritesheet = True, fix=False, base_sprite=0, ani_frames_count=8, ani_animations={}, flip = (False, False)):
+        super().__init__(pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, fix, base_sprite, ani_frames_count, ani_animations)
+
+        if flip is not (False, False):
+            self.image = pygame.transform.flip(self.image, flip[0], flip[1])
 class Laser_h(entities.Entity):
     def __init__(self, pos_x, pos_y, rect = pygame.Rect(0,0,64,64), rect_attach = "topleft", scale = (64, 64), source = r"Engine\Entity_Classes\Sprites_Entity_Classes\Laser_h.png", solid = True, is_spritesheet = True, fix = False, base_sprite=0, ani_frames_count=5, ani_animations={"turn_off_laser": [3, 6, 14, False], "standard": [0,1, 3, True]}):
         super().__init__(pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, fix, base_sprite, ani_frames_count, ani_animations)
@@ -25,7 +31,6 @@ class Laser_h(entities.Entity):
         center_x = settings.SCREEN_WIDTH // 2
         center_y = settings.SCREEN_HEIGHT // 2
         max_distance = 1000  # 300 Blöcke in Pixeln
-        #sounds.laser_aus()  #Sound abspielen, wenn der Laser deaktiviert wird
 
 
         # Variable für Ergebnis
@@ -50,7 +55,6 @@ class Laser_h(entities.Entity):
         amount_rock_after = 1
         amount_mushroom_juice_after = 1
 
-
         for element in self.near_items:
             if "Stick" in element:
                 amount_stick_after = amount_stick_before -1
@@ -60,13 +64,9 @@ class Laser_h(entities.Entity):
                 amount_mushroom_juice_after = amount_mushroom_juice_before -1
 
         if amount_stick_after >= 0 and amount_rock_after >= 0 and amount_mushroom_juice_after >= 0:
-            print("price is payable")
-            print("differences", amount_stick_after - amount_stick_before, amount_rock_after - amount_rock_before, amount_mushroom_juice_after - amount_mushroom_juice_before)
             for i in range(amount_stick_before - amount_stick_after):
-                print("remove Stick")
                 generation.removeItemFromInventory("Stick")
             for i in range(amount_rock_before - amount_rock_after):
-                print("Remove Rock")
                 generation.removeItemFromInventory("Rock")
             for i in range(amount_mushroom_juice_before - amount_mushroom_juice_after):
                 generation.removeItemFromInventory("Mushroom_juice")
@@ -76,27 +76,21 @@ class Laser_h(entities.Entity):
             for entity in entities:
             # Check if entity is a laser (both horizontal and vertical)
                 if isinstance(entity, (Laser_h, Laser_v)):
-                    print("FOUND")
                     if entity is not self:  # Don't deactivate the current laser twice
                         dx = entity.rect.centerx - self.rect.centerx
                         dy = entity.rect.centery - self.rect.centery
                         distance = (dx**2 + dy**2) ** 0.5
                         if distance <= 400:
-                            print("DIYING")
                             entity.dying = True
 
     def update(self, dx=0, dy=0, *args):
         super().update(dx, dy, *args)
         if self.dying:
+            sounds.laser_aus()
             self.dying_counter += 1
             self.Animation.start_animation("turn_off_laser")
             if self.dying_counter == 50:
                 self.kill()
-
-
-
-
-
 
 class Laser_v(entities.Entity):
     def __init__(self, pos_x, pos_y, rect = pygame.Rect(0,0,64,64), rect_attach = "topleft", scale = (64, 64), source = r"Engine\Entity_Classes\Sprites_Entity_Classes\Laser_v.png", solid = True, is_spritesheet = True, fix = False, base_sprite=0, ani_frames_count=5, ani_animations={"turn_off_laser": [3, 6, 7, False], "standard": [0, 1, 3, True]}):
@@ -135,7 +129,6 @@ class Laser_v(entities.Entity):
         amount_rock_after = 1
         amount_mushroom_juice_after = 1
 
-
         for element in self.near_items:
             if "Stick" in element:
                 amount_stick_after = amount_stick_before -1
@@ -145,34 +138,28 @@ class Laser_v(entities.Entity):
                 amount_mushroom_juice_after = amount_mushroom_juice_before -1
 
         if amount_stick_after >= 0 and amount_rock_after >= 0 and amount_mushroom_juice_after >= 0:
-            print("price is payable")
-            print("differences", amount_stick_after - amount_stick_before, amount_rock_after - amount_rock_before, amount_mushroom_juice_after - amount_mushroom_juice_before)
             for i in range(amount_stick_before - amount_stick_after):
-                print("remove Stick")
                 generation.removeItemFromInventory("Stick")
             for i in range(amount_rock_before - amount_rock_after):
-                print("Remove Rock")
                 generation.removeItemFromInventory("Rock")
             for i in range(amount_mushroom_juice_before - amount_mushroom_juice_after):
                 generation.removeItemFromInventory("Mushroom_juice")
             self.dying = True
-         
-            
+           
             for entity in entities:
             # Check if entity is a laser (both horizontal and vertical)
                 if isinstance(entity, (Laser_h, Laser_v)):
-                    print("FOUND")
                     if entity is not self:  # Don't deactivate the current laser twice
                         dx = entity.rect.centerx - self.rect.centerx
                         dy = entity.rect.centery - self.rect.centery
                         distance = (dx**2 + dy**2) ** 0.5
                         if distance <= 400:
-                            print("DIYING")
                             entity.dying = True
 
     def update(self, dx=0, dy=0, *args):
         super().update(dx, dy, *args)
         if self.dying:
+            sounds.laser_aus()
             self.dying_counter += 1
             self.Animation.start_animation("turn_off_laser")
             if self.dying_counter == 50:

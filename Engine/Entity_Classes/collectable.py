@@ -24,8 +24,6 @@ class Collectable(entities.Entity):
         self.source = source
         self.function = "Item"
         self.should_pick_up = True
-        print("getting created")
-
 
     def collide_with_player(self, player_obj):
         if self.should_pick_up:
@@ -43,11 +41,9 @@ class Collectable(entities.Entity):
 
             # Kollisionsprüfung mit Rechtecken
             if self.rect.colliderect(player_obj.rect):
-                print("COLLITION")
                 self.collected = True
                 sounds.play_bubble_pop()
                 player_obj.item_dict[self.name] = player_obj.item_dict.get(self.name, 0) + self.value
-                print(f"[DEBUG] {player_obj} hat {self.name} eingesammelt! Inventar: {player_obj.item_dict}")
                 self.pick_up = animations.pick_up_animation(self.rect.centerx, self.rect.centery)
                 events.checkAnimations(self.pick_up)
 
@@ -62,11 +58,7 @@ class Collectable(entities.Entity):
             gruppe.add(self)
 
     def update(self, dx = 0, dy = 0, keys = []):
-        super().update(dx, dy, keys)
-        
-
-         
-
+        super().update(dx, dy, keys)    
 
 class Stick(Collectable):
     def __init__(self, pos_x, pos_y, rect=pygame.Rect(0,0,64,64), rect_attach="topleft",
