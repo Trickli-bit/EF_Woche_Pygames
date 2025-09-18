@@ -67,7 +67,7 @@ class Player(EntityMovable):
             #sounds.stop_walking_main_character()
 
     def attack(self):
-        if self.ready_to_attack:
+        if self.ready_to_attack and sum(1 for elem in generation.inventoryCollectables if elem.function == "Item") < 7:
             for entity in self.attaking_objects:
                 if isinstance(entity, interactable.Mushroom):
                     if generation.GetNumberOfItems("Axe") == 0:
