@@ -61,7 +61,6 @@ cooldown = 6
 Vignette = True
 BigMap = False
 Recipe = False
-cooldownM = 6
 
 running = True
 while running:
@@ -124,15 +123,6 @@ while running:
             if cooldown <= 0 and len(generation.itemField_group) > 0:
                 entities_group.add(generation.dropItemFromInventory())
                 cooldown = 6
-
-        if keys[pygame.K_m]:
-            cooldownM -= 1
-            if cooldownM <= 0 and len(generation.itemField_group) > 0:
-                currentCollectable = getattr(collectable, "Torch")
-                generation.addItemToInventory(currentCollectable(5000, 5000))
-                currentCollectable = getattr(collectable, "Map")
-                generation.addItemToInventory(currentCollectable(5000, 5000))
-                cooldownM = 6
         
         if Vignette == True:
             if generation.GetNumberOfItems("Torch") == 0:

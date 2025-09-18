@@ -28,9 +28,6 @@ class PriceInventorySlot(entities.Entity):
         self.pos_y = pos_y
         self.near_items = []
 
-
-        
-
     def update_image(self):
         """Funktion, die das Bild neu lädt basierend auf self.source und self.scale."""
         self.image = pygame.transform.scale(pygame.image.load(self.source), self.scale)
