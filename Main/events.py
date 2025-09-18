@@ -45,14 +45,15 @@ class Collision:
                         player.attaking_objects.append(entity)
 
             if isinstance(entity, interactable.Mushroom):
-                for palyer in self.playerGroup:
+                for player in self.playerGroup:
                     if player.rect.colliderect(entity.rect):
                         player.ready_to_attack = True
                         player.attaking_objects.append(entity)
+
             if isinstance(entity, wall.Laser_h) or isinstance(entity, wall.Laser_v):
-                if player.rect.colliderect(entity.rect):
-                    
-                    entity.die(self.objects)
+                for player in self.playerGroup:
+                    if player.rect.colliderect(entity.rect):
+                        entity.die(self.objects)
 
             if isinstance(entity, interactable.interactables):
                 for player in self.playerGroup:
@@ -61,7 +62,6 @@ class Collision:
 
 
     def move_out(self, other):
-        print(other.solid_collision_direction)
         """Bewegt ein Objekt aus einer Kollision heraus."""
         move_amount = 16
         if other.solid_collision_direction == "up":
