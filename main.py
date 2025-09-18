@@ -44,7 +44,7 @@ overlayGroup_2.add(vigniette, PoI)
 
 playerGroup.add(Player)
                 
-entities_group.add(Axecrafter, RecipeBook)
+entities_group.add(Axecrafter, RecipeBook, Turtle)
 
 animationGroup.add(StartAnimation)
 

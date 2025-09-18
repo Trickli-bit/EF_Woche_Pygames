@@ -67,14 +67,21 @@ class Player(EntityMovable):
                 if isinstance(entity, interactable.Mushroom):
                     if generation.GetNumberOfItems("Axe") == 0:
                         self.kill_go = True
-                if isinstance(entity, npc.Turtle):
+                    if self.kill_go:
+                        entity.die(has_axe=True)
+                        self.ready_to_attack = False
+                        self.attaking_objects = []
+                        self.kill_go = False
+                        break  # Nach dem ersten Kill abbrechen
+                elif isinstance(entity, npc.Turtle):
                     if generation.GetNumberOfItems("Torch") == 0:
                         self.kill_go = True
-                if self.kill_go:
-                    entity.die()
-                    self.ready_to_attack = False
-                    self.attaking_objects = []
-                    self.kill_go = False
+                    if self.kill_go:
+                        entity.die()
+                        self.ready_to_attack = False
+                        self.attaking_objects = []
+                        self.kill_go = False
+                        break
         
 
 
