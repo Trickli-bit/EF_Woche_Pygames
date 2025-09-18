@@ -23,7 +23,7 @@ def parse_y_string(s: str):
 
 class generateLandscape():
     """Liest eine CSV-Datei ein und erstellt eine 2D-Liste der Werte."""
-    def __init__(self, spritegroup, entitygroup):
+    def __init__(self, spritegroup, entitygroup, trigger):
         """ Initialisiert die Klasse mit dem Dateinamen der CSV-Datei.
         param:\t filename (str) - Pfad zur CSV-Datei."""
 
@@ -32,6 +32,7 @@ class generateLandscape():
         self.map_laser = self.readCSV("Main/mapCSVInteractables.csv")
         self.spritegroup = spritegroup
         self.entitygroup = entitygroup
+        self.trigger = trigger
         
         self.elem = {
             0: "grass",
@@ -279,7 +280,11 @@ class generateLandscape():
                         self.entitygroup.add(interactable.interactables(self.horizontal_segment_counter * 64,self.vertical_segment_counter * 64, pygame.Rect(0, 0, 64, 64), "topleft", (128,128), r"Engine\Entity_Classes\Sprites_Entity_Classes\CarftingTableMirror.png", True, True, "Mirror", "Shell", "Mushroom_juice", "air", "air", False, 0, 8, {"Craft_Axe" : [0, 7, 10, False]}, "Craft_Axe"))
                     if len(str(self.map_laser[row][elem])) == 3:
                         self.entitygroup.add(npc.Turtle(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64, width_blocks=int(str(self.map_laser[row][elem])[1]), height_blocks=int(str(self.map_laser[row][elem])[2])))
-        return self.entitygroup
+                    if self.map_laser[row][elem] == 99:
+                        print("Generated")
+                        self.trigger = pygame.Rect(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64, 128, 192)
+                        
+        return self.trigger
 
     def generatePrices(self):
         item = None

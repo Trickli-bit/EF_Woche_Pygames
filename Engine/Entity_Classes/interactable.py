@@ -24,7 +24,7 @@ class interactables(entities.Entity):
                 if self.input2 == "air":
                     if generation.GetNumberOfItems(self.input1) >= 0:
                         generation.removeItemFromInventory(self.input1)
-                        if self.output == "Axe":
+                        if self.output == "Axe" or self.output == "Mirror" or self.output == "Shell":
                             sounds.play_crafting_axe()
                         else:
                             pass
@@ -103,10 +103,11 @@ class interactables(entities.Entity):
 #Axecrafter = interactables(0, 0, pygame.Rect(0, 0, 64, 64), "topleft", (64,64), r"Engine\Entity_Classes\Sprites_Entity_Classes\pixilart-sprite (6).png", True, False, "Axe", "stick", "stone", "air", "air", False, 0, 8, {"Craft_Axe" : [0, 7, 5, False]})
 
 class Mushroom(entities.Entity):
-    def __init__(self, pos_x, pos_y, rect = pygame.Rect(0, 0, 64, 64), rect_attach = "topleft", scale = (192, 192), source = r"Engine\Entity_Classes\Sprites_Entity_Classes\mushroom-frame-0 (2).png", solid = False, is_spritesheet = False, fix=False, base_sprite=0, ani_frames_count=0, ani_animations={}):
+    def __init__(self, pos_x, pos_y, rect = pygame.Rect(0, 0, 64, 64), rect_attach = "topleft", scale = (140, 140), source = r"Engine\Entity_Classes\Sprites_Entity_Classes\mushroom-frame-0 (2).png", solid = False, is_spritesheet = False, fix=False, base_sprite=0, ani_frames_count=0, ani_animations={}):
         super().__init__(pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, fix, base_sprite, ani_frames_count, ani_animations)
 
     def die(self, has_axe=False):
         self.kill()
+        sounds.play_breaking_mushroom()
         if has_axe:
             generation.addItemToInventory(collectable.Mushroom_juice(self.rect.x, self.rect.y))
