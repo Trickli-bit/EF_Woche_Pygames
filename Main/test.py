@@ -1,4 +1,3 @@
-a  = [[], []]
-print(len(a))
-for elem in len():
-    print("Hallo")
+a = 123
+print(len(str(a)))
+print(str(a)[2])
