@@ -52,7 +52,7 @@ class Collectable(entities.Entity):
 
 
 
-            sounds.play_bubble_pop()
+                sounds.play_bubble_pop()
                 self.kill()  # Entfernt das Collectable aus allen Sprite-Gruppen
                 return generation.addItemToInventory(self)
         
