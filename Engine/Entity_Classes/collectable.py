@@ -5,6 +5,7 @@ import pygame
 import Player.player as player
 import Engine.Entity_Classes.animations as animations 
 import Main.events as events
+import Main.sounds as sounds
 
 # collectable.py (relevanter Ausschnitt)
 class Collectable(entities.Entity):
@@ -51,8 +52,12 @@ class Collectable(entities.Entity):
 
 
 
+                sounds.play_bubble_pop()
                 self.kill()  # Entfernt das Collectable aus allen Sprite-Gruppen
                 return generation.addItemToInventory(self)
+        
+    def zur_gruppe_hinzufuegen(self, gruppe):
+            gruppe.add(self)
 
     def update(self, dx = 0, dy = 0, keys = []):
         super().update(dx, dy, keys)

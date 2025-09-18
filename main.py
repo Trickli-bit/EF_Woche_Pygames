@@ -39,9 +39,11 @@ Turtle = npc.Turtle(2400, 1800, width_blocks=4, height_blocks=4)
 
 
 
-overlayGroup_2.add(vigniette)
-entities_group.add(Axecrafter, Turtle)
+overlayGroup_2.add(vigniette, PoI)
+
 playerGroup.add(Player)
+                
+entities_group.add(Axecrafter, )
 
 animationGroup.add(StartAnimation)
 
@@ -57,9 +59,12 @@ maingame = False
 start_generation = False
 start_startanimation = True 
 
+cooldown = 6
 
 running = True
 while running:
+
+    
 
     
     for event in pygame.event.get():
@@ -122,6 +127,13 @@ while running:
             if hasattr(anim, "Animation") and anim.Animation.active == False:
                 anim.kill()
 
+        if keys[pygame.K_q]:
+            cooldown -= 1
+            if cooldown <= 0 and len(generation.itemField_group) > 0:
+                entities_group.add(generation.dropItemFromInventory())
+                cooldown = 6
+                
+            print("ITEMFIELD_GROUP", generation.itemField_group, cooldown > 0 and len(generation.inventoryCollectables) > 0)
 
         entities_group.update(-Player.dx, -Player.dy, keys)
         entities_group.draw(screen)
@@ -144,6 +156,7 @@ while running:
         overlayGroup = generation.updateInventory()
 
         if Player.rect.colliderect(Axecrafter.rect) and Axecrafter.has_tool == False:
+            sounds.play_crafting_axe()
             Axecrafter.interact()
 
     pygame.display.update()
