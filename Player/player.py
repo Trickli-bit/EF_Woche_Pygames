@@ -1,6 +1,10 @@
 import pygame
 from Engine.entities import EntityMovable
 import Main.sounds as sounds
+import Engine.Entity_Classes.interactable as interactable
+import Engine.Entity_Classes.npc as npc
+import Main.generation as generation
+
 class Player(EntityMovable):
     def __init__(self, pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, fix = False, base_sprite=0, ani_frames_count=0, ani_animations=...):
         super().__init__(pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, fix, base_sprite, ani_frames_count, ani_animations)
@@ -11,6 +15,7 @@ class Player(EntityMovable):
         self.animations = ani_animations or {}
         self.ready_to_attack = False
         self.attaking_objects = []
+        self.kill_go = False
 
     def calculating_movement(self, keys):
 
@@ -51,12 +56,22 @@ class Player(EntityMovable):
 
         if not (self.dx != 0 or self.dy != 0):
             sounds.stop_walking_main_character()
+
     def attack(self):
         print(self.ready_to_attack)
         if self.ready_to_attack:
             for entity in self.attaking_objects:
-                entity.die()
-                self.ready_to_attack = False
+                if isinstance(entity, interactable.Mushroom):
+                    if generation.GetNumberOfItems("Axe") == 0:
+                        self.kill_go = True
+                if isinstance(entity, npc.Turtle):
+                    if generation.GetNumberOfItems("Torch") == 0:
+                        self.kill_go = True
+                if self.kill_go:
+                    entity.die()
+                    self.ready_to_attack = False
+                    self.attaking_objects = []
+                    self.kill_go = False
         
 
 

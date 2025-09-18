@@ -83,3 +83,10 @@ class interactables(entities.Entity):
 #            placeholderfunction2(self.drop)
 
 #Axecrafter = interactables(0, 0, pygame.Rect(0, 0, 64, 64), "topleft", (64,64), r"Engine\Entity_Classes\Sprites_Entity_Classes\pixilart-sprite (6).png", True, False, "Axe", "stick", "stone", "air", "air", False, 0, 8, {"Craft_Axe" : [0, 7, 5, False]})
+
+class Mushroom(entities.Entity):
+    def __init__(self, pos_x, pos_y, rect = pygame.Rect(0, 0, 64, 64), rect_attach = "topleft", scale = (64, 64), source = r"Engine\Entity_Classes\Sprites_Entity_Classes\mushroom-frame-0 (2).png", solid = False, is_spritesheet = False, fix=False, base_sprite=0, ani_frames_count=0, ani_animations={}):
+        super().__init__(pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, fix, base_sprite, ani_frames_count, ani_animations)
+
+    def die(self):
+        self.kill()

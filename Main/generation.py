@@ -6,6 +6,19 @@ import Engine.Entity_Classes.inventorySlot as inventory
 import Main.settings as settings
 import random
 import Engine.Entity_Classes.collectable as collectable
+import Engine.Entity_Classes.interactable as interactable
+import Engine.Entity_Classes.npc as npc
+import re
+
+
+def parse_y_string(s: str):
+    pattern = r"^Y\.(\d+)\.(\d+)$"
+    match = re.match(pattern, s)
+    if match:
+        first_int = int(match.group(1))
+        second_int = int(match.group(2))
+        return True, first_int, second_int
+    return False, None, None
 
 
 class generateLandscape():
@@ -249,8 +262,19 @@ class generateLandscape():
                         self.entitygroup.add(Wall.Laser_v(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64))
                     if self.map_laser[row][elem] == 5:
                         self.entitygroup.add(Wall.Laser_h(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64))
-        
-
+                    if self.map_laser[row][elem] == 11:
+                        self.entitygroup.add(interactable.Mushroom(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64))
+                    if self.map_laser[row][elem] == 21:
+                        print("CA")
+                        self.entitygroup.add(interactable.interactables(self.horizontal_segment_counter * 64,self.vertical_segment_counter * 64, pygame.Rect(0, 0, 64, 64), "topleft", (128,128), r"Engine\Entity_Classes\Sprites_Entity_Classes\CraftingTableAxe.png", True, True, "Axe", "Stick", "Rock", "air", "air", False, 0, 8, {"Craft_Axe" : [0, 7, 10, False]}, "Craft_Axe"))
+                    if self.map_laser[row][elem] == 22:
+                        self.entitygroup.add(interactable.interactables(self.horizontal_segment_counter * 64,self.vertical_segment_counter * 64, pygame.Rect(0, 0, 64, 64), "topleft", (128,128), r"", True, True, "Torch", "Stick", "Mushroom_juice", "air", "air", False, 0, 8, {"Craft_Axe" : [0, 7, 10, False]}, "Craft_Axe"))
+                    if self.map_laser[row][elem] == 23:
+                        self.entitygroup.add(interactable.interactables(self.horizontal_segment_counter * 64,self.vertical_segment_counter * 64, pygame.Rect(0, 0, 64, 64), "topleft", (128,128), r"", True, True, "Map", "Shell", "Rock", "Stick", "air", False, 0, 8, {"Craft_Axe" : [0, 7, 10, False]}, "Craft_Axe"))
+                    if self.map_laser[row][elem] == 24:
+                        self.entitygroup.add(interactable.interactables(self.horizontal_segment_counter * 64,self.vertical_segment_counter * 64, pygame.Rect(0, 0, 64, 64), "topleft", (128,128), r"", True, True, "Mirror", "Shell", "Mushroom_juice", "air", "air", False, 0, 8, {"Craft_Axe" : [0, 7, 10, False]}, "Craft_Axe"))
+                    if len(str(self.map_laser[row][elem])) == 3:
+                        self.entitygroup.add(npc.Turtle(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64, width_blocks=str(self.map_laser[row][elem])[1], height_blocks=str(self.map_laser[row][elem])[2]))
         return self.entitygroup
 
     def generatePrices(self):

@@ -4,6 +4,8 @@ import Engine.Entity_Classes.npc as npc
 import Engine.Entity_Classes.inventorySlot as inventory
 import pygame
 import Engine.Entity_Classes.Wall as wall
+import Engine.Entity_Classes.interactable as interactable
+import Main.sounds as sounds
 
 
 class Collision:
@@ -38,9 +40,20 @@ class Collision:
                         player.ready_to_attack = True
                         player.attaking_objects.append(entity)
 
+            if isinstance(entity, interactable.Mushroom):
+                for palyer in self.playerGroup:
+                    if player.rect.colliderect(entity.rect):
+                        player.ready_to_attack = True
+                        player.attaking_objects.append(entity)
             if isinstance(entity, wall.Laser_h) or isinstance(entity, wall.Laser_v):
                 if player.rect.colliderect(entity.rect):
                     entity.die(self.objects)
+
+            if isinstance(entity, interactable.interactables):
+                for player in self.playerGroup:
+                    if player.rect.colliderect(entity.rect) and entity.has_tool == False:
+                        sounds.play_crafting_axe()
+                        entity.interact()
 
 
     def update(self):
