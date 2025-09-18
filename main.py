@@ -18,9 +18,11 @@ import Engine.Entity_Classes.animations as animations
 pygame.init()
 
 
+#Screen Creation and clock setup
 screen = pygame.display.set_mode([settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT])
 clock = pygame.time.Clock()
 
+#Create pygame-sprite-Group 
 entities_group = pygame.sprite.Group()  
 floor_group = pygame.sprite.Group()
 moving_entities_group = pygame.sprite.Group()
@@ -29,6 +31,7 @@ overlayGroup = pygame.sprite.Group()
 animationGroup = pygame.sprite.Group()
 overlayGroup_2= pygame.sprite.Group()
 
+#Objects used in Main
 vigniette = entities.Entity(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), "center", (settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), r"Sprites_Main/vigniette.png",False, False, False, 0, 0, {})
 vignietteSmall = entities.Entity(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), "center", (settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), r"Sprites_Main/Vigniette2.png",False, False, False, 0, 0, {})
 Player = player.Player(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 64, 64), "midbottom", (80, 80), r"Player\player.png",True, True, True, 13, 21, {"walking_a": [0, 3, 5, True], "walking_d": [5, 8, 5, True], "walking_s": [10, 15, 5, True], "walking_w": [17, 19, 5, True]})
@@ -37,11 +40,13 @@ EndAnimation = entities.Entity(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT/
 StartText = entities.Entity(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 448, 256), "center", (886, 512), r"Sprites_Main/Start_text.png", False, True, False, 0, 8, {"Start": [0, 3, 50, False], "Explanation": [4, 7, 350, False]} )
 trigger = None
 
+#Adding Objects to Sprite-Groups
 overlayGroup_2.add(vigniette)
 playerGroup.add(Player)
 animationGroup.add(StartAnimation)
 Collition = events.Collision(entities_group, moving_entities_group, playerGroup)
 
+#Main-Logic-Variables
 start_animation_counter = 0
 addable = True
 maingame = False
@@ -54,24 +59,28 @@ waiting_on_start_button = True
 end_animation_started = False
 end_counter = 0
 
-
 cooldown = 6
 Vignette = True
 BigMap = False
 Recipe = False
 RedPoint = False
 
+#Main-While-Loop, updates the Game with 60 fps
 running = True
 while running:
     
+    #closing window 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
+    #getting pressed keys
     keys = pygame.key.get_pressed()
 
-    screen.fill((255, 255, 255))
+    #filling background color
+    screen.fill((0,0,0))
 
+    #Logic for Startanimaion
     if start_startanimation:
         screen.fill((0,0,0))
         start_generation = False
@@ -106,7 +115,6 @@ while running:
             start_introduction_animation = True
             animationGroup.remove(StartAnimation)
             
-
         if start_animation_counter == 280:
             StartText.Animation.stop_animation(3)
             StartText.Animation.start_animation("Explanation")
@@ -114,7 +122,7 @@ while running:
 
 
 
-
+    #Map Generation 
     if start_generation:
         sounds.channel_start_animation.stop()
         Map = generation.generateLandscape(floor_group, entities_group, trigger)
@@ -137,6 +145,8 @@ while running:
         sounds.play_background_music()
         start_generation = False
 
+
+    #Maingame-Loop, is on through-out the game
     if maingame:
         if trigger is not None:
             print(trigger.x, trigger.y )
@@ -145,6 +155,7 @@ while running:
         floor_group.update(-Player.dx, -Player.dy, keys)
         floor_group.draw(screen)
 
+        #calling functions to insert Animations to the Main Loop
         addable = events.addingAnimation()
         if addable is not None:
             animationGroup.add(addable)
@@ -159,12 +170,14 @@ while running:
             if hasattr(anim, "Animation") and anim.Animation.active == False:
                 anim.kill()
 
+        #Drop-Items
         if keys[pygame.K_q]:
             cooldown -= 1
             if cooldown <= 0 and len(generation.itemField_group) > 0:
                 entities_group.add(generation.dropItemFromInventory())
                 cooldown = 6
         
+        #creates Vigniette
         if Vignette == True:
             if generation.GetNumberOfItems("Torch") == 0:
                 sounds.play_fackelsound()
@@ -174,15 +187,19 @@ while running:
                 BigMap = False
                 Recipe = False 
         
+        #create Map
         if BigMap == False:
             if generation.GetNumberOfItems("Map") == 0:
                 overlayGroup_2.add(inventory.InventorySlot(0, settings.SCREEN_HEIGHT - 180.9, pygame.Rect(0, 0, 794, 603), (238.2, 180.9), r"Engine\Entity_Classes\Sprites_Entity_Classes\MapBig.png"))
                 BigMap = True
 
+        #create Recipie Book
         if Recipe == False:
             if generation.GetNumberOfItems("RecipeBook") == 0:
                 overlayGroup_2.add(inventory.InventorySlot(18, 0, pygame.Rect(0, 0, 64, 64), (192, 192), r"Engine\Entity_Classes\Sprites_Entity_Classes\Recipe.png"))
                 Recipe = True
+
+        #Updating Sprite Groups
 
         entities_group.update(-Player.dx, -Player.dy, keys)
         entities_group.draw(screen)
@@ -207,12 +224,13 @@ while running:
 
         overlayGroup = generation.updateInventory()
 
+        #trigger for end Animation
         if trigger is not None:
             if trigger.colliderect(Player.rect):
                 game_finished = True
 
         
-
+    #Logig-End-Animation/Cutscene
     if game_finished:
         trigger = None
         sounds.stop_all_sounds()

@@ -19,14 +19,6 @@ class Collision:
     """
 
     def __init__(self, entities, movable_entities, playerGroup):
-        """
-        IInitialisiert die Kollisionsklasse mit den gegebenen Gruppen.
-        Parameter: entities (pygame.sprite.Group): Gruppe aller festen Objekte.
-        movable_entities (pygame.sprite.Group): Gruppe aller beweglichen Objekte.
-        playerGroup (pygame.sprite.Group): Gruppe aller Spieler-Objekte.
-        """
-
-    def __init__(self, entities, movable_entities, playerGroup):
         """Initialisiert die Kollisionsklasse mit den gegebenen Gruppen.
 
         Parameter:
