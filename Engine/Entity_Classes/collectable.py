@@ -49,7 +49,7 @@ class Collectable(entities.Entity):
                 print(f"[DEBUG] {player_obj} hat {self.name} eingesammelt! Inventar: {player_obj.item_dict}")
                 self.pick_up = animations.pick_up_animation(self.rect.centerx, self.rect.centery)
                 events.checkAnimations(self.pick_up)
-
+                
 
 
                 sounds.play_bubble_pop()

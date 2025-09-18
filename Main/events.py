@@ -48,27 +48,29 @@ class Collision:
 
 
     def move_out(self, other):
+        print(other.solid_collision_direction)
         """Bewegt ein Objekt aus einer Kollision heraus."""
+        move_amount = 16
         if other.solid_collision_direction == "up":
-            other.dy += 1
+            other.dy += move_amount
         elif other.solid_collision_direction == "down":
-            other.dy -= 1
+            other.dy -= move_amount
         elif other.solid_collision_direction == "right":
-            other.dx -= 1
+            other.dx -= move_amount
         elif other.solid_collision_direction == "left":
-            other.dx += 1        
+            other.dx += move_amount
         elif other.solid_collision_direction == "leftup":
-            other.dx -= 1
-            other.dy -= 1
+            other.dx -= move_amount
+            other.dy -= move_amount
         elif other.solid_collision_direction == "leftdown":
-            other.dx += 1
-            other.dy -= 1
+            other.dx += move_amount
+            other.dy -= move_amount
         elif other.solid_collision_direction == "rightup":
-            other.dx -= 1
-            other.dy += 1
+            other.dx -= move_amount
+            other.dy += move_amount
         elif other.solid_collision_direction == "rightdown":
-            other.dx += 1
-            other.dy += 1
+            other.dx += move_amount
+            other.dy += move_amount
 
 
     def update(self):
