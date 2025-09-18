@@ -3,7 +3,7 @@ from Engine.entities import EntityMovable
 import Main.sounds as sounds
 import Engine.Entity_Classes.interactable as interactable
 import Engine.Entity_Classes.npc as npc
-import Main.generation as generation
+import Main.inventoryManager as inventory
 import Engine.Entity_Classes.animations as animations
 import Main.events as events
 
@@ -67,10 +67,10 @@ class Player(EntityMovable):
             #sounds.stop_walking_main_character()
 
     def attack(self):
-        if self.ready_to_attack and sum(1 for elem in generation.inventoryCollectables if elem.function == "Item") < 7:
+        if self.ready_to_attack and sum(1 for elem in inventory.inventoryCollectables if elem.function == "Item") < 7:
             for entity in self.attaking_objects:
                 if isinstance(entity, interactable.Mushroom):
-                    if generation.GetNumberOfItems("Axe") == 0:
+                    if inventory.GetNumberOfItems("Axe") == 0:
                         self.kill_go = True
                     if self.kill_go:
                         entity.die(has_axe=True)
@@ -79,7 +79,7 @@ class Player(EntityMovable):
                         self.kill_go = False
                         break  # Nach dem ersten Kill abbrechen
                 elif isinstance(entity, npc.Turtle):
-                    if generation.GetNumberOfItems("Torch") == 0:
+                    if inventory.GetNumberOfItems("Torch") == 0:
                         self.kill_go = True
                     if self.kill_go:
                         entity.die()

@@ -2,7 +2,7 @@ import Engine.entities as entities
 import pygame
 import Main.settings as settings
 import Engine.Entity_Classes.collectable as collectable
-import Main.generation as generation
+import Main.inventoryManager as inventory
 import Main.sounds as sounds
 class Wall(entities.Entity):
     def __init__(self, pos_x, pos_y, rect = pygame.Rect(0,0,64,64), rect_attach = "topleft", scale = (64, 64), source = r"Engine\Entity_Classes\Sprites_Entity_Classes\Wall.png", solid = True, is_spritesheet = True, fix = False, base_sprite=0, ani_frames_count=8, ani_animations={}, flip = (False, False)):
@@ -49,10 +49,10 @@ class Laser_h(entities.Entity):
                             if (entity.name, entity) not in self.near_items:
                                 self.near_items.append((entity.name, entity))
 
-            amount_stick = generation.GetNumberOfItems("Stick") + 1
-            amount_rock = generation.GetNumberOfItems("Rock") + 1
-            amount_mushroom = generation.GetNumberOfItems("Mushroom_juice") + 1
-            amount_mirror = generation.GetNumberOfItems("Mirror") + 1
+            amount_stick = inventory.GetNumberOfItems("Stick") + 1
+            amount_rock = inventory.GetNumberOfItems("Rock") + 1
+            amount_mushroom = inventory.GetNumberOfItems("Mushroom_juice") + 1
+            amount_mirror = inventory.GetNumberOfItems("Mirror") + 1
 
 
             price_stick = 0
@@ -73,13 +73,13 @@ class Laser_h(entities.Entity):
 
             if price_stick <= amount_stick and price_rock <= amount_rock and price_mushroom <= amount_mushroom and price_mirror <= amount_mirror:
                 for i in range(price_stick):
-                    generation.removeItemFromInventory("Stick")
+                    inventory.removeItemFromInventory("Stick")
                 for i in range(price_rock):
-                    generation.removeItemFromInventory("Rock")
+                    inventory.removeItemFromInventory("Rock")
                 for i in range(price_mushroom):
-                    generation.removeItemFromInventory("Mushroom_juice")
+                    inventory.removeItemFromInventory("Mushroom_juice")
                 for i in range(price_mirror):
-                    generation.removeItemFromInventory("Mirror")
+                    inventory.removeItemFromInventory("Mirror")
                 self.dying = True
             
                 for entity in entities:
@@ -132,10 +132,10 @@ class Laser_v(entities.Entity):
                             if (entity.name, entity) not in self.near_items:
                                 self.near_items.append((entity.name, entity))
 
-            amount_stick = generation.GetNumberOfItems("Stick") + 1
-            amount_rock = generation.GetNumberOfItems("Rock") + 1
-            amount_mushroom = generation.GetNumberOfItems("Mushroom_juice") + 1
-            amount_mirror = generation.GetNumberOfItems("Mirror") + 1
+            amount_stick = inventory.GetNumberOfItems("Stick") + 1
+            amount_rock = inventory.GetNumberOfItems("Rock") + 1
+            amount_mushroom = inventory.GetNumberOfItems("Mushroom_juice") + 1
+            amount_mirror = inventory.GetNumberOfItems("Mirror") + 1
 
 
             price_stick = 0
@@ -156,13 +156,13 @@ class Laser_v(entities.Entity):
 
             if price_stick <= amount_stick and price_rock <= amount_rock and price_mushroom <= amount_mushroom and price_mirror <= amount_mirror:
                 for i in range(price_stick):
-                    generation.removeItemFromInventory("Stick")
+                    inventory.removeItemFromInventory("Stick")
                 for i in range(price_rock):
-                    generation.removeItemFromInventory("Rock")
+                    inventory.removeItemFromInventory("Rock")
                 for i in range(price_mushroom):
-                    generation.removeItemFromInventory("Mushroom_juice")
+                    inventory.removeItemFromInventory("Mushroom_juice")
                 for i in range(price_mirror):
-                    generation.removeItemFromInventory("Mirror")
+                    inventory.removeItemFromInventory("Mirror")
                 self.dying = True
             
                 for entity in entities:

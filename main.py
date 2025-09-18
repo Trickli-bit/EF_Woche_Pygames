@@ -4,6 +4,7 @@ import Engine.entities as entities
 import Main.events as events
 import Player.player as player
 import Main.generation as generation
+import Main.inventoryManager as inventory
 import Engine.Entity_Classes.floor as Floor
 import Engine.Entity_Classes.interactable as interactable
 import Engine.Entity_Classes.Interface as interface
@@ -156,12 +157,12 @@ while running:
 
         if keys[pygame.K_q]:
             cooldown -= 1
-            if cooldown <= 0 and len(generation.itemField_group) > 0:
-                entities_group.add(generation.dropItemFromInventory())
+            if cooldown <= 0 and len(inventory.itemField_group) > 0:
+                entities_group.add(inventory.dropItemFromInventory())
                 cooldown = 6
         
         if Vignette == True:
-            if generation.GetNumberOfItems("Torch") == 0:
+            if inventory.GetNumberOfItems("Torch") == 0:
                 sounds.play_fackelsound()
                 overlayGroup_2.remove(vigniette)
                 overlayGroup_2.add(vignietteSmall)
@@ -170,12 +171,12 @@ while running:
                 Recipe = False 
         
         if BigMap == False:
-            if generation.GetNumberOfItems("Map") == 0:
+            if inventory.GetNumberOfItems("Map") == 0:
                 overlayGroup_2.add(interface.InventorySlot(0, settings.SCREEN_HEIGHT - 180.9, pygame.Rect(0, 0, 794, 603), (238.2, 180.9), r"Engine\Entity_Classes\Sprites_Entity_Classes\MapBig.png"))
                 BigMap = True
 
         if Recipe == False:
-            if generation.GetNumberOfItems("RecipeBook") == 0:
+            if inventory.GetNumberOfItems("RecipeBook") == 0:
                 overlayGroup_2.add(interface.InventorySlot(18, 0, pygame.Rect(0, 0, 64, 64), (192, 192), r"Engine\Entity_Classes\Sprites_Entity_Classes\Recipe.png"))
                 Recipe = True
 
@@ -200,7 +201,7 @@ while running:
         overlayGroup.update(-Player.dx, -Player.dy, keys,)
         overlayGroup.draw(screen)
 
-        overlayGroup = generation.updateInventory()
+        overlayGroup = inventory.updateInventory()
 
         if trigger is not None:
             if trigger.colliderect(Player.rect):

@@ -108,10 +108,10 @@ def createInventorySlotsHorizontal(slots_group, slotSize, slotCount, edgeWidth, 
     """
     for i in range(slotCount):
         currentSlotSize = (i)*(slotSize)
-        slot = interface.InventorySlot((settings.SCREEN_WIDTH//2)-((slotCount/2)*slotSize) + currentSlotSize, (settings.SCREEN_WIDTH//2) - yPos, pygame.Rect(0, 0, 64, 64), (slotSize, slotSize), r"Sprites_Main/InventorySlot.png")
+        slot = interface.Interface((settings.SCREEN_WIDTH//2)-((slotCount/2)*slotSize) + currentSlotSize, (settings.SCREEN_WIDTH//2) - yPos, pygame.Rect(0, 0, 64, 64), (slotSize, slotSize), r"Sprites_Main/InventorySlot.png")
         slots_group.add(slot)
     if fullInventory():
-        redPoint = interface.InventorySlot((settings.SCREEN_WIDTH//2)+(7/2)*64, (settings.SCREEN_WIDTH//2)-440, pygame.Rect(0, 0, 64, 64), (40, 40), r"Sprites_Main\QRedSign.png")
+        redPoint = interface.Interface((settings.SCREEN_WIDTH//2)+(7/2)*64, (settings.SCREEN_WIDTH//2)-440, pygame.Rect(0, 0, 64, 64), (40, 40), r"Sprites_Main\QRedSign.png")
         slots_group.add(redPoint)
     return pygame.sprite.Group(slots_group)
 
@@ -123,7 +123,7 @@ def createInventoryItemFieldsHorizontal(itemField_group, slotSize, slotCount, ed
     iconSize = slotSize - 2*edgeWidth
     for i in range(slotCount):
         currentIconSize = i*(slotSize)
-        itemField = interface.InventorySlot((settings.SCREEN_WIDTH//2)-((slotCount/2)*slotSize) + currentIconSize + edgeWidth, (settings.SCREEN_WIDTH//2) + edgeWidth - yPos, pygame.Rect(0, 0, 64, 64), (iconSize, iconSize), r"Sprites_Main/EmptyIcon.png")
+        itemField = interface.Interface((settings.SCREEN_WIDTH//2)-((slotCount/2)*slotSize) + currentIconSize + edgeWidth, (settings.SCREEN_WIDTH//2) + edgeWidth - yPos, pygame.Rect(0, 0, 64, 64), (iconSize, iconSize), r"Sprites_Main/EmptyIcon.png")
         itemField_group.add(itemField)
     return pygame.sprite.Group(itemField_group)
 
@@ -145,7 +145,7 @@ def createInventorySlotsVertical(slots_group, slotSize, slotCount, edgeWidth, xP
     """ 
     for i in range(slotCount):
         currentSlotSize = (i)*(slotSize)
-        slot = interface.InventorySlot((settings.SCREEN_HEIGHT//2)/2 + xPos, (settings.SCREEN_HEIGHT//2)-((slotCount/2)*slotSize) + currentSlotSize, pygame.Rect(0, 0, 64, 64), (slotSize, slotSize), r"Sprites_Main/InventorySlot.png")
+        slot = interface.Interface((settings.SCREEN_HEIGHT//2)/2 + xPos, (settings.SCREEN_HEIGHT//2)-((slotCount/2)*slotSize) + currentSlotSize, pygame.Rect(0, 0, 64, 64), (slotSize, slotSize), r"Sprites_Main/InventorySlot.png")
         slots_group.add(slot)
     return pygame.sprite.Group(slots_group)
 
@@ -156,6 +156,6 @@ def createInventoryToolFieldsVertical(toolField_group, slotSize, slotCount, edge
     iconSize = slotSize - 2*edgeWidth
     for i in range(slotCount):
         currentIconSize = i*(slotSize)
-        toolField = interface.InventorySlot((settings.SCREEN_HEIGHT//2)/2 + edgeWidth  + xPos, (settings.SCREEN_HEIGHT//2)-((slotCount/2)*slotSize) + currentIconSize + edgeWidth, pygame.Rect(0, 0, 64, 64), (iconSize, iconSize), r"Sprites_Main/EmptyIcon.png")
+        toolField = interface.Interface((settings.SCREEN_HEIGHT//2)/2 + edgeWidth  + xPos, (settings.SCREEN_HEIGHT//2)-((slotCount/2)*slotSize) + currentIconSize + edgeWidth, pygame.Rect(0, 0, 64, 64), (iconSize, iconSize), r"Sprites_Main/EmptyIcon.png")
         toolField_group.add(toolField)
     return pygame.sprite.Group(toolField_group)

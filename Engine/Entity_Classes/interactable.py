@@ -1,6 +1,6 @@
 import pygame
 import Engine.entities as entities
-import Main.generation as generation
+import Main.inventoryManager as inventory
 import Engine.Entity_Classes.collectable as collectable
 import Main.sounds as sounds
 
@@ -22,8 +22,8 @@ class interactables(entities.Entity):
         if self.input4 == "air":
             if self.input3 == "air":
                 if self.input2 == "air":
-                    if generation.GetNumberOfItems(self.input1) >= 0:
-                        generation.removeItemFromInventory(self.input1)
+                    if inventory.GetNumberOfItems(self.input1) >= 0:
+                        inventory.removeItemFromInventory(self.input1)
                         if self.output == "Axe" or self.output == "Mirror" or self.output == "Shell":
                             sounds.play_crafting_axe()
                         else:
@@ -32,12 +32,12 @@ class interactables(entities.Entity):
                         currentCollectable = getattr(collectable, self.output)
                         currentCraftItem = currentCollectable(5000, 5000)
                         if currentCraftItem.craftable == True:
-                            generation.addItemToInventory(currentCollectable(5000, 5000))
+                            inventory.addItemToInventory(currentCollectable(5000, 5000))
                             self.has_tool = True
                 else:
-                    if generation.GetNumberOfItems(self.input1) >= 0 and generation.GetNumberOfItems(self.input2) >= 0:
-                        generation.removeItemFromInventory(self.input1)
-                        generation.removeItemFromInventory(self.input2)
+                    if inventory.GetNumberOfItems(self.input1) >= 0 and inventory.GetNumberOfItems(self.input2) >= 0:
+                        inventory.removeItemFromInventory(self.input1)
+                        inventory.removeItemFromInventory(self.input2)
                         if self.output == "Axe":
                             sounds.play_crafting_axe()
                         else:
@@ -46,13 +46,13 @@ class interactables(entities.Entity):
                         currentCollectable = getattr(collectable, self.output)
                         currentCraftItem = currentCollectable(5000, 5000)
                         if currentCraftItem.craftable == True:
-                            generation.addItemToInventory(currentCollectable(5000, 5000))
+                            inventory.addItemToInventory(currentCollectable(5000, 5000))
                             self.has_tool = True
             else:
-                if generation.GetNumberOfItems(self.input1) >= 0 and generation.GetNumberOfItems(self.input2) >= 0 and generation.GetNumberOfItems(self.input3) >= 0:
-                    generation.removeItemFromInventory(self.input1)
-                    generation.removeItemFromInventory(self.input2)
-                    generation.removeItemFromInventory(self.input3)
+                if inventory.GetNumberOfItems(self.input1) >= 0 and inventory.GetNumberOfItems(self.input2) >= 0 and inventory.GetNumberOfItems(self.input3) >= 0:
+                    inventory.removeItemFromInventory(self.input1)
+                    inventory.removeItemFromInventory(self.input2)
+                    inventory.removeItemFromInventory(self.input3)
                     if self.output == "Axe":
                         sounds.play_crafting_axe()
                     else:
@@ -61,18 +61,18 @@ class interactables(entities.Entity):
                     currentCollectable = getattr(collectable, self.output)
                     currentCraftItem = currentCollectable(5000, 5000)
                     if currentCraftItem.craftable == True:
-                        generation.addItemToInventory(currentCollectable(5000, 5000))
+                        inventory.addItemToInventory(currentCollectable(5000, 5000))
                         self.has_tool = True
-                    generation.addItemToInventory(collectable.Axe(5000, 5000))
+                    inventory.addItemToInventory(collectable.Axe(5000, 5000))
                     
                     self.has_tool = True
                         
         else:
-            if generation.GetNumberOfItems(self.input1) >= 0 and generation.GetNumberOfItems(self.input2) >= 0 and generation.GetNumberOfItems(self.input3) >= 0 and generation.GetNumberOfItems(self.input4) >= 0:
-                generation.removeItemFromInventory(self.input1)
-                generation.removeItemFromInventory(self.input2)
-                generation.removeItemFromInventory(self.input3)
-                generation.removeItemFromInventory(self.input4)
+            if inventory.GetNumberOfItems(self.input1) >= 0 and inventory.GetNumberOfItems(self.input2) >= 0 and inventory.GetNumberOfItems(self.input3) >= 0 and inventory.GetNumberOfItems(self.input4) >= 0:
+                inventory.removeItemFromInventory(self.input1)
+                inventory.removeItemFromInventory(self.input2)
+                inventory.removeItemFromInventory(self.input3)
+                inventory.removeItemFromInventory(self.input4)
                 if self.output == "Axe":
                     sounds.play_crafting_axe()
                 else:
@@ -81,7 +81,7 @@ class interactables(entities.Entity):
                 currentCollectable = getattr(collectable, self.output)
                 currentCraftItem = currentCollectable(5000, 5000)
                 if currentCraftItem.craftable == True:
-                    generation.addItemToInventory(currentCollectable(5000, 5000))
+                    inventory.addItemToInventory(currentCollectable(5000, 5000))
                     self.has_tool = True
 
     def update(self, dx=0, dy=0, *args):
@@ -110,4 +110,4 @@ class Mushroom(entities.Entity):
         self.kill()
         sounds.play_breaking_mushroom()
         if has_axe:
-            generation.addItemToInventory(collectable.Mushroom_juice(self.rect.x, self.rect.y))
+            inventory.addItemToInventory(collectable.Mushroom_juice(self.rect.x, self.rect.y))

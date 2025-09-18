@@ -193,11 +193,6 @@ class generateLandscape():
 
         return new_map
 
-
-
-
-
-
     def generateGrass(self):
             """
             Generiert Gras-Sprites basierend auf der aktualisierten Karte.

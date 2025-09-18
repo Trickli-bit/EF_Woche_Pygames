@@ -1,8 +1,5 @@
 import pygame
 import Engine.entities as entities
-import Main.generation as generation
-import Engine.Entity_Classes.collectable as collectable
-import Main.settings as settings
 
 class Interface(entities.Entity):
     """Klasse, die ein Inventory Slot als Entity definiert. \tpos_x: float für X-Position, \tpos_x: float für Y-Position, \trect: pygame.Rect für Xpos/Ypos/Höhe/Breite, \t scale: Tupel für Breite/Höhe, \tsource: String für Dateipfad"""

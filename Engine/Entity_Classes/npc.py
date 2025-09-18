@@ -2,7 +2,7 @@
 import Engine.entities as entites
 import Main.settings as settings
 import Engine.Entity_Classes.collectable as collectable
-import Main.generation as generation
+import Main.inventoryManager as inventory
 import Main.sounds as sounds
 
 class Turtle(entites.EntityMovable):
@@ -72,7 +72,7 @@ class Turtle(entites.EntityMovable):
                 self.Animation.start_animation("burning_s")
             if self.dead_counter == 120:
                 self.kill()
-                generation.addItemToInventory(collectable.Shell(self.rect.x, self.rect.y))
+                inventory.addItemToInventory(collectable.Shell(self.rect.x, self.rect.y))
         else:
             sounds.play_dying_turtle()
             self.sound_trigger = True

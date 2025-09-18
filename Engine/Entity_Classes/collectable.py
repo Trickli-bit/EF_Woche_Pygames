@@ -1,5 +1,5 @@
 import Engine.entities as entities
-import Main.generation as generation
+import Main.inventoryManager as inventory
 import pygame
 import Player.player as player
 import Engine.Entity_Classes.animations as animations 
@@ -33,7 +33,7 @@ class Collectable(entities.Entity):
         Eine Funktion die prüft, ob der Spieler das Collectable berührt und fügt es dem Inventar hinzu.
         Parameter: player_obj - das Spielerobjekt, mit dem die Kollision überprüft wird
         """
-        if self.should_pick_up and sum(1 for elem in generation.inventoryCollectables if elem.function == "Item") < 7:
+        if self.should_pick_up and sum(1 for elem in inventory.inventoryCollectables if elem.function == "Item") < 7:
             """
             Prüft, ob der Spieler das Collectable berührt.
             Nur wenn die Rechtecke überlappen und das Objekt noch nicht gesammelt wurde.
@@ -79,7 +79,7 @@ class Collectable(entities.Entity):
                 Entfernt das Objekt aus der aktuellen Gruppe und entfernt das dazugehörige Sprite.
                 """
                 self.kill()
-                return generation.addItemToInventory(self)
+                return inventory.addItemToInventory(self)
 
     """ Fügt das Collectable einer angegebenen Gruppe hinzu.
     Parameter: gruppe - die Gruppe, der das Collectable hinzugefügt werden soll
