@@ -1,4 +1,3 @@
-
 import Engine.entities as entites
 import Main.settings as settings
 import Engine.Entity_Classes.collectable as collectable
@@ -14,26 +13,23 @@ class Turtle(entites.EntityMovable):
                  ani_animations={"walking_a": [0, 1, 5, True], "walking_d": [3, 4, 5, True],
                                  "walking_s": [6, 7, 5, True], "walking_w": [9, 10, 5, True],
                                  "burning_s": [12, 13, 5, False], "burning_d": [14, 15, 5, False],
-                                 "burning_a": [16,17, 5, False], "burning_w": [18, 19, 5, False]},  width_blocks = 0, height_blocks = 0):
+                                 "burning_a": [16, 17, 5, False], "burning_w": [18, 19, 5, False]},
+                 width_blocks=0, height_blocks=0):
+        """Erzeugt eine bewegliche Turtle mit Animationen und Bewegungsmustern."""
         super().__init__(pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, fix, base_sprite, ani_frames_count, ani_animations)
         
-        # Rechteck-Seiten in Pixeln (Vielfache von 64)
         self.width = width_blocks * 64
         self.height = height_blocks * 64
-
-        # Startposition merken
         self.start_x = pos_x
         self.start_y = pos_y
-
-        # Bewegungsrichtung
         self.direction = "right"
         self.speed = 2
         self.dead = False
         self.dead_counter = 0
-
         self.sound_trigger = False
 
     def movement(self):
+        """Berechnet die Bewegungsrichtung und Rückgabe von dx, dy."""
         dx, dy = 0, 0
 
         if self.direction == "right":
@@ -59,6 +55,7 @@ class Turtle(entites.EntityMovable):
         return dx, dy
     
     def die(self):
+        """Startet Todesanimation und Sound, verwandelt Turtle in ein Item."""
         if self.sound_trigger:
             self.dead_counter += 1
             self.dead = True
@@ -76,22 +73,18 @@ class Turtle(entites.EntityMovable):
         else:
             sounds.play_dying_turtle()
             self.sound_trigger = True
+
     def update(self, dx=0, dy=0, *args):
+        """Aktualisiert Position, Bewegung und Animation der Turtle."""
         if not self.dead:
             dtx, dty = self.movement()
         else:
             dtx, dty = 0, 0
             self.direction == ""
             self.die()
-        #print(dx,dy, self.start_x, self.start_y)
+
         self.start_x += dx
         self.start_y += dy
         self.dx = dtx
         self.dy = dty
         super().update(dx + dtx, dy + dty, *args)
-
-        
-
-
-        
-        
