@@ -6,11 +6,13 @@ import Player.player as player
 import Main.generation as generation
 import Engine.Entity_Classes.floor as Floor
 import Engine.Entity_Classes.interactable as interactable
+import Engine.Entity_Classes.inventorySlot as inventory
 import sys
 import time
 import Engine.Entity_Classes.collectable as collectable
 import Main.sounds as sounds
 import Engine.Entity_Classes.npc as npc
+import Engine.Entity_Classes.animations as animations
 
 
 pygame.init()
@@ -29,21 +31,23 @@ animationGroup = pygame.sprite.Group()
 overlayGroup_2= pygame.sprite.Group()
 
 vigniette = entities.Entity(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), "center", (settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), r"vigniette.png",False, False, False, 0, 0, {})
+vignietteSmall = entities.Entity(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), "center", (settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), r"Vigniette2.png",False, False, False, 0, 0, {})
 
-Player = player.Player(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 64, 64), "midbottom", (96, 96), r"Player\player.png",True, True, True, 13, 21, {"walking_a": [0, 3, 5, True], "walking_d": [5, 8, 5, True], "walking_s": [10, 15, 5, True], "walking_w": [17, 19, 5, True]})
+Player = player.Player(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 64, 64), "midbottom", (80, 80), r"Player\player.png",True, True, True, 13, 21, {"walking_a": [0, 3, 5, True], "walking_d": [5, 8, 5, True], "walking_s": [10, 15, 5, True], "walking_w": [17, 19, 5, True]})
+Axecrafter = interactable.interactables(2200,1600, pygame.Rect(0, 0, 64, 64), "topleft", (128,128), r"Engine\Entity_Classes\Sprites_Entity_Classes\pixilart-sprite (6).png", True, True, "Axe", "Stick", "Rock", "air", "air", False, 0, 8, {"Craft_Axe" : [0, 7, 10, False]}, "Craft_Axe")
 StartAnimation = entities.Entity(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 450, 256), "center", (900, 512), r"StartAnimation.png", False, True, False, 0, 14, {"Start": [1, 13, 10, False]} )
 EndAnimation = entities.Entity(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 256, 144), "center", (1024, 576), r"EndAnimation.png", False, True, False, 0, 65, {"End": [0, 64, 10, False]} )
 PoI = entities.Entity(settings.SCREEN_HEIGHT//2 + 50, settings.SCREEN_WIDTH//2 + 50, pygame.Rect(0,0, 64, 64), "center", (64, 64), r"Main\PoI.png", False, True, False, 0, 3, {"PoI": [0, 2, 10, True]})
 start_animation_counter = 0
 Turtle = npc.Turtle(2400, 1800, width_blocks=4, height_blocks=4)
+RecipeBook = collectable.RecipeBook(Axecrafter.pos_x+32, Axecrafter.pos_y+32)
+
 
 overlayGroup_2.add(vigniette, PoI)
 
 playerGroup.add(Player)
                 
-entities_group.add()
-
-
+entities_group.add(Axecrafter, RecipeBook)
 
 animationGroup.add(StartAnimation)
 
@@ -59,6 +63,9 @@ game_finished = False
 end_animation_started = False
 
 cooldown = 6
+Vignette = True
+BigMap = False
+Recipe = False
 
 running = True
 while running:
@@ -102,7 +109,6 @@ while running:
 
     if maingame:
 
-        print("main")
 
         floor_group.update(-Player.dx, -Player.dy, keys)
         floor_group.draw(screen)
@@ -110,7 +116,10 @@ while running:
         addable = events.addingAnimation()
         if addable is not None:
             animationGroup.add(addable)
-            addable.Animation.start_animation("pick_up")
+            if isinstance(addable, animations.pick_up_animation):
+                addable.Animation.start_animation("pick_up")
+            if isinstance(addable, animations.interact_animation):
+                addable.Animation.start_animation("interaction")
             events.animation_to_add = None
             addable = None
 
@@ -123,6 +132,24 @@ while running:
             if cooldown <= 0 and len(generation.itemField_group) > 0:
                 entities_group.add(generation.dropItemFromInventory())
                 cooldown = 6
+        
+        if Vignette == True:
+            if generation.GetNumberOfItems("Torch") == 0:
+                overlayGroup_2.remove(vigniette)
+                overlayGroup_2.add(vignietteSmall)
+                Vignette = False
+                BigMap = False
+                Recipe = False 
+        
+        if BigMap == False:
+            if generation.GetNumberOfItems("Map") == 0:
+                overlayGroup_2.add(inventory.InventorySlot(0, settings.SCREEN_HEIGHT - 180.9, pygame.Rect(0, 0, 794, 603), (238.2, 180.9), r"Engine\Entity_Classes\Sprites_Entity_Classes\MapBig.png"))
+                BigMap = True
+
+        if Recipe == False:
+            if generation.GetNumberOfItems("RecipeBook") == 0:
+                overlayGroup_2.add(inventory.InventorySlot(18, 0, pygame.Rect(0, 0, 64, 64), (192, 192), r"Engine\Entity_Classes\Sprites_Entity_Classes\Recipe.png"))
+                Recipe = True
 
         entities_group.update(-Player.dx, -Player.dy, keys)
         entities_group.draw(screen)

@@ -23,10 +23,11 @@ class Collectable(entities.Entity):
         self.pick_up = None
         self.source = source
         self.function = "Item"
+        self.craftable = False
         self.should_pick_up = True
 
     def collide_with_player(self, player_obj):
-        if self.should_pick_up:
+        if self.should_pick_up and sum(1 for elem in generation.inventoryCollectables if elem.function == "Item") < 7:
             """
             Prüft, ob der Spieler das Collectable berührt.
             Nur wenn die Rechtecke überlappen und das Objekt noch nicht gesammelt wurde.
@@ -73,6 +74,7 @@ class Stick(Collectable):
         )
         self.name = "Stick"
         self.function = "Item"
+        self.craftable = False
         self.value = 1
 
 class Rock(Collectable):
@@ -88,6 +90,7 @@ class Rock(Collectable):
         )
         self.name = "Rock"
         self.function = "Item"
+        self.craftable = False
         self.value = 1
 
 class Mushroom_juice(Collectable):
@@ -103,7 +106,24 @@ class Mushroom_juice(Collectable):
         )
         self.name = "Mushroom_juice"
         self.function = "Item"
+        self.craftable = False
         self.value = 1   
+
+class Shell(Collectable):
+    def __init__(self, pos_x, pos_y, rect=pygame.Rect(0,0,64,64), rect_attach="topleft",
+                 scale=(64,64), source=r"Engine\Entity_Classes\Sprites_Entity_Classes\Shell.png",
+                 solid=False, is_spritesheet=False, fix=False,
+                 base_sprite=0, ani_frames_count=0, ani_animations={}):
+        super().__init__(
+            pos_x=pos_x, pos_y=pos_y, rect=rect, rect_attach=rect_attach,
+            scale=scale, source=source, solid=solid, is_spritesheet=is_spritesheet,
+            fix=fix, base_sprite=base_sprite, ani_frames_count=ani_frames_count,
+            ani_animations=ani_animations
+        )
+        self.name = "Shell"
+        self.function = "Item"
+        self.craftable = False
+        self.value = 1
 
 class Axe(Collectable):
     def __init__(self, pos_x, pos_y, rect=pygame.Rect(0,0,64,64), rect_attach="topleft",
@@ -118,4 +138,69 @@ class Axe(Collectable):
         )
         self.name = "Axe"
         self.function = "Tool"
+        self.craftable = True
+        self.value = 1
+
+class Map(Collectable):
+    def __init__(self, pos_x, pos_y, rect=pygame.Rect(0,0,64,64), rect_attach="topleft",
+                 scale=(64,64), source=r"Engine\Entity_Classes\Sprites_Entity_Classes\Map.png",
+                 solid=False, is_spritesheet=False, fix=False,
+                 base_sprite=0, ani_frames_count=0, ani_animations={}):
+        super().__init__(
+            pos_x=pos_x, pos_y=pos_y, rect=rect, rect_attach=rect_attach,
+            scale=scale, source=source, solid=solid, is_spritesheet=is_spritesheet,
+            fix=fix, base_sprite=base_sprite, ani_frames_count=ani_frames_count,
+            ani_animations=ani_animations
+        )
+        self.name = "Map"
+        self.function = "Tool"
+        self.craftable = True
+        self.value = 1
+
+class Mirror(Collectable):
+    def __init__(self, pos_x, pos_y, rect=pygame.Rect(0,0,64,64), rect_attach="topleft",
+                 scale=(64,64), source=r"Engine\Entity_Classes\Sprites_Entity_Classes\Mirror.png",
+                 solid=False, is_spritesheet=False, fix=False,
+                 base_sprite=0, ani_frames_count=0, ani_animations={}):
+        super().__init__(
+            pos_x=pos_x, pos_y=pos_y, rect=rect, rect_attach=rect_attach,
+            scale=scale, source=source, solid=solid, is_spritesheet=is_spritesheet,
+            fix=fix, base_sprite=base_sprite, ani_frames_count=ani_frames_count,
+            ani_animations=ani_animations
+        )
+        self.name = "Mirror"
+        self.function = "Item"
+        self.craftable = True
+        self.value = 1
+
+class Torch(Collectable):
+    def __init__(self, pos_x, pos_y, rect=pygame.Rect(0,0,64,64), rect_attach="topleft",
+                 scale=(64,64), source=r"Engine\Entity_Classes\Sprites_Entity_Classes\Torch.png",
+                 solid=False, is_spritesheet=False, fix=False,
+                 base_sprite=0, ani_frames_count=0, ani_animations={}):
+        super().__init__(
+            pos_x=pos_x, pos_y=pos_y, rect=rect, rect_attach=rect_attach,
+            scale=scale, source=source, solid=solid, is_spritesheet=is_spritesheet,
+            fix=fix, base_sprite=base_sprite, ani_frames_count=ani_frames_count,
+            ani_animations=ani_animations
+        )
+        self.name = "Torch"
+        self.function = "Tool"
+        self.craftable = True
+        self.value = 1
+
+class RecipeBook(Collectable):
+    def __init__(self, pos_x, pos_y, rect=pygame.Rect(0,0,64,64), rect_attach="topleft",
+                 scale=(64,64), source=r"Engine\Entity_Classes\Sprites_Entity_Classes\RecipeBook.png",
+                 solid=False, is_spritesheet=False, fix=False,
+                 base_sprite=0, ani_frames_count=0, ani_animations={}):
+        super().__init__(
+            pos_x=pos_x, pos_y=pos_y, rect=rect, rect_attach=rect_attach,
+            scale=scale, source=source, solid=solid, is_spritesheet=is_spritesheet,
+            fix=fix, base_sprite=base_sprite, ani_frames_count=ani_frames_count,
+            ani_animations=ani_animations
+        )
+        self.name = "RecipeBook"
+        self.function = "Tool"
+        self.craftable = False
         self.value = 1
