@@ -43,16 +43,16 @@ class Collision:
             other.dx -= 1
         elif other.solid_collision_direction == "left":
             other.dx += 1        
-        elif other.solid_collision_direction == "leftdown":
-            other.dx -= 1
-            other.dy -= 1
         elif other.solid_collision_direction == "leftup":
             other.dx -= 1
-            other.dy += 1
-        elif other.solid_collision_direction == "rightdown":
+            other.dy -= 1
+        elif other.solid_collision_direction == "leftdown":
             other.dx += 1
             other.dy -= 1
         elif other.solid_collision_direction == "rightup":
+            other.dx -= 1
+            other.dy += 1
+        elif other.solid_collision_direction == "rightdown":
             other.dx += 1
             other.dy += 1
 

@@ -208,22 +208,22 @@ class EntityMovable(Entity):
         elif self.dx > 0 and self.dy > 0:
             self.dx = 0
             self.dy = 0
-            self.solid_collision_direction = "leftdown"
+            self.solid_collision_direction = "leftup"
         # nach links unten
         elif self.dx < 0 and self.dy > 0:
             self.dx = 0
             self.dy = 0
-            self.solid_collision_direction = "leftup"
+            self.solid_collision_direction = "leftdown"
         # nach links oben
         elif self.dx > 0 and self.dy < 0:
             self.dx = 0
             self.dy = 0
-            self.solid_collision_direction = "rightdown"
+            self.solid_collision_direction = "rightup"
         # nach rechts unten
         elif self.dx < 0 and self.dy < 0:
             self.dx = 0
             self.dy = 0
-            self.solid_collision_direction = "rightup"
+            self.solid_collision_direction = "rightdown"
         # nach rechts oben
 
 
