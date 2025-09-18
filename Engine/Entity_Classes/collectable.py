@@ -43,11 +43,15 @@ class Collectable(entities.Entity):
             # Kollisionsprüfung mit Rechtecken
             if self.rect.colliderect(player_obj.rect):
                 self.collected = True
+                sounds.play_bubble_pop()
                 player_obj.item_dict[self.name] = player_obj.item_dict.get(self.name, 0) + self.value
                 self.pick_up = animations.pick_up_animation(self.rect.centerx, self.rect.centery)
                 events.checkAnimations(self.pick_up)
 
-                sounds.play_bubble_pop()
+
+
+                
+               
                 self.kill()  # Entfernt das Collectable aus allen Sprite-Gruppen
                 return generation.addItemToInventory(self)
         

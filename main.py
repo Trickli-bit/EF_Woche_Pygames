@@ -44,7 +44,7 @@ overlayGroup_2.add(vigniette, PoI)
 
 playerGroup.add(Player)
                 
-entities_group.add(Axecrafter, RecipeBook, Turtle)
+entities_group.add(Axecrafter, RecipeBook)
 
 animationGroup.add(StartAnimation)
 
@@ -162,9 +162,8 @@ while running:
 
         overlayGroup = generation.updateInventory()
 
-        if Player.rect.colliderect(Axecrafter.rect) and Axecrafter.has_tool == False:
-            sounds.play_crafting_axe()
-            Axecrafter.interact()
+        
+
 
     pygame.display.update()
     clock.tick(60)

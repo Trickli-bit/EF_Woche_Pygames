@@ -3,7 +3,7 @@ import pygame
 import Main.settings as settings
 import Engine.Entity_Classes.collectable as collectable
 import Main.generation as generation
-
+import Main.sounds as sounds
 class Wall(entities.Entity):
     def __init__(self, pos_x, pos_y, rect = pygame.Rect(0,0,64,64), rect_attach = "topleft", scale = (64, 64), source = r"Engine\Entity_Classes\Sprites_Entity_Classes\Wall.png", solid = True, is_spritesheet = True, fix = False, base_sprite=0, ani_frames_count=8, ani_animations={}, flip = (False, False)):
         super().__init__(pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, fix, base_sprite, ani_frames_count, ani_animations)
@@ -11,6 +11,12 @@ class Wall(entities.Entity):
         if flip is not (False, False):
             self.image = pygame.transform.flip(self.image, flip[0], flip[1])
 
+class Water(entities.Entity):
+    def __init__(self, pos_x, pos_y, rect = pygame.Rect(0, 0, 64, 64), rect_attach = "topleft", scale = (64, 64), source = r"Engine\Entity_Classes\Sprites_Entity_Classes\Water.png", solid = True, is_spritesheet = True, fix=False, base_sprite=0, ani_frames_count=8, ani_animations={}, flip = (False, False)):
+        super().__init__(pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, fix, base_sprite, ani_frames_count, ani_animations)
+
+        if flip is not (False, False):
+            self.image = pygame.transform.flip(self.image, flip[0], flip[1])
 class Laser_h(entities.Entity):
     def __init__(self, pos_x, pos_y, rect = pygame.Rect(0,0,64,64), rect_attach = "topleft", scale = (64, 64), source = r"Engine\Entity_Classes\Sprites_Entity_Classes\Laser_h.png", solid = True, is_spritesheet = True, fix = False, base_sprite=0, ani_frames_count=5, ani_animations={"turn_off_laser": [3, 6, 14, False], "standard": [0,1, 3, True]}):
         super().__init__(pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, fix, base_sprite, ani_frames_count, ani_animations)
@@ -20,11 +26,12 @@ class Laser_h(entities.Entity):
         self.dying = False
         self.dying_counter = 0
 
-    def die(self, entities):
+    def die(self, entities): #Laser wird deaktiviert
         # Mittelpunkt des Screens
         center_x = settings.SCREEN_WIDTH // 2
         center_y = settings.SCREEN_HEIGHT // 2
         max_distance = 1000  # 300 Blöcke in Pixeln
+
 
         # Variable für Ergebnis
 
@@ -79,6 +86,7 @@ class Laser_h(entities.Entity):
     def update(self, dx=0, dy=0, *args):
         super().update(dx, dy, *args)
         if self.dying:
+            sounds.laser_aus()
             self.dying_counter += 1
             self.Animation.start_animation("turn_off_laser")
             if self.dying_counter == 50:
@@ -151,6 +159,7 @@ class Laser_v(entities.Entity):
     def update(self, dx=0, dy=0, *args):
         super().update(dx, dy, *args)
         if self.dying:
+            sounds.laser_aus()
             self.dying_counter += 1
             self.Animation.start_animation("turn_off_laser")
             if self.dying_counter == 50:
