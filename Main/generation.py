@@ -372,10 +372,11 @@ class generateLandscape():
             item = collectable.Shell(pos_x, pos_y)
         return item
 
-        
-
-
 inventoryCollectables = {}
+
+def fullInventory():
+    """Funktion, die überprüft, ob das Inventar voll ist"""
+    return sum(elem.value for elem in inventoryCollectables if elem.function == "Item") >= 7
 
 def dropItemFromInventory():
     """
@@ -477,6 +478,9 @@ def createInventorySlotsHorizontal(slots_group, slotSize, slotCount, edgeWidth, 
         currentSlotSize = (i)*(slotSize)
         slot = inventory.InventorySlot((settings.SCREEN_WIDTH//2)-((slotCount/2)*slotSize) + currentSlotSize, (settings.SCREEN_WIDTH//2) - yPos, pygame.Rect(0, 0, 64, 64), (slotSize, slotSize), r"Sprites_Main/InventorySlot.png")
         slots_group.add(slot)
+    if fullInventory():
+        redPoint = inventory.InventorySlot((settings.SCREEN_WIDTH//2)+(7/2)*64, (settings.SCREEN_WIDTH//2)-440, pygame.Rect(0, 0, 64, 64), (40, 40), r"QRedSign.png")
+        slots_group.add(redPoint)
     return pygame.sprite.Group(slots_group)
 
 def createInventoryItemFieldsHorizontal(itemField_group, slotSize, slotCount, edgeWidth, yPos):
