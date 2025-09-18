@@ -6,7 +6,7 @@ import Player.player as player
 import Main.generation as generation
 import Engine.Entity_Classes.floor as Floor
 import Engine.Entity_Classes.interactable as interactable
-import Engine.Entity_Classes.inventorySlot as inventory
+import Engine.Entity_Classes.Interface as interface
 import sys
 import time
 import Engine.Entity_Classes.collectable as collectable
@@ -111,10 +111,6 @@ while running:
             StartText.Animation.stop_animation(3)
             StartText.Animation.start_animation("Explanation")
 
-
-
-
-
     if start_generation:
         sounds.channel_start_animation.stop()
         Map = generation.generateLandscape(floor_group, entities_group, trigger)
@@ -140,7 +136,6 @@ while running:
     if maingame:
         if trigger is not None:
             print(trigger.x, trigger.y )
-
 
         floor_group.update(-Player.dx, -Player.dy, keys)
         floor_group.draw(screen)
@@ -176,12 +171,12 @@ while running:
         
         if BigMap == False:
             if generation.GetNumberOfItems("Map") == 0:
-                overlayGroup_2.add(inventory.InventorySlot(0, settings.SCREEN_HEIGHT - 180.9, pygame.Rect(0, 0, 794, 603), (238.2, 180.9), r"Engine\Entity_Classes\Sprites_Entity_Classes\MapBig.png"))
+                overlayGroup_2.add(interface.InventorySlot(0, settings.SCREEN_HEIGHT - 180.9, pygame.Rect(0, 0, 794, 603), (238.2, 180.9), r"Engine\Entity_Classes\Sprites_Entity_Classes\MapBig.png"))
                 BigMap = True
 
         if Recipe == False:
             if generation.GetNumberOfItems("RecipeBook") == 0:
-                overlayGroup_2.add(inventory.InventorySlot(18, 0, pygame.Rect(0, 0, 64, 64), (192, 192), r"Engine\Entity_Classes\Sprites_Entity_Classes\Recipe.png"))
+                overlayGroup_2.add(interface.InventorySlot(18, 0, pygame.Rect(0, 0, 64, 64), (192, 192), r"Engine\Entity_Classes\Sprites_Entity_Classes\Recipe.png"))
                 Recipe = True
 
         entities_group.update(-Player.dx, -Player.dy, keys)
