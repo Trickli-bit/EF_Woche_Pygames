@@ -12,6 +12,7 @@ import time
 import Engine.Entity_Classes.collectable as collectable
 import Main.sounds as sounds
 import Engine.Entity_Classes.npc as npc
+import Engine.Entity_Classes.animations as animations
 
 
 pygame.init()
@@ -35,10 +36,12 @@ vignietteSmall = entities.Entity(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGH
 Player = player.Player(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 64, 64), "midbottom", (80, 80), r"Player\player.png",True, True, True, 13, 21, {"walking_a": [0, 3, 5, True], "walking_d": [5, 8, 5, True], "walking_s": [10, 15, 5, True], "walking_w": [17, 19, 5, True]})
 Axecrafter = interactable.interactables(2200,1600, pygame.Rect(0, 0, 64, 64), "topleft", (128,128), r"Engine\Entity_Classes\Sprites_Entity_Classes\pixilart-sprite (6).png", True, True, "Axe", "Stick", "Rock", "air", "air", False, 0, 8, {"Craft_Axe" : [0, 7, 10, False]}, "Craft_Axe")
 StartAnimation = entities.Entity(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 450, 256), "center", (900, 512), r"StartAnimation.png", False, True, False, 0, 14, {"Start": [1, 13, 10, False]} )
+EndAnimation = entities.Entity(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 256, 144), "center", (1024, 576), r"EndAnimation.png", False, True, False, 0, 65, {"End": [0, 64, 10, False]} )
 PoI = entities.Entity(settings.SCREEN_HEIGHT//2 + 50, settings.SCREEN_WIDTH//2 + 50, pygame.Rect(0,0, 64, 64), "center", (64, 64), r"Main\PoI.png", False, True, False, 0, 3, {"PoI": [0, 2, 10, True]})
 start_animation_counter = 0
 Turtle = npc.Turtle(2400, 1800, width_blocks=4, height_blocks=4)
 RecipeBook = collectable.RecipeBook(Axecrafter.pos_x+32, Axecrafter.pos_y+32)
+
 
 overlayGroup_2.add(vigniette, PoI)
 
@@ -56,6 +59,8 @@ addable = True
 maingame = False
 start_generation = False
 start_startanimation = True 
+game_finished = False
+end_animation_started = False
 
 cooldown = 6
 Vignette = True
@@ -111,7 +116,10 @@ while running:
         addable = events.addingAnimation()
         if addable is not None:
             animationGroup.add(addable)
-            addable.Animation.start_animation("pick_up")
+            if isinstance(addable, animations.pick_up_animation):
+                addable.Animation.start_animation("pick_up")
+            if isinstance(addable, animations.interact_animation):
+                addable.Animation.start_animation("interaction")
             events.animation_to_add = None
             addable = None
 
@@ -165,8 +173,57 @@ while running:
 
         
 
+    if game_finished:
+        print("finished")
+        animationGroup.add(EndAnimation)
+        game_finished = False
+        maingame = False
+        end_animation_started = True
+        EndAnimation.Animation.start_animation("End")
+    if end_animation_started:
+        print("ANIMATION")
+        screen.fill((0,0,0))
+        animationGroup.update()
+        animationGroup.draw(screen)
+        if EndAnimation.Animation.active == False:
+            end_animation_started = False
+            animationGroup.remove(EndAnimation)
+            generation.clear_all_groups(floor_group, entities_group, moving_entities_group, playerGroup, overlayGroup, overlayGroup_2)
+            Player.dx = 0
+            Player.dy = 0
+            Axecrafter.has_tool = False
+            sounds.stop_background_music()
+            start_startanimation = True
+            running = False
+
+
+    if game_finished:
+        print("finished")
+        animationGroup.add(EndAnimation)
+        game_finished = False
+        maingame = False
+        end_animation_started = True
+        EndAnimation.Animation.start_animation("End")
+    if end_animation_started:
+        print("ANIMATION")
+        screen.fill((0,0,0))
+        animationGroup.update()
+        animationGroup.draw(screen)
+        if EndAnimation.Animation.active == False:
+            end_animation_started = False
+            animationGroup.remove(EndAnimation)
+            generation.clear_all_groups(floor_group, entities_group, moving_entities_group, playerGroup, overlayGroup, overlayGroup_2)
+            Player.dx = 0
+            Player.dy = 0
+            Axecrafter.has_tool = False
+            sounds.stop_background_music()
+            start_startanimation = True
+            running = False
+
 
     pygame.display.update()
     clock.tick(60)
 
 pygame.quit()
+
+#cx 52

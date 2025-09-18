@@ -4,6 +4,8 @@ import Main.sounds as sounds
 import Engine.Entity_Classes.interactable as interactable
 import Engine.Entity_Classes.npc as npc
 import Main.generation as generation
+import Engine.Entity_Classes.animations as animations
+import Main.events as events
 
 class Player(EntityMovable):
     def __init__(self, pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, fix = False, base_sprite=0, ani_frames_count=0, ani_animations=...):
@@ -33,7 +35,10 @@ class Player(EntityMovable):
         if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
             self.dx += self.speed
         if keys[pygame.K_SPACE]:
+            self.interact = animations.interact_animation(self.rect.centerx, self.rect.centery)
+            events.checkAnimations(self.interact)
             self.attack()
+
 
         # Diagonalbewegung anpassen (optional, für gleichmäßige Geschwindigkeit)
         if self.dx != 0 and self.dy != 0:
