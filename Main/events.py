@@ -58,7 +58,6 @@ class Collision:
             if isinstance(entity, interactable.interactables):
                 for player in self.playerGroup:
                     if player.rect.colliderect(entity.rect) and entity.has_tool == False:
-                        sounds.play_crafting_axe()
                         entity.interact()
 
 

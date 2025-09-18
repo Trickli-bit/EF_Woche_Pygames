@@ -3,7 +3,7 @@ import pygame
 import Main.settings as settings
 import Engine.Entity_Classes.collectable as collectable
 import Main.generation as generation
-
+import Main.sounds as sounds
 class Wall(entities.Entity):
     def __init__(self, pos_x, pos_y, rect = pygame.Rect(0,0,64,64), rect_attach = "topleft", scale = (64, 64), source = r"Engine\Entity_Classes\Sprites_Entity_Classes\Wall.png", solid = True, is_spritesheet = True, fix = False, base_sprite=0, ani_frames_count=8, ani_animations={}, flip = (False, False)):
         super().__init__(pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, fix, base_sprite, ani_frames_count, ani_animations)
@@ -88,6 +88,7 @@ class Laser_h(entities.Entity):
     def update(self, dx=0, dy=0, *args):
         super().update(dx, dy, *args)
         if self.dying:
+            sounds.laser_aus()
             self.dying_counter += 1
             self.Animation.start_animation("turn_off_laser")
             if self.dying_counter == 50:
@@ -163,6 +164,7 @@ class Laser_v(entities.Entity):
     def update(self, dx=0, dy=0, *args):
         super().update(dx, dy, *args)
         if self.dying:
+            sounds.laser_aus()
             self.dying_counter += 1
             self.Animation.start_animation("turn_off_laser")
             if self.dying_counter == 50:

@@ -42,6 +42,8 @@ playerGroup.add(Player)
                 
 entities_group.add()
 
+
+
 animationGroup.add(StartAnimation)
 
 Collition = events.Collision(entities_group, moving_entities_group, playerGroup)
@@ -139,6 +141,7 @@ while running:
         overlayGroup = generation.updateInventory()
 
         
+
 
     pygame.display.update()
     clock.tick(60)
