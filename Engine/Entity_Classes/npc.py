@@ -3,6 +3,7 @@ import Engine.entities as entites
 import Main.settings as settings
 import Engine.Entity_Classes.collectable as collectable
 import Main.generation as generation
+import Main.sounds as sounds
 
 class Turtle(entites.EntityMovable):
     def __init__(self, pos_x, pos_y, rect=(0, 0, 64, 64), rect_attach="topleft",
@@ -30,6 +31,8 @@ class Turtle(entites.EntityMovable):
         self.dead = False
         self.dead_counter = 0
 
+        self.sound_trigger = False
+
     def movement(self):
         dx, dy = 0, 0
 
@@ -56,20 +59,23 @@ class Turtle(entites.EntityMovable):
         return dx, dy
     
     def die(self):
-        self.dead_counter += 1
-        self.dead = True
-        if self.direction == "right":
-            self.Animation.start_animation("burning_d")
-        if self.direction == "left":
-            self.Animation.start_animation("burning_a")
-        if self.direction == "up":
-            self.Animation.start_animation("burning_w")
-        if self.direction == "down":
-            self.Animation.start_animation("burning_s")
-        if self.dead_counter == 120:
-            self.kill()
-            generation.addItemToInventory(collectable.Shell(self.rect.x, self.rect.y))
-
+        if self.sound_trigger:
+            self.dead_counter += 1
+            self.dead = True
+            if self.direction == "right":
+                self.Animation.start_animation("burning_d")
+            if self.direction == "left":
+                self.Animation.start_animation("burning_a")
+            if self.direction == "up":
+                self.Animation.start_animation("burning_w")
+            if self.direction == "down":
+                self.Animation.start_animation("burning_s")
+            if self.dead_counter == 120:
+                self.kill()
+                generation.addItemToInventory(collectable.Shell(self.rect.x, self.rect.y))
+        else:
+            sounds.play_dying_turtle()
+            self.sound_trigger = True
     def update(self, dx=0, dy=0, *args):
         if not self.dead:
             dtx, dty = self.movement()

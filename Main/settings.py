@@ -1,6 +1,8 @@
-
+"""
+Haupt Einstellungen für das Spiel
+"""
 SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 576
 SOLID_FRAME_HIGHT = 64
-MIDDLE_X = 1816
-MIDDLE_Y = 1600
+MIDDLE_X = 2200
+MIDDLE_Y = 1984
