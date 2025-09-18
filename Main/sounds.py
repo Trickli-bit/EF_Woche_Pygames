@@ -1,15 +1,6 @@
 import pygame
 pygame.mixer.init()
-
-"""
-10 Kanäle für Sounds initialisieren
-"""
-pygame.mixer.set_num_channels(10) #Anzahl der gleichzeitig abspielbaren Sounds
-
-"""
-weisst jedem Sound eine Variabel und Datei zu,damit sie im Spiel verwendet werden können und übereinenader 
-abgespielt werden können.
-"""
+pygame.mixer.set_num_channels(14) #Anzahl der gleichzeitig abspielbaren Sounds
 slow_theme = pygame.mixer.Sound(r"Main\sounds\slow_themes.mp3")
 pilz_abbauen = pygame.mixer.Sound(r"Main\sounds\water-bubbles-257594.wav")
 fackelsound = pygame.mixer.Sound(r"Main\sounds\breath-264957-1.wav")
@@ -20,11 +11,12 @@ walking_main_character = pygame.mixer.Sound(r"Main\sounds\foot-steps-77348-1.wav
 crafting_axe = pygame.mixer.Sound(r"Main\sounds\crafting_sound_axe.wav")
 laser_aus_sound = pygame.mixer.Sound(r"Main\sounds\laser_aus.wav")
 crafting_torche = pygame.mixer.Sound(r"Main\sounds\fackel_craften.wav")
+break_mushoom = pygame.mixer.Sound(r"Main\sounds\MushroomBreak.mp3")
+dying_turtle = pygame.mixer.Sound(r"Main\sounds\TurtleDie.mp3")
+start_animation = pygame.mixer.Sound(r"Main\sounds\StartAnimation.mp3")
+finale = pygame.mixer.Sound(r"Main\sounds\Finale.mp3")
 
-"""
-weist den Sounds verschiedene Channels zu, damit sie gleichzeitig abgespielt werden können
-"""
-channel_background = pygame.mixer.Channel(0)
+channel_background = pygame.mixer.Channel(0) #weist den Sounds verschiedene Channels zu, damit sie gleichzeitig abgespielt werden können
 channel_water = pygame.mixer.Channel(1)
 channel_breath = pygame.mixer.Channel(2)
 channel_bubble_pop = pygame.mixer.Channel(3)
@@ -34,6 +26,10 @@ channel_walk = pygame.mixer.Channel(6)
 channel_crafting = pygame.mixer.Channel(7)
 channel_fackelsound = pygame.mixer.Channel(8)
 channel_laser_aus = pygame.mixer.Channel(9)
+channel_break_mushroom = pygame.mixer.Channel(10)
+channel_kill_turtle = pygame.mixer.Channel(11)
+channel_start_animation = pygame.mixer.Channel(12)
+channel_finale = pygame.mixer.Channel(13)
 
 """
 Hintergrundmusik (IMPLEMENTIERT)
@@ -89,10 +85,7 @@ def play_walking_main_character():
 def stop_walking_main_character():
     channel_walk.stop()
 
-"""
-Sound für das craften der Axt (x)
-"""
-def play_crafting_axe(): 
+def play_crafting_axe(): #Sound für das craften der Axt 
     channel_crafting.set_volume(0.9)
     channel_crafting.play(crafting_axe)
     print("crafting_axe")
@@ -112,3 +105,34 @@ def laser_aus():
     channel_laser_aus.set_volume(0.6)
     channel_laser_aus.play(laser_aus_sound)
     print("laser_aus")
+
+def play_breaking_mushroom():
+    channel_break_mushroom.set_volume(0.6)
+    channel_break_mushroom.play(break_mushoom)
+
+def play_dying_turtle():
+    channel_kill_turtle.set_volume(0.6)
+    channel_kill_turtle.play(dying_turtle)
+
+def play_start_animation():
+    channel_start_animation.set_volume(0.3)
+    channel_start_animation.play(start_animation)
+
+def play_finale():
+    channel_finale.set_volume(0.6)
+    channel_finale.play(finale)
+
+
+def stop_all_sounds():
+    channel_background.stop()
+    channel_water.stop()
+    channel_breath.stop()
+    channel_bubble_pop.stop()
+    channel_sword.stop()
+    channel_monkey.stop()
+    channel_walk.stop()
+    channel_crafting.stop()
+    channel_fackelsound.stop()
+    channel_laser_aus.stop()
+    channel_break_mushroom.stop()
+    channel_kill_turtle.stop()
