@@ -48,7 +48,6 @@ class Collision:
 
 
     def move_out(self, other):
-        print(other.solid_collision_direction)
         """Bewegt ein Objekt aus einer Kollision heraus."""
         move_amount = 16
         if other.solid_collision_direction == "up":
