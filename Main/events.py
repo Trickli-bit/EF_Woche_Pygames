@@ -10,15 +10,39 @@ import Main.sounds as sounds
 
 
 class Collision:
-    """Kollisionsklasse für feste und bewegliche Objekte."""
+    """
+    Kollisionsklasse für feste und bewegliche Objekte.
+    Parameter:
+    entities (pygame.sprite.Group): Gruppe aller festen Objekte.
+    movable_entities (pygame.sprite.Group): Gruppe aller beweglichen Objekte.
+    playerGroup (pygame.sprite.Group): Gruppe aller Spieler-Objekte.
+    """
 
     def __init__(self, entities, movable_entities, playerGroup):
+        """
+        IInitialisiert die Kollisionsklasse mit den gegebenen Gruppen.
+        Parameter: entities (pygame.sprite.Group): Gruppe aller festen Objekte.
+        movable_entities (pygame.sprite.Group): Gruppe aller beweglichen Objekte.
+        playerGroup (pygame.sprite.Group): Gruppe aller Spieler-Objekte.
+        """
+
+    def __init__(self, entities, movable_entities, playerGroup):
+        """Initialisiert die Kollisionsklasse mit den gegebenen Gruppen.
+
+        Parameter:
+        entities (pygame.sprite.Group): Gruppe aller festen Objekte.
+        movable_entities (pygame.sprite.Group): Gruppe aller beweglichen Objekte.
+        playerGroup (pygame.sprite.Group): Gruppe aller Spieler-Objekte.
+        """
         self.objects = entities
         self.movable_entities = movable_entities
         self.playerGroup = playerGroup
 
     def collide_with_solid(self, other):
-        """Überprüft Kollisionsrichtung für ein einzelnes bewegliches Objekt."""
+        """
+        Überprüft Kollisionsrichtung für ein einzelnes bewegliches Objekt.   
+        Parameter: other (MovableEntity): Das bewegliche Objekt, das überprüft wird.
+        """
         collision_offset = 16
         coll_rect = other.rect.inflate(-collision_offset*2, -collision_offset*2)
         collided = False
@@ -33,6 +57,10 @@ class Collision:
             other.solid_collision_direction = None
 
     def collition_with_collectable(self):
+        """
+        Überprüft Kollisionen zwischen dem Spieler und sammelbaren Objekten.
+        Wenn eine Kollision erkannt wird, wird die entsprechende Methode des sammelbaren Objekts aufgerufen.
+        """
         for entity in self.objects:
             if isinstance(entity, collectable.Collectable):
                 for player in self.playerGroup:
@@ -62,7 +90,10 @@ class Collision:
 
 
     def move_out(self, other):
-        """Bewegt ein Objekt aus einer Kollision heraus."""
+        """
+        Bewegt ein Objekt aus einer Kollision heraus.   
+        Parameter: other (MovableEntity): Das bewegliche Objekt, das bewegt wird.
+        """
         move_amount = 16
         if other.solid_collision_direction == "up":
             other.dy += move_amount
@@ -87,7 +118,10 @@ class Collision:
 
 
     def update(self):
-        """Aktualisiert alle Kollisionen für Movable Entities und Player."""
+        """
+        Aktualisiert alle Kollisionen für Movable Entities und Player.   
+        Ruft die entsprechenden Methoden auf, um Kollisionen zu überprüfen und Objekte zu bewegen.
+        """
         for movable in self.movable_entities:
             self.collide_with_solid(movable)
         for player in self.playerGroup:
@@ -103,11 +137,19 @@ class Collision:
 animation_to_add = None
 
 def checkAnimations(animation):
+    """
+    Überprüft die Animationen für ein bestimmtes Objekt.
+    Parameter: animation (pygame.sprite.Sprite): Das Objekt, dessen Animation überprüft wird.
+    """
     global animation_to_add
     animation_to_add = animation
     addingAnimation()
     
 
 def addingAnimation():
+    """
+    Fügt die Animation zur Liste der Animationen hinzu.
+    Rückgabe: pygame.sprite.Sprite oder None: Die hinzugefügte Animation oder None, wenn keine vorhanden ist.
+    """
     global animation_to_add
     return animation_to_add
