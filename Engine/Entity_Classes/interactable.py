@@ -29,11 +29,11 @@ class interactables(entities.Entity):
                         else:
                             pass
                         self.Animation.start_animation(self.ani_name)
-                        
-                        generation.addItemToInventory(collectable.Axe(5000, 5000))
-                        
-
-                        self.has_tool = True
+                        currentCollectable = getattr(collectable, self.output)
+                        currentCraftItem = currentCollectable(5000, 5000)
+                        if currentCraftItem.craftable == True:
+                            generation.addItemToInventory(currentCollectable(5000, 5000))
+                            self.has_tool = True
                 else:
                     if generation.GetNumberOfItems(self.input1) >= 0 and generation.GetNumberOfItems(self.input2) >= 0:
                         generation.removeItemFromInventory(self.input1)
@@ -43,9 +43,11 @@ class interactables(entities.Entity):
                         else:
                             pass
                         self.Animation.start_animation(self.ani_name)
-                        generation.addItemToInventory(collectable.Axe(5000, 5000))
-                        
-                        self.has_tool = True
+                        currentCollectable = getattr(collectable, self.output)
+                        currentCraftItem = currentCollectable(5000, 5000)
+                        if currentCraftItem.craftable == True:
+                            generation.addItemToInventory(currentCollectable(5000, 5000))
+                            self.has_tool = True
             else:
                 if generation.GetNumberOfItems(self.input1) >= 0 and generation.GetNumberOfItems(self.input2) >= 0 and generation.GetNumberOfItems(self.input3) >= 0:
                     generation.removeItemFromInventory(self.input1)
@@ -55,7 +57,12 @@ class interactables(entities.Entity):
                         sounds.play_crafting_axe()
                     else:
                         pass
-                    #self.Animation.start_animation(self.ani_name)
+                    self.Animation.start_animation(self.ani_name)
+                    currentCollectable = getattr(collectable, self.output)
+                    currentCraftItem = currentCollectable(5000, 5000)
+                    if currentCraftItem.craftable == True:
+                        generation.addItemToInventory(currentCollectable(5000, 5000))
+                        self.has_tool = True
                     generation.addItemToInventory(collectable.Axe(5000, 5000))
                     
                     self.has_tool = True
@@ -71,9 +78,11 @@ class interactables(entities.Entity):
                 else:
                     pass
                 self.Animation.start_animation(self.ani_name)
-                generation.addItemToInventory(collectable.Axe(5000, 5000))
-                
-                self.has_tool = True
+                currentCollectable = getattr(collectable, self.output)
+                currentCraftItem = currentCollectable(5000, 5000)
+                if currentCraftItem.craftable == True:
+                    generation.addItemToInventory(currentCollectable(5000, 5000))
+                    self.has_tool = True
 
     def update(self, dx=0, dy=0, *args):
         #print(self.rect.x, self.rect.y)
