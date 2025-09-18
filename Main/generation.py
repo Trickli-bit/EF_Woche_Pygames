@@ -12,6 +12,7 @@ import re
 
 
 def parse_y_string(s: str):
+    """Parst einen String im Format 'Y.<int>.<int>' und gibt die beiden Ganzzahlen zurück."""
     pattern = r"^Y\.(\d+)\.(\d+)$"
     match = re.match(pattern, s)
     if match:
@@ -22,17 +23,28 @@ def parse_y_string(s: str):
 
 
 class generateLandscape():
-    """Liest eine CSV-Datei ein und erstellt eine 2D-Liste der Werte."""
-    def __init__(self, spritegroup, entitygroup):
-        """ Initialisiert die Klasse mit dem Dateinamen der CSV-Datei.
-        param:\t filename (str) - Pfad zur CSV-Datei."""
+
+    def __init__(self, spritegroup, entitygroup, trigger):
+        """
+        Initialisiert die Generierungsklasse mit den CSV-Daten und den Sprite-Gruppen. 
+        \n param:\t spritegroup (pygame.sprite.Group) - Gruppe für Boden-Sprites. \n param:\t entitygroup (pygame.sprite.Group) 
+        - Gruppe für Wand- und Interaktions-Sprites.
+        """
+        """Liest eine CSV-Datei ein und erstellt eine 2D-Liste der Werte."""
+        
 
         self.map = self.readCSV("Main/mapCSV.csv")
         self.map_wall = self.readCSV("Main/mapCSVWall.csv")
         self.map_laser = self.readCSV("Main/mapCSVInteractables.csv")
         self.spritegroup = spritegroup
         self.entitygroup = entitygroup
+
+
+        """Mapping der CSV-Werte zu Terrain-Typen."""
+
+        self.trigger = trigger
         
+
         self.elem = {
             0: "grass",
             1: "grass_l_potsoile",
@@ -51,8 +63,11 @@ class generateLandscape():
         self.map_wall = self.update_tiles(self.map_wall)
 
     def readCSV(self, filename):
-        """Liest die CSV-Datei und erstellt die 2D-Liste der Werte.
-        param:\t filename (str) - Pfad zur CSV-Datei."""
+        """
+        Diese Funktion liest eine CSV-Datei ein und gibt die Daten als Liste von Listen zurück.
+        :param filename: Der Pfad zur CSV-Datei.
+        :return: Eine Liste von Listen, die die Daten der CSV-Datei repräsentieren.
+        """
 
         with open(filename, "r") as file:
             reader = csv.reader(file)
@@ -61,6 +76,9 @@ class generateLandscape():
         return data
     
     def update_tiles(self, map_):
+        """
+        Diese Funktion aktualisiert die Kacheln in der Karte basierend auf den Nachbarn.
+        """
         height = len(map_) - 2
         width = max((len(r) for r in map_), default=0)
 
@@ -90,7 +108,15 @@ class generateLandscape():
                             new_map[ny][nx] = p
 
         def get_tile_code(prefix, top, right, bottom, left, m, y, x):
+            """
+            Bestimmt den Kachelcode basierend auf den Nachbarn.
+            Parameter: prefix (str): "F", "W" oder "R"
+            """
             def diag(dy, dx):
+                """
+                Überprüft, ob die diagonale Nachbarkachel zum gleichen Terrain gehört.
+                Parameter: dy (int): -1 oder 1 für die vertikale Richtung.
+                """
                 ny, nx = y + dy, x + dx
                 return 0 <= ny < len(m) and 0 <= nx < len(m[0]) and same_terrain(m[ny][nx], prefix)
 
@@ -122,6 +148,11 @@ class generateLandscape():
             return 2 if prefix == "F" else (3 if prefix == "W" else 1)
 
         def compute_once(m):
+            """
+            Führt einen Berechnungsschritt auf der Karte durch.
+            Parameter: m (list): Die aktuelle Karte.
+            """
+
             changed = False
             out = [row[:] for row in m]
             for y in range(height):
@@ -169,6 +200,10 @@ class generateLandscape():
 
 
     def generateGrass(self):
+            """
+            Generiert Gras-Sprites basierend auf der aktualisierten Karte.
+            Parameter: Keine.
+            """
             self.horizontal_segment_counter = -1
             self.vertical_segment_counter = -1
             for row in self.map:
@@ -201,6 +236,10 @@ class generateLandscape():
             return self.spritegroup
     
     def generateWall(self):
+        """
+        Generiert Wand-Sprites basierend auf der aktualisierten Wandkarte.
+        Parameter: Keine.
+        """
         self.horizontal_segment_counter = -1
         self.vertical_segment_counter = -1
         for row in self.map_wall:
@@ -240,6 +279,10 @@ class generateLandscape():
                 if elem == "Ric_br": self.entitygroup.add(Wall.Water(self.horizontal_segment_counter*64, self.vertical_segment_counter*64, base_sprite=7, flip=(True, False)))
     
     def generateItems(self):
+        """
+        Generiert die Sammelobjekte auf der Karte.
+        Parameter: Keine.
+        """
         self.horizontal_segment_counter = -1
         self.vertical_segment_counter = -1
         for row in range(len(self.map_wall)):
@@ -249,7 +292,7 @@ class generateLandscape():
                 self.horizontal_segment_counter += 1
                 if self.map_wall[row][elem] == 0:
                     if self.map[row][elem] == 0:
-                        if random.randint(0,100) <= 5:
+                        if random.randint(0,100) <= 7:
                             if random.randint (0,100) <= 40:
                                 self.entitygroup.add(collectable.Rock(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64))
                             else:
@@ -279,9 +322,17 @@ class generateLandscape():
                         self.entitygroup.add(interactable.interactables(self.horizontal_segment_counter * 64,self.vertical_segment_counter * 64, pygame.Rect(0, 0, 64, 64), "topleft", (128,128), r"Engine\Entity_Classes\Sprites_Entity_Classes\CarftingTableMirror.png", True, True, "Mirror", "Shell", "Mushroom_juice", "air", "air", False, 0, 8, {"Craft_Axe" : [0, 7, 10, False]}, "Craft_Axe"))
                     if len(str(self.map_laser[row][elem])) == 3:
                         self.entitygroup.add(npc.Turtle(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64, width_blocks=int(str(self.map_laser[row][elem])[1]), height_blocks=int(str(self.map_laser[row][elem])[2])))
-        return self.entitygroup
+                    if self.map_laser[row][elem] == 99:
+                        print("Generated")
+                        self.trigger = pygame.Rect(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64, 128, 192)
+                        
+        return self.trigger
 
     def generatePrices(self):
+        """
+        Generiert die Preisschilder und die entsprechenden Items auf der Karte.
+        Parameter: Keine.
+        """
         item = None
         self.horizontal_segment_counter = -1
         self.vertical_segment_counter = -1
@@ -308,6 +359,9 @@ class generateLandscape():
         return self.entitygroup
 
     def generateItemsIntoSlots(self, item, pos_x, pos_y):
+        """Funktion, die ein Item in ein Preisschild legt
+        Parameter: item (str): Name des Items, pos_x (int): x-Position des Items, pos_y (int): y-Position des Items
+        """
         if item == "Rock":
             item = collectable.Rock(pos_x, pos_y)
         if item == "Stick":
@@ -325,7 +379,10 @@ def fullInventory():
     return sum(elem.value for elem in inventoryCollectables if elem.function == "Item") >= 7
 
 def dropItemFromInventory():
-    """Funktion, die ein Item vom Inventar entfernt und es auf der Map ablegt"""
+    """
+    Funktion, die das letzte Item aus dem Inventar entfernt und es in der Mitte des Bildschirms spawnt
+    Parameter: Keine
+    """
     for i in range (len(inventoryCollectables)):
         j = len(inventoryCollectables) - i - 1
         keys = list(inventoryCollectables.keys())
@@ -335,7 +392,10 @@ def dropItemFromInventory():
             return currentCollectable((settings.SCREEN_WIDTH)/2, (settings.SCREEN_HEIGHT)/2)
 
 def addItemToInventory(item):
-    """Funktion, die ein Item dem Inventar hinzufügt"""
+    """
+    Funktion, die ein Item ins Inventar hinzufügt
+    Parameter: item (Collectable): Das hinzuzufügende Item
+    """
     if len(itemField_group) < 7 and item.function == "Item":
         inventoryCollectables[item] = item.name
         return updateInventory()
@@ -344,14 +404,19 @@ def addItemToInventory(item):
         return updateInventory()
 
 def removeItemFromInventory(itemName):
-    """Funktion, die ein Item vom Inventar entfernt"""
+    """
+    Funktion, die ein Item vom Inventar entfernt
+    Parameter: itemName (str): Der Name des zu entfernenden Items
+    """
     for elem in inventoryCollectables:
         if elem.name == itemName:
             inventoryCollectables.pop(elem)
             return updateInventory()
 
 def GetNumberOfItems(itemName):
-    """Funktion, die die Anzahl der Items im Inventar zurückgibt"""
+    """
+    Funktion, die die Anzahl der Items im Inventar zurückgibt
+    Parameter: itemName (str): Der Name des zu zählenden Items"""
     itemcount = -1
     for elem in inventoryCollectables:
         if elem.name == itemName:
@@ -359,7 +424,11 @@ def GetNumberOfItems(itemName):
     return itemcount
     
 def updateInventory():
-    """Funktion, die das Inventar neu lädt"""
+    """
+    Funktion, die das Inventar neu lädt
+    Parameter: Keine
+    """
+
     overlayGroup = pygame.sprite.Group()
     inventoryItems = {}
     inventoryTools = {}
@@ -386,9 +455,13 @@ def updateInventory():
 
     return overlayGroup
 
-# Itembar
+
 def createItembar(slotCount, slotSize, edgeWidth, yPos):
-    """Funktion, die ein Inventar für die Items erstellt"""
+    """
+    Funktion, die ein Inventar für die Items erstellt
+    Parameter: slotCount (int): Anzahl der Slots, slotSize (float): Grösse der Slots, edgeWidth (float): Abstand des Icons zum Slot-Rand, 
+    yPos (float): y-Position des Itembars
+    """
     global itemField_group
     itemField_group = pygame.sprite.Group()
     slots_group = pygame.sprite.Group()
@@ -397,10 +470,13 @@ def createItembar(slotCount, slotSize, edgeWidth, yPos):
     return pygame.sprite.Group(slots_group, itemField_group)
 
 def createInventorySlotsHorizontal(slots_group, slotSize, slotCount, edgeWidth, yPos):
-    """Funktion, die eine Liste von Inventar Slots erstellt und sie nebeneinander platziert \t SlotSize: float für die Grösse des Slots"""
+    """
+    Funktion, die eine Liste von Inventar Slots erstellt und sie nebeneinander platziert \t SlotSize: float für die Grösse des Slots
+    Parameter: slots_group (pygame.sprite.Group): Gruppe für die Slots, slotSize (float): Grösse der Slots, slotCount (int): Anzahl der Slots, edgeWidth (float): Abstand des Icons zum Slot-Rand, yPos (float): y-Position des Itembars
+    """
     for i in range(slotCount):
         currentSlotSize = (i)*(slotSize)
-        slot = inventory.InventorySlot((settings.SCREEN_WIDTH//2)-((slotCount/2)*slotSize) + currentSlotSize, (settings.SCREEN_WIDTH//2) - yPos, pygame.Rect(0, 0, 64, 64), (slotSize, slotSize), r"InventorySlot.png")
+        slot = inventory.InventorySlot((settings.SCREEN_WIDTH//2)-((slotCount/2)*slotSize) + currentSlotSize, (settings.SCREEN_WIDTH//2) - yPos, pygame.Rect(0, 0, 64, 64), (slotSize, slotSize), r"Sprites_Main/InventorySlot.png")
         slots_group.add(slot)
     if fullInventory():
         redPoint = inventory.InventorySlot((settings.SCREEN_WIDTH//2)+(7/2)*64, (settings.SCREEN_WIDTH//2)-440, pygame.Rect(0, 0, 64, 64), (40, 40), r"QRedSign.png")
@@ -408,17 +484,22 @@ def createInventorySlotsHorizontal(slots_group, slotSize, slotCount, edgeWidth, 
     return pygame.sprite.Group(slots_group)
 
 def createInventoryItemFieldsHorizontal(itemField_group, slotSize, slotCount, edgeWidth, yPos):
-    """Funktion, die eine Liste von Inventar Felder fürs spätere füllen erstellt und sie in den Item Slots platziert"""
+    """
+    Funktion, die eine Liste von Inventar Felder fürs spätere füllen erstellt und sie in den Item Slots platziert
+    Parameter: itemField_group (pygame.sprite.Group): Gruppe für die Item Felder, slotSize (float): Grösse der Slots, slotCount (int): Anzahl der Slots, edgeWidth (float): Abstand des Icons zum Slot-Rand, yPos (float): y-Position des Itembars
+    """
     iconSize = slotSize - 2*edgeWidth
     for i in range(slotCount):
         currentIconSize = i*(slotSize)
-        itemField = inventory.InventorySlot((settings.SCREEN_WIDTH//2)-((slotCount/2)*slotSize) + currentIconSize + edgeWidth, (settings.SCREEN_WIDTH//2) + edgeWidth - yPos, pygame.Rect(0, 0, 64, 64), (iconSize, iconSize), r"EmptyIcon.png")
+        itemField = inventory.InventorySlot((settings.SCREEN_WIDTH//2)-((slotCount/2)*slotSize) + currentIconSize + edgeWidth, (settings.SCREEN_WIDTH//2) + edgeWidth - yPos, pygame.Rect(0, 0, 64, 64), (iconSize, iconSize), r"Sprites_Main/EmptyIcon.png")
         itemField_group.add(itemField)
     return pygame.sprite.Group(itemField_group)
 
 # Toolbar
 def createToolbar(slotCount, slotSize, edgeWidth, yPos):
-    """Funktion, die ein Inventar für die Tools erstellt"""
+    """Funktion, die ein Inventar für die Tools erstellt  
+    Parameter: slotCount (int): Anzahl der Slots, slotSize (float): Grösse der Slots, edgeWidth (float): Abstand des Icons zum Slot-Rand, yPos (float): y-Position des Toolbars
+    """
     global toolField_group
     toolField_group = pygame.sprite.Group()
     slots_group = pygame.sprite.Group()
@@ -427,18 +508,22 @@ def createToolbar(slotCount, slotSize, edgeWidth, yPos):
     return pygame.sprite.Group(slots_group, toolField_group)
 
 def createInventorySlotsVertical(slots_group, slotSize, slotCount, edgeWidth, xPos):
-    """Funktion, die eine Liste von Inventar Slots erstellt und sie nebeneinander platziert \t SlotSize: float für die Grösse des Slots"""
+    """Funktion, die eine Liste von Inventar Slots erstellt und sie nebeneinander platziert
+    Parameter: slots_group (pygame.sprite.Group): Gruppe für die Slots, slotSize (float): Grösse der Slots, slotCount (int): Anzahl der Slots, edgeWidth (float): Abstand des Icons zum Slot-Rand, yPos (float): y-Position des Itembars
+    """ 
     for i in range(slotCount):
         currentSlotSize = (i)*(slotSize)
-        slot = inventory.InventorySlot((settings.SCREEN_HEIGHT//2)/2 + xPos, (settings.SCREEN_HEIGHT//2)-((slotCount/2)*slotSize) + currentSlotSize, pygame.Rect(0, 0, 64, 64), (slotSize, slotSize), r"InventorySlot.png")
+        slot = inventory.InventorySlot((settings.SCREEN_HEIGHT//2)/2 + xPos, (settings.SCREEN_HEIGHT//2)-((slotCount/2)*slotSize) + currentSlotSize, pygame.Rect(0, 0, 64, 64), (slotSize, slotSize), r"Sprites_Main/InventorySlot.png")
         slots_group.add(slot)
     return pygame.sprite.Group(slots_group)
 
 def createInventoryToolFieldsVertical(toolField_group, slotSize, slotCount, edgeWidth, xPos):
-    """Funktion, die eine Liste von Inventar Felder fürs spätere füllen erstellt und sie in den Tool Slots platziert"""
+    """Funktion, die eine Liste von Inventar Felder fürs spätere füllen erstellt und sie in den Tool Slots platziert
+    Parameter: toolField_group (pygame.sprite.Group): Gruppe für die Tool Felder, slotSize (float): Grösse der Slots, slotCount (int): Anzahl der Slots, edgeWidth (float): Abstand des Icons zum Slot-Rand, xPos (float): x-Position des Toolbars
+    """
     iconSize = slotSize - 2*edgeWidth
     for i in range(slotCount):
         currentIconSize = i*(slotSize)
-        toolField = inventory.InventorySlot((settings.SCREEN_HEIGHT//2)/2 + edgeWidth  + xPos, (settings.SCREEN_HEIGHT//2)-((slotCount/2)*slotSize) + currentIconSize + edgeWidth, pygame.Rect(0, 0, 64, 64), (iconSize, iconSize), r"EmptyIcon.png")
+        toolField = inventory.InventorySlot((settings.SCREEN_HEIGHT//2)/2 + edgeWidth  + xPos, (settings.SCREEN_HEIGHT//2)-((slotCount/2)*slotSize) + currentIconSize + edgeWidth, pygame.Rect(0, 0, 64, 64), (iconSize, iconSize), r"Sprites_Main/EmptyIcon.png")
         toolField_group.add(toolField)
     return pygame.sprite.Group(toolField_group)
