@@ -17,7 +17,7 @@ class Water(entities.Entity):
 
         if flip != (False, False):
             self.image = pygame.transform.flip(self.image, flip[0], flip[1])
-            
+
 class Laser_h(entities.Entity):
     def __init__(self, pos_x, pos_y, rect = pygame.Rect(0,0,64,64), rect_attach = "topleft", scale = (64, 64), source = r"Engine\Entity_Classes\Sprites_Entity_Classes\Laser_h.png", solid = True, is_spritesheet = True, fix = False, base_sprite=0, ani_frames_count=5, ani_animations={"turn_off_laser": [3, 6, 14, False], "standard": [0,1, 3, True]}):
         super().__init__(pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, fix, base_sprite, ani_frames_count, ani_animations)
@@ -52,11 +52,13 @@ class Laser_h(entities.Entity):
             amount_stick = generation.GetNumberOfItems("Stick") + 1
             amount_rock = generation.GetNumberOfItems("Rock") + 1
             amount_mushroom = generation.GetNumberOfItems("Mushroom_juice") + 1
+            amount_mirror = generation.GetNumberOfItems("Mirror") + 1
 
 
             price_stick = 0
             price_rock = 0
             price_mushroom = 0
+            price_mirror = 0
 
 
             for name, entity_found in self.near_items:
@@ -66,14 +68,18 @@ class Laser_h(entities.Entity):
                     price_rock += 1
                 elif name == "Mushroom_juice":
                     price_mushroom += 1
+                elif name == "Mirror":
+                    price_mirror += 1
 
-            if price_stick <= amount_stick and price_rock <= amount_rock and price_mushroom <= amount_mushroom:
+            if price_stick <= amount_stick and price_rock <= amount_rock and price_mushroom <= amount_mushroom and price_mirror <= amount_mirror:
                 for i in range(price_stick):
                     generation.removeItemFromInventory("Stick")
                 for i in range(price_rock):
                     generation.removeItemFromInventory("Rock")
                 for i in range(price_mushroom):
                     generation.removeItemFromInventory("Mushroom_juice")
+                for i in range(price_mirror):
+                    generation.removeItemFromInventory("Mirror")
                 self.dying = True
             
                 for entity in entities:
@@ -120,6 +126,7 @@ class Laser_v(entities.Entity):
                         dx = abs(entity.rect.x - center_x)
                         dy = abs(entity.rect.y - center_y)
                         d = ((dy)**2 + (dx)**2)**(0.5)
+
                         # Prüfen, ob innerhalb von 300 Blöcken in beide Richtungen
                         if d <= max_distance:
                             if (entity.name, entity) not in self.near_items:
@@ -128,11 +135,14 @@ class Laser_v(entities.Entity):
             amount_stick = generation.GetNumberOfItems("Stick") + 1
             amount_rock = generation.GetNumberOfItems("Rock") + 1
             amount_mushroom = generation.GetNumberOfItems("Mushroom_juice") + 1
+            amount_mirror = generation.GetNumberOfItems("Mirror") + 1
 
 
             price_stick = 0
             price_rock = 0
             price_mushroom = 0
+            price_mirror = 0
+
 
             for name, entity_found in self.near_items:
                 if name == "Stick":
@@ -141,14 +151,18 @@ class Laser_v(entities.Entity):
                     price_rock += 1
                 elif name == "Mushroom_juice":
                     price_mushroom += 1
+                elif name == "Mirror":
+                    price_mirror += 1
 
-            if price_stick <= amount_stick and price_rock <= amount_rock and price_mushroom <= amount_mushroom:
+            if price_stick <= amount_stick and price_rock <= amount_rock and price_mushroom <= amount_mushroom and price_mirror <= amount_mirror:
                 for i in range(price_stick):
                     generation.removeItemFromInventory("Stick")
                 for i in range(price_rock):
                     generation.removeItemFromInventory("Rock")
                 for i in range(price_mushroom):
                     generation.removeItemFromInventory("Mushroom_juice")
+                for i in range(price_mirror):
+                    generation.removeItemFromInventory("Mirror")
                 self.dying = True
             
                 for entity in entities:

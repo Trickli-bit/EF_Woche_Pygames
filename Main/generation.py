@@ -352,6 +352,8 @@ class generateLandscape():
                             item = self.generateItemsIntoSlots("Mushroom_juice", self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64)
                         if self.map_laser[row][elem] == 9: 
                             item = self.generateItemsIntoSlots("Shell", self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64)
+                        if self.map_laser[row][elem] == 10: 
+                            item = self.generateItemsIntoSlots("Mirroe", self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64)
                         if item is not None:
                             self.entitygroup.add(item)
                             item.should_pick_up = False
@@ -370,6 +372,8 @@ class generateLandscape():
             item = collectable.Mushroom_juice(pos_x, pos_y)
         if item == "Shell":
             item = collectable.Shell(pos_x, pos_y)
+        if item == "Mirror":
+            item = collectable.Mirror(pos_x, pos_y)
         return item
 
         
