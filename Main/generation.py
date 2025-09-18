@@ -297,15 +297,15 @@ def dropItemFromInventory():
         keys = list(inventoryCollectables.keys())
         if keys[j].function == "Item":
             removeItemFromInventory(keys[j].name)
-            if keys[j].name == "Stick":
-                collectable_to_drop = collectable.Stick((settings.SCREEN_WIDTH)/2, (settings.SCREEN_HEIGHT)/2)
-            elif keys[j].name == "Rock":
-                collectable_to_drop = collectable.Rock((settings.SCREEN_WIDTH)/2, (settings.SCREEN_HEIGHT)/2)
-            return collectable_to_drop
+            currentCollectable = getattr(collectable, keys[j].name)
+            return currentCollectable((settings.SCREEN_WIDTH)/2, (settings.SCREEN_HEIGHT)/2)
 
 def addItemToInventory(item):
     """Funktion, die ein Item dem Inventar hinzufügt"""
-    if len(itemField_group) < 11 and len(toolField_group) < 3:
+    if len(itemField_group) < 7 and item.function == "Item":
+        inventoryCollectables[item] = item.name
+        return updateInventory()
+    if len(toolField_group) < 4 and item.function == "Tool":
         inventoryCollectables[item] = item.name
         return updateInventory()
 

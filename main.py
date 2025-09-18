@@ -6,6 +6,7 @@ import Player.player as player
 import Main.generation as generation
 import Engine.Entity_Classes.floor as Floor
 import Engine.Entity_Classes.interactable as interactable
+import Engine.Entity_Classes.inventorySlot as inventory
 import sys
 import time
 import Engine.Entity_Classes.collectable as collectable
@@ -41,7 +42,7 @@ overlayGroup_2.add(vigniette, PoI)
 
 playerGroup.add(Player)
                 
-entities_group.add(Axecrafter, )
+entities_group.add(Axecrafter, Turtle)
 
 animationGroup.add(StartAnimation)
 
@@ -55,6 +56,7 @@ start_generation = False
 start_startanimation = True 
 
 cooldown = 6
+cooldownM = 6
 
 running = True
 while running:
@@ -117,6 +119,16 @@ while running:
             if cooldown <= 0 and len(generation.itemField_group) > 0:
                 entities_group.add(generation.dropItemFromInventory())
                 cooldown = 6
+
+        if keys[pygame.K_m]:
+            cooldownM -= 1
+            if cooldownM <= 0 and len(generation.itemField_group) > 0:
+                currentCollectable = getattr(collectable, "Map")
+                generation.addItemToInventory(currentCollectable(5000, 5000))
+                cooldownM = 6
+        
+        if generation.GetNumberOfItems("Map") == 0:
+            overlayGroup_2.add(inventory.InventorySlot(0, 0, pygame.Rect(0, 0, 794, 603), (238.2, 180.9), r"Engine\Entity_Classes\Sprites_Entity_Classes\MapBig.png"))
 
         entities_group.update(-Player.dx, -Player.dy, keys)
         entities_group.draw(screen)

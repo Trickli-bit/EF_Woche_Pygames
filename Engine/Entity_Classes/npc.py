@@ -1,6 +1,8 @@
 
 import Engine.entities as entites
 import Main.settings as settings
+import Engine.Entity_Classes.collectable as collectable
+import Main.generation as generation
 
 class Turtle(entites.EntityMovable):
     def __init__(self, pos_x, pos_y, rect=(0, 0, 64, 64), rect_attach="topleft",
@@ -66,6 +68,7 @@ class Turtle(entites.EntityMovable):
             self.Animation.start_animation("burning_s")
         if self.dead_counter == 120:
             self.kill()
+            generation.addItemToInventory(collectable.Shell(self.rect.x, self.rect.y))
 
     def update(self, dx=0, dy=0, *args):
         if not self.dead:
