@@ -31,7 +31,7 @@ class Turtle(entites.EntityMovable):
         self.dead = False
         self.dead_counter = 0
 
-        self.sound_trigger = True
+        self.sound_trigger = False
 
     def movement(self):
         dx, dy = 0, 0
@@ -75,7 +75,7 @@ class Turtle(entites.EntityMovable):
                 generation.addItemToInventory(collectable.Shell(self.rect.x, self.rect.y))
         else:
             sounds.play_dying_turtle()
-            self.sound_trigger = False
+            self.sound_trigger = True
     def update(self, dx=0, dy=0, *args):
         if not self.dead:
             dtx, dty = self.movement()

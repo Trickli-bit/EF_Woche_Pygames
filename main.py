@@ -193,9 +193,9 @@ while running:
 
         animationGroup.update(-Player.dx, -Player.dy, keys)
         animationGroup.draw(screen)
-
-        trigger.x += -Player.dx
-        trigger.y += -Player.dy
+        if trigger != None:
+            trigger.x += -Player.dx
+            trigger.y += -Player.dy
 
         playerGroup.update(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, keys)
         playerGroup.draw(screen)
