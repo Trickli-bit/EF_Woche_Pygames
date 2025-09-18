@@ -61,54 +61,56 @@ class generateLandscape():
         return data
     
     def update_tiles(self, map_):
-        height = len(map_)-2
+        height = len(map_) - 2
         width = max((len(r) for r in map_), default=0)
 
         full = [row[:] + [0] * (width - len(row)) for row in map_]
         new_map = [row[:] for row in full]
 
-        neigh8 = [(-1,0),(1,0),(0,-1),(0,1),(-1,-1),(-1,1),(1,-1),(1,1)]
+        neigh8 = [(-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (-1, 1), (1, -1), (1, 1)]
 
         def same_terrain(val, prefix):
-            if prefix == "F":
+            if prefix == "F":  # Floor
                 return val == 2 or (isinstance(val, str) and val.startswith("F"))
-            else:
+            elif prefix == "R":  # Water
+                return val == 1 or (isinstance(val, str) and val.startswith("R"))
+            elif prefix == "W":  # Wall
                 return val == 3 or (isinstance(val, str) and val.startswith("W"))
+            return False
 
-        # Phase 1: F/W auf 0er Felder propagieren
+        # Phase 1: F/W/R auf 0er Felder propagieren
         for y in range(height):
             for x in range(width):
                 v = full[y][x]
-                if v == 2 or v == 3:
-                    p = "F" if v == 2 else "W"
+                if v in (1, 2, 3):
+                    p = "F" if v == 2 else ("W" if v == 3 else "R")
                     for dy, dx in neigh8:
                         ny, nx = y + dy, x + dx
                         if 0 <= ny < height and 0 <= nx < width and full[ny][nx] == 0:
                             new_map[ny][nx] = p
 
-        # Tile-Code bestimmen
         def get_tile_code(prefix, top, right, bottom, left, m, y, x):
             def diag(dy, dx):
-                ny, nx = y+dy, x+dx
+                ny, nx = y + dy, x + dx
                 return 0 <= ny < len(m) and 0 <= nx < len(m[0]) and same_terrain(m[ny][nx], prefix)
 
-            top_left = diag(-1,-1)
-            top_right = diag(-1,1)
-            bottom_left = diag(1,-1)
-            bottom_right = diag(1,1)
+            top_left = diag(-1, -1)
+            top_right = diag(-1, 1)
+            bottom_left = diag(1, -1)
+            bottom_right = diag(1, 1)
 
             # Normale äußere Ecken
             if not top and not right: return prefix + "tr"
-            if not top and not left:  return prefix + "tl"
+            if not top and not left: return prefix + "tl"
             if not bottom and not right: return prefix + "br"
-            if not bottom and not left:  return prefix + "bl"
+            if not bottom and not left: return prefix + "bl"
 
-            # Innere Ecken nur für W
-            if prefix == "W":
-                if top and left and not top_left: return "Wic_tl"
-                if top and right and not top_right: return "Wic_tr"
-                if bottom and left and not bottom_left: return "Wic_bl"
-                if bottom and right and not bottom_right: return "Wic_br"
+            # Innere Ecken nur für W und R
+            if prefix in ("W", "R"):
+                if top and left and not top_left: return prefix + "ic_tl"
+                if top and right and not top_right: return prefix + "ic_tr"
+                if bottom and left and not bottom_left: return prefix + "ic_bl"
+                if bottom and right and not bottom_right: return prefix + "ic_br"
 
             # Kanten
             if not top: return prefix + "t"
@@ -117,7 +119,7 @@ class generateLandscape():
             if not left: return prefix + "l"
 
             # Innenbereich
-            return 2 if prefix == "F" else 3
+            return 2 if prefix == "F" else (3 if prefix == "W" else 1)
 
         def compute_once(m):
             changed = False
@@ -132,20 +134,21 @@ class generateLandscape():
                         prefix = "F"
                     elif cell == 3 or (isinstance(cell, str) and cell.startswith("W")):
                         prefix = "W"
+                    elif cell == 1 or (isinstance(cell, str) and cell.startswith("R")):
+                        prefix = "R"
                     else:
                         continue
 
-                    top    = same_terrain(m[y-1][x] if y > 0 else 0, prefix)
-                    right  = same_terrain(m[y][x+1] if x < width-1 else 0, prefix)
+                    top = same_terrain(m[y-1][x] if y > 0 else 0, prefix)
+                    right = same_terrain(m[y][x+1] if x < width-1 else 0, prefix)
                     bottom = same_terrain(m[y+1][x] if y < height-1 else 0, prefix)
-                    left   = same_terrain(m[y][x-1] if x > 0 else 0, prefix)
+                    left = same_terrain(m[y][x-1] if x > 0 else 0, prefix)
 
                     new_code = get_tile_code(prefix, top, right, bottom, left, m, y, x)
                     if new_code != cell:
                         out[y][x] = new_code
                         changed = True
             return out, changed
-        
 
         # Berechnung + Stabilisierung (3 Durchläufe)
         new_map, _ = compute_once(new_map)
@@ -159,6 +162,7 @@ class generateLandscape():
             new_map[i] = new_map[i][:len(row)]
 
         return new_map
+
 
 
 
@@ -197,41 +201,43 @@ class generateLandscape():
             return self.spritegroup
     
     def generateWall(self):
+        self.horizontal_segment_counter = -1
+        self.vertical_segment_counter = -1
+        for row in self.map_wall:
             self.horizontal_segment_counter = -1
-            self.vertical_segment_counter = -1
-            for row in self.map_wall:
-                self.horizontal_segment_counter = -1
-                self.vertical_segment_counter += 1
-                for elem in row:
-                    self.horizontal_segment_counter += 1
-                    if elem == 3:
-                        self.entitygroup.add(Wall.Wall(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64, base_sprite=0))
-                    if elem == "Wt":
-                        self.entitygroup.add(Wall.Wall(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64, base_sprite=6))
-                    if elem == "Wb":
-                        self.entitygroup.add(Wall.Wall(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64, base_sprite=6, flip = (False, True)))
-                    if elem == "Wr":
-                        self.entitygroup.add(Wall.Wall(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64, base_sprite=1))
-                    if elem == "Wl":
-                        self.entitygroup.add(Wall.Wall(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64, base_sprite=2))
-                    if elem == "Wtr":
-                        self.entitygroup.add(Wall.Wall(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64, base_sprite=3))
-                    if elem == "Wtl":
-                        self.entitygroup.add(Wall.Wall(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64, base_sprite=4))
-                    if elem == "Wbr":
-                        self.entitygroup.add(Wall.Wall(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64, base_sprite=3, flip=(False, True)))
-                    if elem == "Wbl":
-                        self.entitygroup.add(Wall.Wall(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64, base_sprite=4, flip = (False, True)))
-                    if elem == "Wic_tl":
-                        self.entitygroup.add(Wall.Wall(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64, base_sprite=7, flip = (False, True)))
-                    if elem == "Wic_bl":
-                        self.entitygroup.add(Wall.Wall(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64, base_sprite=7, flip = (False, False)))
-                    if elem == "Wic_tr":
-                        self.entitygroup.add(Wall.Wall(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64, base_sprite=7, flip = (True, True)))
-                    if elem == "Wic_br":
-                        self.entitygroup.add(Wall.Wall(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64, base_sprite=7, flip = (True, False)))
-    
+            self.vertical_segment_counter += 1
+            for elem in row:
+                self.horizontal_segment_counter += 1
 
+                # Wall (W)
+                if elem == 3: self.entitygroup.add(Wall.Wall(self.horizontal_segment_counter*64, self.vertical_segment_counter*64, base_sprite=0))
+                if elem == "Wt": self.entitygroup.add(Wall.Wall(self.horizontal_segment_counter*64, self.vertical_segment_counter*64, base_sprite=6))
+                if elem == "Wb": self.entitygroup.add(Wall.Wall(self.horizontal_segment_counter*64, self.vertical_segment_counter*64, base_sprite=6, flip=(False, True)))
+                if elem == "Wr": self.entitygroup.add(Wall.Wall(self.horizontal_segment_counter*64, self.vertical_segment_counter*64, base_sprite=1))
+                if elem == "Wl": self.entitygroup.add(Wall.Wall(self.horizontal_segment_counter*64, self.vertical_segment_counter*64, base_sprite=2))
+                if elem == "Wtr": self.entitygroup.add(Wall.Wall(self.horizontal_segment_counter*64, self.vertical_segment_counter*64, base_sprite=3))
+                if elem == "Wtl": self.entitygroup.add(Wall.Wall(self.horizontal_segment_counter*64, self.vertical_segment_counter*64, base_sprite=4))
+                if elem == "Wbr": self.entitygroup.add(Wall.Wall(self.horizontal_segment_counter*64, self.vertical_segment_counter*64, base_sprite=3, flip=(False, True)))
+                if elem == "Wbl": self.entitygroup.add(Wall.Wall(self.horizontal_segment_counter*64, self.vertical_segment_counter*64, base_sprite=4, flip=(False, True)))
+                if elem == "Wic_tl": self.entitygroup.add(Wall.Wall(self.horizontal_segment_counter*64, self.vertical_segment_counter*64, base_sprite=7, flip=(False, True)))
+                if elem == "Wic_bl": self.entitygroup.add(Wall.Wall(self.horizontal_segment_counter*64, self.vertical_segment_counter*64, base_sprite=7, flip=(False, False)))
+                if elem == "Wic_tr": self.entitygroup.add(Wall.Wall(self.horizontal_segment_counter*64, self.vertical_segment_counter*64, base_sprite=7, flip=(True, True)))
+                if elem == "Wic_br": self.entitygroup.add(Wall.Wall(self.horizontal_segment_counter*64, self.vertical_segment_counter*64, base_sprite=7, flip=(True, False)))
+
+                # Water (R)
+                if elem == 1: self.entitygroup.add(Wall.Water(self.horizontal_segment_counter*64, self.vertical_segment_counter*64, base_sprite=0))
+                if elem == "Rt": self.entitygroup.add(Wall.Water(self.horizontal_segment_counter*64, self.vertical_segment_counter*64, base_sprite=6))
+                if elem == "Rb": self.entitygroup.add(Wall.Water(self.horizontal_segment_counter*64, self.vertical_segment_counter*64, base_sprite=6, flip=(False, True)))
+                if elem == "Rr": self.entitygroup.add(Wall.Water(self.horizontal_segment_counter*64, self.vertical_segment_counter*64, base_sprite=1))
+                if elem == "Rl": self.entitygroup.add(Wall.Water(self.horizontal_segment_counter*64, self.vertical_segment_counter*64, base_sprite=2))
+                if elem == "Rtr": self.entitygroup.add(Wall.Water(self.horizontal_segment_counter*64, self.vertical_segment_counter*64, base_sprite=3))
+                if elem == "Rtl": self.entitygroup.add(Wall.Water(self.horizontal_segment_counter*64, self.vertical_segment_counter*64, base_sprite=4))
+                if elem == "Rbr": self.entitygroup.add(Wall.Water(self.horizontal_segment_counter*64, self.vertical_segment_counter*64, base_sprite=3, flip=(False, True)))
+                if elem == "Rbl": self.entitygroup.add(Wall.Water(self.horizontal_segment_counter*64, self.vertical_segment_counter*64, base_sprite=4, flip=(False, True)))
+                if elem == "Ric_tl": self.entitygroup.add(Wall.Water(self.horizontal_segment_counter*64, self.vertical_segment_counter*64, base_sprite=7, flip=(False, True)))
+                if elem == "Ric_bl": self.entitygroup.add(Wall.Water(self.horizontal_segment_counter*64, self.vertical_segment_counter*64, base_sprite=7, flip=(False, False)))
+                if elem == "Ric_tr": self.entitygroup.add(Wall.Water(self.horizontal_segment_counter*64, self.vertical_segment_counter*64, base_sprite=7, flip=(True, True)))
+                if elem == "Ric_br": self.entitygroup.add(Wall.Water(self.horizontal_segment_counter*64, self.vertical_segment_counter*64, base_sprite=7, flip=(True, False)))
     
     def generateItems(self):
         self.horizontal_segment_counter = -1
@@ -267,13 +273,15 @@ class generateLandscape():
                         print("CA")
                         self.entitygroup.add(interactable.interactables(self.horizontal_segment_counter * 64,self.vertical_segment_counter * 64, pygame.Rect(0, 0, 64, 64), "topleft", (128,128), r"Engine\Entity_Classes\Sprites_Entity_Classes\CraftingTableAxe.png", True, True, "Axe", "Stick", "Rock", "air", "air", False, 0, 8, {"Craft_Axe" : [0, 7, 10, False]}, "Craft_Axe"))
                     if self.map_laser[row][elem] == 22:
-                        self.entitygroup.add(interactable.interactables(self.horizontal_segment_counter * 64,self.vertical_segment_counter * 64, pygame.Rect(0, 0, 64, 64), "topleft", (128,128), r"", True, True, "Torch", "Stick", "Mushroom_juice", "air", "air", False, 0, 8, {"Craft_Axe" : [0, 7, 10, False]}, "Craft_Axe"))
+                        self.entitygroup.add(interactable.interactables(self.horizontal_segment_counter * 64,self.vertical_segment_counter * 64, pygame.Rect(0, 0, 64, 64), "topleft", (128,128), r"Engine\Entity_Classes\Sprites_Entity_Classes\CraftingTableTorch.png", True, True, "Torch", "Stick", "Mushroom_juice", "air", "air", False, 0, 8, {"Craft_Axe" : [0, 7, 10, False]}, "Craft_Axe"))
                     if self.map_laser[row][elem] == 23:
-                        self.entitygroup.add(interactable.interactables(self.horizontal_segment_counter * 64,self.vertical_segment_counter * 64, pygame.Rect(0, 0, 64, 64), "topleft", (128,128), r"", True, True, "Map", "Shell", "Rock", "Stick", "air", False, 0, 8, {"Craft_Axe" : [0, 7, 10, False]}, "Craft_Axe"))
+                        self.entitygroup.add(interactable.interactables(self.horizontal_segment_counter * 64,self.vertical_segment_counter * 64, pygame.Rect(0, 0, 64, 64), "topleft", (128,128), r"Engine\Entity_Classes\Sprites_Entity_Classes\CraftingTableMap.png", True, True, "Map", "Shell", "Rock", "Stick", "air", False, 0, 8, {"Craft_Axe" : [0, 7, 10, False]}, "Craft_Axe"))
                     if self.map_laser[row][elem] == 24:
                         self.entitygroup.add(interactable.interactables(self.horizontal_segment_counter * 64,self.vertical_segment_counter * 64, pygame.Rect(0, 0, 64, 64), "topleft", (128,128), r"", True, True, "Mirror", "Shell", "Mushroom_juice", "air", "air", False, 0, 8, {"Craft_Axe" : [0, 7, 10, False]}, "Craft_Axe"))
+                    print(len(str(self.map_laser[row][elem])))
                     if len(str(self.map_laser[row][elem])) == 3:
-                        self.entitygroup.add(npc.Turtle(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64, width_blocks=str(self.map_laser[row][elem])[1], height_blocks=str(self.map_laser[row][elem])[2]))
+                        print(str(self.map_laser[row][elem])[1], str(self.map_laser[row][elem])[2])
+                        self.entitygroup.add(npc.Turtle(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64, width_blocks=int(str(self.map_laser[row][elem])[1]), height_blocks=int(str(self.map_laser[row][elem])[2])))
         return self.entitygroup
 
     def generatePrices(self):

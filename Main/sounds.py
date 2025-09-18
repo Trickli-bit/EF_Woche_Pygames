@@ -9,37 +9,39 @@ monkey_noise = pygame.mixer.Sound(r"Main\sounds\monkey-noise-sound-effect-no-cop
 walking_main_character = pygame.mixer.Sound(r"Main\sounds\rocks-crumbling-from-room-or-cave-76827.mp3")
 crafting_axe = pygame.mixer.Sound(r"Main\sounds\rock-cinematic-161648.mp3")
 
+v = 0
+
 def play_background_music(): #Hintergrundmusik (IMPLEMENTIERT)
-    slow_theme.set_volume(0.1)
+    slow_theme.set_volume(v)
     slow_theme.play(loops = -1)
 
 def play_water_bubble(): #beim abauen der Pilzes (x)
-    water_bubble.set_volume(0.1)
+    water_bubble.set_volume(v)
     water_bubble.play()
 
 def play_breath(): #Sound, sobald man eine Fackel in der Hand hält (x)
-    breath.set_volume(0.1)
+    breath.set_volume(v)
     breath.play()
 
 def play_bubble_pop(): #Sound für das aufsammeln von Items (IMPLEMENTIERT)
-    bubble_pop.set_volume(0.1)
+    bubble_pop.set_volume(v)
     bubble_pop.play()
 
 def play_sword_slice(): #beim angreifen eines Mobs (x)
-    sword_slice.set_volume(0.1)
+    sword_slice.set_volume(v)
     sword_slice.play()
 
 def play_monkey_noise(): #Endanimation (x)
-    monkey_noise.set_volume(0.1)
+    monkey_noise.set_volume(v)
     monkey_noise.play()
 
 def play_walking_main_character(): #Laufsound des Hauptcharakters (IMPLEMENTIERT)
-    walking_main_character.set_volume(0.1)
+    walking_main_character.set_volume(v)
     walking_main_character.play()
 
 def stop_walking_main_character():
     walking_main_character.stop()
 
 def play_crafting_axe(): #Sound für das craften der Axt (IMPLEMENTIERT)
-    crafting_axe.set_volume(0.1)
+    crafting_axe.set_volume(v)
     crafting_axe.play()
