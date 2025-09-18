@@ -41,7 +41,7 @@ Turtle = npc.Turtle(2400, 1800, width_blocks=4, height_blocks=4)
 
 overlayGroup_2.add(vigniette)
 
->>>>>>>>> Temporary merge branch 2
+#>>>>>>>>> Temporary merge branch 2
 playerGroup.add(Player)
 
 animationGroup.add(StartAnimation)

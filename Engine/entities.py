@@ -189,7 +189,6 @@ class EntityMovable(Entity):
         """Berechnet die Kollisionsrichtung"""
 
         # Richtung bestimmen und Entität anhalten
-        print(self.dy)
         if self.dx == 0 and self.dy < 0:
             self.dy = 0
             self.solid_collision_direction = "up"

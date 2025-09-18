@@ -290,6 +290,8 @@ class generateLandscape():
 
 
 inventoryCollectables = {}
+itemField_group = pygame.sprite.Group()
+toolField_group = pygame.sprite.Group()
 
 def dropItemFromInventory():
     """Funktion, die ein Item vom Inventar entfernt und es auf der Map ablegt"""
@@ -357,7 +359,6 @@ def updateInventory():
 def createItembar(slotCount, slotSize, edgeWidth, yPos):
     """Funktion, die ein Inventar für die Items erstellt"""
     global itemField_group
-    itemField_group = pygame.sprite.Group()
     slots_group = pygame.sprite.Group()
     slots_group = createInventorySlotsHorizontal(slots_group, slotSize, slotCount, edgeWidth, yPos)
     itemField_group = createInventoryItemFieldsHorizontal(itemField_group, slotSize, slotCount, edgeWidth, yPos)
@@ -384,7 +385,6 @@ def createInventoryItemFieldsHorizontal(itemField_group, slotSize, slotCount, ed
 def createToolbar(slotCount, slotSize, edgeWidth, yPos):
     """Funktion, die ein Inventar für die Tools erstellt"""
     global toolField_group
-    toolField_group = pygame.sprite.Group()
     slots_group = pygame.sprite.Group()
     slots_group = createInventorySlotsVertical(slots_group, slotSize, slotCount, edgeWidth, yPos)
     toolField_group = createInventoryToolFieldsVertical(toolField_group, slotSize, slotCount, edgeWidth, yPos)
