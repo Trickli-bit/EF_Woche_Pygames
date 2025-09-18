@@ -55,7 +55,6 @@ class generateLandscape():
         param:\t filename (str) - Pfad zur CSV-Datei."""
 
         with open(filename, "r") as file:
-            print("Öffne Datei:", filename)
             reader = csv.reader(file)
             data = [list(map(int, row)) for row in reader]
 

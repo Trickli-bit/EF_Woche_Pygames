@@ -42,14 +42,6 @@ class Player(EntityMovable):
 
         wall_direction = self.solid_collision_direction
         
-        if wall_direction == "left" and self.dx < 0:
-            self.dx = 0
-        if wall_direction == "right" and self.dx > 0:
-            self.dx = 0
-        if wall_direction == "down" and self.dy > 0:
-            self.dy = 0
-        if wall_direction == "up" and self.dy < 0:
-            self.dy = 0
 
         if self.dx != 0 or self.dy != 0:
             sounds.play_walking_main_character()
