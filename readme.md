@@ -1,1 +1,1 @@
-In this project we created a game. It's a game about a golem escaping a maze. It was programmed pygame, a python libreary. We made and added music, sounds, sprites and animations to complete the game. This entire project was finished in 5 days.
+In this project we created a game, about a golem escaping a maze. It was programmed in pygame, a python libreary. We made and added music, sounds, sprites and animations to complete the game. This entire project was finished in 4 days.
