@@ -30,6 +30,7 @@ animationGroup = pygame.sprite.Group()
 overlayGroup_2= pygame.sprite.Group()
 
 vigniette = entities.Entity(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), "center", (settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), r"vigniette.png",False, False, False, 0, 0, {})
+vignietteSmall = entities.Entity(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), "center", (settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), r"Vigniette2.png",False, False, False, 0, 0, {})
 
 Player = player.Player(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 64, 64), "midbottom", (96, 96), r"Player\player.png",True, True, True, 13, 21, {"walking_a": [0, 3, 5, True], "walking_d": [5, 8, 5, True], "walking_s": [10, 15, 5, True], "walking_w": [17, 19, 5, True]})
 Axecrafter = interactable.interactables(2200,1600, pygame.Rect(0, 0, 64, 64), "topleft", (128,128), r"Engine\Entity_Classes\Sprites_Entity_Classes\pixilart-sprite (6).png", True, True, "Axe", "Stick", "Rock", "air", "air", False, 0, 8, {"Craft_Axe" : [0, 7, 10, False]}, "Craft_Axe")
@@ -56,6 +57,8 @@ start_generation = False
 start_startanimation = True 
 
 cooldown = 6
+BigMap = False
+Vignette = True
 cooldownM = 6
 
 running = True
@@ -123,12 +126,20 @@ while running:
         if keys[pygame.K_m]:
             cooldownM -= 1
             if cooldownM <= 0 and len(generation.itemField_group) > 0:
-                currentCollectable = getattr(collectable, "Map")
+                currentCollectable = getattr(collectable, "Torch")
                 generation.addItemToInventory(currentCollectable(5000, 5000))
                 cooldownM = 6
         
-        if generation.GetNumberOfItems("Map") == 0:
-            overlayGroup_2.add(inventory.InventorySlot(0, 0, pygame.Rect(0, 0, 794, 603), (238.2, 180.9), r"Engine\Entity_Classes\Sprites_Entity_Classes\MapBig.png"))
+        if BigMap == False:
+            if generation.GetNumberOfItems("Map") == 0:
+                overlayGroup_2.add(inventory.InventorySlot(0, 0, pygame.Rect(0, 0, 794, 603), (238.2, 180.9), r"Engine\Entity_Classes\Sprites_Entity_Classes\MapBig.png"))
+                BigMap = True
+        
+        if Vignette == True:
+            if generation.GetNumberOfItems("Torch") == 0:
+                overlayGroup_2.remove(vigniette)
+                overlayGroup_2.add(vignietteSmall)
+                Vignette = False
 
         entities_group.update(-Player.dx, -Player.dy, keys)
         entities_group.draw(screen)

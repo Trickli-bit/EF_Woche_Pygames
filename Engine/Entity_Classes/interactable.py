@@ -27,8 +27,10 @@ class interactables(entities.Entity):
                         sounds.play_crafting_axe()
                         self.Animation.start_animation(self.ani_name)
                         currentCollectable = getattr(collectable, self.output)
-                        generation.addItemToInventory(currentCollectable(5000, 5000))
-                        self.has_tool = True
+                        currentCraftItem = currentCollectable(5000, 5000)
+                        if currentCraftItem.craftable == True:
+                            generation.addItemToInventory(currentCollectable(5000, 5000))
+                            self.has_tool = True
                 else:
                     if generation.GetNumberOfItems(self.input1) >= 0 and generation.GetNumberOfItems(self.input2) >= 0:
                         generation.removeItemFromInventory(self.input1)
@@ -36,8 +38,10 @@ class interactables(entities.Entity):
                         sounds.play_crafting_axe()
                         self.Animation.start_animation(self.ani_name)
                         currentCollectable = getattr(collectable, self.output)
-                        generation.addItemToInventory(currentCollectable(5000, 5000))
-                        self.has_tool = True
+                        currentCraftItem = currentCollectable(5000, 5000)
+                        if currentCraftItem.craftable == True:
+                            generation.addItemToInventory(currentCollectable(5000, 5000))
+                            self.has_tool = True
             else:
                 if generation.GetNumberOfItems(self.input1) >= 0 and generation.GetNumberOfItems(self.input2) >= 0 and generation.GetNumberOfItems(self.input3) >= 0:
                     generation.removeItemFromInventory(self.input1)
@@ -46,8 +50,10 @@ class interactables(entities.Entity):
                     sounds.play_crafting_axe()
                     self.Animation.start_animation(self.ani_name)
                     currentCollectable = getattr(collectable, self.output)
-                    generation.addItemToInventory(currentCollectable(5000, 5000))
-                    self.has_tool = True
+                    currentCraftItem = currentCollectable(5000, 5000)
+                    if currentCraftItem.craftable == True:
+                        generation.addItemToInventory(currentCollectable(5000, 5000))
+                        self.has_tool = True
                         
         else:
             if generation.GetNumberOfItems(self.input1) >= 0 and generation.GetNumberOfItems(self.input2) >= 0 and generation.GetNumberOfItems(self.input3) >= 0 and generation.GetNumberOfItems(self.input4) >= 0:
@@ -58,8 +64,10 @@ class interactables(entities.Entity):
                 sounds.play_crafting_axe()
                 self.Animation.start_animation(self.ani_name)
                 currentCollectable = getattr(collectable, self.output)
-                generation.addItemToInventory(currentCollectable(5000, 5000))
-                self.has_tool = True
+                currentCraftItem = currentCollectable(5000, 5000)
+                if currentCraftItem.craftable == True:
+                    generation.addItemToInventory(currentCollectable(5000, 5000))
+                    self.has_tool = True
 
     def update(self, dx=0, dy=0, *args):
         return super().update(dx, dy, *args)
