@@ -24,7 +24,10 @@ class interactables(entities.Entity):
                 if self.input2 == "air":
                     if generation.GetNumberOfItems(self.input1) >= 0:
                         generation.removeItemFromInventory(self.input1)
-                        sounds.play_crafting_axe()
+                        if self.output == "Axe":
+                            sounds.play_crafting_axe()
+                        else:
+                            pass
                         self.Animation.start_animation(self.ani_name)
                         
                         generation.addItemToInventory(collectable.Axe(5000, 5000))
@@ -35,7 +38,10 @@ class interactables(entities.Entity):
                     if generation.GetNumberOfItems(self.input1) >= 0 and generation.GetNumberOfItems(self.input2) >= 0:
                         generation.removeItemFromInventory(self.input1)
                         generation.removeItemFromInventory(self.input2)
-                        sounds.play_crafting_axe()
+                        if self.output == "Axe":
+                            sounds.play_crafting_axe()
+                        else:
+                            pass
                         self.Animation.start_animation(self.ani_name)
                         generation.addItemToInventory(collectable.Axe(5000, 5000))
                         
@@ -45,8 +51,11 @@ class interactables(entities.Entity):
                     generation.removeItemFromInventory(self.input1)
                     generation.removeItemFromInventory(self.input2)
                     generation.removeItemFromInventory(self.input3)
-                    sounds.play_crafting_axe()
-                    self.Animation.start_animation(self.ani_name)
+                    if self.output == "Axe":
+                        sounds.play_crafting_axe()
+                    else:
+                        pass
+                    #self.Animation.start_animation(self.ani_name)
                     generation.addItemToInventory(collectable.Axe(5000, 5000))
                     
                     self.has_tool = True
@@ -57,13 +66,17 @@ class interactables(entities.Entity):
                 generation.removeItemFromInventory(self.input2)
                 generation.removeItemFromInventory(self.input3)
                 generation.removeItemFromInventory(self.input4)
-                sounds.play_crafting_axe()
+                if self.output == "Axe":
+                    sounds.play_crafting_axe()
+                else:
+                    pass
                 self.Animation.start_animation(self.ani_name)
                 generation.addItemToInventory(collectable.Axe(5000, 5000))
                 
                 self.has_tool = True
 
     def update(self, dx=0, dy=0, *args):
+        #print(self.rect.x, self.rect.y)
         return super().update(dx, dy, *args)
 
 #class resources(entities.Entity):

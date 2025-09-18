@@ -16,6 +16,7 @@ class Player(EntityMovable):
         self.ready_to_attack = False
         self.attaking_objects = []
         self.kill_go = False
+        self.is_moving = False
 
     def calculating_movement(self, keys):
 
@@ -41,13 +42,25 @@ class Player(EntityMovable):
             self.dy = int(self.dy / 1.4142)
 
         wall_direction = self.solid_collision_direction
-        
 
-        if self.dx != 0 or self.dy != 0:
+        moving_now = self.dx != 0 or self.dy != 0
+
+        # Laufsound nur starten, wenn Bewegung beginnt
+        if moving_now and not self.is_moving:
             sounds.play_walking_main_character()
-
-        if not (self.dx != 0 or self.dy != 0):
+        # Laufsound stoppen, wenn Bewegung endet
+        elif not moving_now and self.is_moving:
             sounds.stop_walking_main_character()
+
+        # Flag aktualisieren
+        self.is_moving = moving_now
+
+
+        #if self.dx != 0 or self.dy != 0:
+            #sounds.play_walking_main_character()
+
+        #if not (self.dx != 0 or self.dy != 0):
+            #sounds.stop_walking_main_character()
 
     def attack(self):
         print(self.ready_to_attack)
