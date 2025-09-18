@@ -119,6 +119,15 @@ while running:
         Map = generation.generateLandscape(floor_group, entities_group, trigger)
         Map.generateGrass()
         trigger = Map.generateItems()
+        
+        for entity in entities_group:
+            if hasattr(entity, "output") and entity.output == "Axe":
+                recipe_book_x = entity.rect.x + 16
+                recipe_book_y = entity.rect.y + 16
+                RecipeBook = collectable.RecipeBook(recipe_book_x, recipe_book_y)
+                entities_group.add(RecipeBook)
+                break
+
         Map.generateWall()
         Map.generatePrices()
         Player.dx = settings.MIDDLE_X
