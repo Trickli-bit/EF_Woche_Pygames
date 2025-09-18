@@ -1,4 +1,6 @@
-
+"""
+Haupt Einstellungen für das Spiel
+"""
 SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 576
 SOLID_FRAME_HIGHT = 64

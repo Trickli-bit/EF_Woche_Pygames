@@ -28,11 +28,12 @@ class Collectable(entities.Entity):
         self.craftable = False
         self.should_pick_up = True
 
-    """
-    Eine Funktion die prüft, ob der Spieler das Collectable berührt und fügt es dem Inventar hinzu.
-    Parameter: player_obj - das Spielerobjekt, mit dem die Kollision überprüft wird
-    """
+   
     def collide_with_player(self, player_obj):
+        """
+        Eine Funktion die prüft, ob der Spieler das Collectable berührt und fügt es dem Inventar hinzu.
+        Parameter: player_obj - das Spielerobjekt, mit dem die Kollision überprüft wird
+        """
         if self.should_pick_up and sum(1 for elem in generation.inventoryCollectables if elem.function == "Item") < 7:
             """
             Prüft, ob der Spieler das Collectable berührt.
