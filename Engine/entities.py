@@ -54,10 +54,16 @@ class Entity(pygame.sprite.Sprite):
             rect.y = self.pos_y
         
     def update(self, dx = 0, dy = 0, *args):
-        # Animation nur aktualisieren UND auf self.image übernehmen, wenn:
-        # - die Entität tatsächlich Animationen definiert hat (ani_animations != {})
-        #   -> normale animierbare Entitäten (z.B. NPCs, pick_up, Player)
-        # - ODER wenn eine Animation extern gestartet wurde und aktiv ist (sicherheit)
+        """Aktualisiert die Entität.
+        Parameter: dx (float): Änderung der x-Position, dy (float): Änderung der y-Position, *args: Zusätzliche Argumente.
+        Rückgabe: Ergebnis der übergeordneten Update-Methode.
+        """
+    def update(self, dx = 0, dy = 0, *args):
+        """Aktualisiert die Entität.    
+        Parameter: dx (float): Änderung der x-Position, dy (float): Änderung der y-Position, *args: Zusätzliche Argumente.
+        Rückgabe: Ergebnis der übergeordneten Update-Methode.
+        """
+        super().update(dx, dy, *args)
         if self.is_spritesheet:
             should_update_image = False
             if self.ani_animations and len(self.ani_animations) > 0:
@@ -66,9 +72,7 @@ class Entity(pygame.sprite.Sprite):
                 should_update_image = True
 
             if should_update_image:
-                # Advance animation frames
                 self.Animation.update()
-                # Aktualisiere self.image nur für animierte Entities (so behalten statische Tiles ihr initial gesetztes Bild)
                 try:
                     new_img = self.Animation.image
                     new_img = pygame.transform.scale(new_img, self.scale)
@@ -85,7 +89,11 @@ class Entity(pygame.sprite.Sprite):
             self.rect.y += dy
 
 class EntityMovable(Entity):
-            
+    """
+    Entität die sich bewegen kann. Erbt von Entity.
+    Parameter: pos_x (float): x-Position der Animation, pos_y (float): y-Position der Animation, rect (pygame.Rect): Rechteck für die Animation, rect_attach (str): Befestigungspunkt des Rechtecks, scale (tuple): Skalierung der Animation, source (str): Pfad zur Bildquelle, solid (bool): Ob die Animation solide ist, is_spritesheet (bool): Ob es sich um ein Sprite-Sheet handelt, fix (bool): Ob die Position fixiert ist, base_sprite (int): Startindex des Sprites, ani_frames_count (int): Anzahl der Animationsframes, ani_animations (dict): Wörterbuch der Animationen.
+    """
+
     def __init__(self, pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, fix = False, base_sprite = 0, ani_frames_count=0, ani_animations={}):
         super().__init__(pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, fix, base_sprite, ani_frames_count, ani_animations)
         
@@ -98,16 +106,11 @@ class EntityMovable(Entity):
         self.solid_collision_direction = None
 
     def animation_movement_adjustement(self):
-        """
-        Passt die Animation je nach Bewegungsrichtung an.
-        - Wählt zuerst die gewünschte Richtung (desired).
-        - Wenn genau passende Animation (z.B. 'walking_a') existiert, nutze sie, kein Flip.
-        - Falls nur die Gegenrichtung existiert (z.B. nur 'walking_d' vorhanden),
-          nutze diese und flippe horizontal (nur für links/rechts).
-        - Wenn keine passende Animation existiert, ändere nichts.
+        """ Passt die Animation basierend auf der Bewegungsrichtung an.
+        Wenn sich die Entität bewegt, wird die entsprechende Animation gestartet.
+        Wenn die Entität stillsteht, wird die Animation gestoppt und das Bild auf den Standframe gesetzt.
         """
 
-        # Bestimme Wunschrichtung
         desired = None
         if self.dx > 0:
             desired = 'walking_d'
@@ -118,17 +121,14 @@ class EntityMovable(Entity):
         elif self.dy > 0:
             desired = 'walking_s'
 
-        # Wähle Animation und ob wir flippen müssen
         anim_to_start = None
         flip_needed = False
 
         if desired is not None:
-            # benutze direkte Animation, falls vorhanden
             if desired in getattr(self, "ani_animations", {}):
                 anim_to_start = desired
                 flip_needed = False
             else:
-                # fallback: versuche die Gegenrichtung (opposite)
                 opposite_map = {
                     'walking_a': 'walking_d',
                     'walking_d': 'walking_a',
@@ -138,23 +138,20 @@ class EntityMovable(Entity):
                 opp = opposite_map.get(desired)
                 if opp and opp in getattr(self, "ani_animations", {}):
                     anim_to_start = opp
-                    # Flip nur horizontal, nicht vertikal
                     flip_needed = True if desired in ('walking_a', 'walking_d') else False
 
-        # setze flip-flag (wichtig falls vorher ein anderer Wert da war)
         self.flip = flip_needed
 
-        # Wenn Spritesheet vorhanden: starte/stoppe Animationen korrekt und aktualisiere self.image
         if self.is_spritesheet:
-            # Stillstand -> Zurück auf Standframe
+            
             if self.dx == 0 and self.dy == 0 and self.last_animation != (None, False):
                 self.last_animation = (None, self.flip)
-                # stoppe aktuelle Animation
+                
                 try:
                     self.Animation.stop_animation(self.Animation.current_range[1] + 1)
                 except Exception:
                     pass
-                # setze das Image auf das, was Animation momentan liefert (skalieren & flip falls nötig)
+                
                 try:
                     img = self.Animation.image
                     img = pygame.transform.scale(img, self.scale)
@@ -165,7 +162,7 @@ class EntityMovable(Entity):
                     pass
                 self.animation_name = None
             else:
-                # Wenn eine Animation gewählt wurde: starte sie falls sie neu ist
+                
                 if anim_to_start is not None:
                     if self.last_animation != (anim_to_start, self.flip):
                         try:
@@ -174,7 +171,7 @@ class EntityMovable(Entity):
                             pass
                         self.Animation.start_animation(anim_to_start)
                         self.last_animation = (anim_to_start, self.flip)
-                # sync aktuelles Frame ins sichtbare Bild (auch wenn gleiche Animation läuft)
+                
                 try:
                     img = self.Animation.image
                     img = pygame.transform.scale(img, self.scale)
@@ -186,47 +183,55 @@ class EntityMovable(Entity):
 
 
     def collition(self, entity):
-        """Berechnet die Kollisionsrichtung"""
+        """
+        Berechnet die Kollisionsrichtung
+         und passt die Bewegungsrichtung entsprechend an.
+         Parameter: entity (Entity): Die Entität, mit der die Kollision überprüft wird
+         """
 
-        # Richtung bestimmen und Entität anhalten
+        
         if self.dx == 0 and self.dy < 0:
             self.dy = 0
             self.solid_collision_direction = "up"
-        # nach oben
+        
         elif self.dx == 0 and self.dy > 0:
             self.dy = 0
             self.solid_collision_direction = "down"
-        # nach unten
+        
         elif self.dx > 0 and self.dy == 0:
             self.dx = 0
             self.solid_collision_direction = "right"
-        # nach links
+        
         elif self.dx < 0 and self.dy == 0:
             self.dx = 0
             self.solid_collision_direction = "left"
-        # nach rechts
+        
         elif self.dx > 0 and self.dy > 0:
             self.dx = 0
             self.dy = 0
             self.solid_collision_direction = "leftup"
-        # nach links unten
+        
         elif self.dx < 0 and self.dy > 0:
             self.dx = 0
             self.dy = 0
             self.solid_collision_direction = "leftdown"
-        # nach links oben
+        
         elif self.dx > 0 and self.dy < 0:
             self.dx = 0
             self.dy = 0
             self.solid_collision_direction = "rightup"
-        # nach rechts unten
+        
         elif self.dx < 0 and self.dy < 0:
             self.dx = 0
             self.dy = 0
             self.solid_collision_direction = "rightdown"
-        # nach rechts oben
+        
 
 
     def update(self, dx = 0, dy = 0, *args):
+        """
+        Aktualisiert die bewegliche Entität. 
+        Parameter: dx (float): Änderung der x-Position, dy (float): Änderung der y-Position, *args: Zusätzliche Argumente.
+        """
         super().update(dx, dy, *args)
         self.animation_movement_adjustement()
