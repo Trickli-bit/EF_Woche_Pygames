@@ -30,7 +30,6 @@ class Player(EntityMovable):
             print("Attack")
             self.attack()
 
-
         # Diagonalbewegung anpassen (optional, für gleichmäßige Geschwindigkeit)
         if self.dx != 0 and self.dy != 0:
             self.dx = int(self.dx / 1.4142)
