@@ -34,20 +34,15 @@ vigniette = entities.Entity(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2,
 vignietteSmall = entities.Entity(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), "center", (settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), r"Vigniette2.png",False, False, False, 0, 0, {})
 
 Player = player.Player(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 64, 64), "midbottom", (80, 80), r"Player\player.png",True, True, True, 13, 21, {"walking_a": [0, 3, 5, True], "walking_d": [5, 8, 5, True], "walking_s": [10, 15, 5, True], "walking_w": [17, 19, 5, True]})
-Axecrafter = interactable.interactables(2200,1600, pygame.Rect(0, 0, 64, 64), "topleft", (128,128), r"Engine\Entity_Classes\Sprites_Entity_Classes\pixilart-sprite (6).png", True, True, "Axe", "Stick", "Rock", "air", "air", False, 0, 8, {"Craft_Axe" : [0, 7, 10, False]}, "Craft_Axe")
 StartAnimation = entities.Entity(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 450, 256), "center", (900, 512), r"StartAnimation.png", False, True, False, 0, 14, {"Start": [1, 13, 10, False]} )
 EndAnimation = entities.Entity(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 256, 144), "center", (1024, 576), r"EndAnimation.png", False, True, False, 0, 65, {"End": [0, 64, 10, False]} )
 PoI = entities.Entity(settings.SCREEN_HEIGHT//2 + 50, settings.SCREEN_WIDTH//2 + 50, pygame.Rect(0,0, 64, 64), "center", (64, 64), r"Main\PoI.png", False, True, False, 0, 3, {"PoI": [0, 2, 10, True]})
 start_animation_counter = 0
 Turtle = npc.Turtle(2400, 1800, width_blocks=4, height_blocks=4)
-RecipeBook = collectable.RecipeBook(Axecrafter.pos_x+32, Axecrafter.pos_y+32)
-
 
 overlayGroup_2.add(vigniette, PoI)
 
 playerGroup.add(Player)
-                
-entities_group.add(Axecrafter, RecipeBook)
 
 animationGroup.add(StartAnimation)
 
@@ -99,6 +94,15 @@ while running:
         Map = generation.generateLandscape(floor_group, entities_group)
         Map.generateGrass()
         Map.generateItems()
+        
+        for entity in entities_group:
+            if hasattr(entity, "output") and entity.output == "Axe":
+                recipe_book_x = entity.rect.x + 16
+                recipe_book_y = entity.rect.y + 16
+                RecipeBook = collectable.RecipeBook(recipe_book_x, recipe_book_y)
+                entities_group.add(RecipeBook)
+                break
+
         Map.generateWall()
         Map.generatePrices()
         Player.dx = settings.MIDDLE_X
