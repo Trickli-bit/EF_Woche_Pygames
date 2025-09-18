@@ -322,7 +322,6 @@ class generateLandscape():
                     if len(str(self.map_laser[row][elem])) == 3:
                         self.entitygroup.add(npc.Turtle(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64, width_blocks=int(str(self.map_laser[row][elem])[1]), height_blocks=int(str(self.map_laser[row][elem])[2])))
                     if self.map_laser[row][elem] == 99:
-                        print("Generated")
                         self.trigger = pygame.Rect(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64, 128, 192)
                         
         return self.trigger
@@ -340,7 +339,7 @@ class generateLandscape():
                 self.vertical_segment_counter += 1
                 for elem in range(len(self.map_laser[row])):
                     self.horizontal_segment_counter += 1
-                    if self.map_laser[row][elem] == 6 or self.map_laser[row][elem] == 7 or self.map_laser[row][elem] == 8:
+                    if self.map_laser[row][elem] == 6 or self.map_laser[row][elem] == 7 or self.map_laser[row][elem] == 8 or self.map_laser[row][elem] == 9 or self.map_laser[row][elem] == 10:
                         self.item = None
                         self.entitygroup.add(interface.PriceInventorySlot(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64))
                         if self.map_laser[row][elem] == 6:
@@ -352,7 +351,7 @@ class generateLandscape():
                         if self.map_laser[row][elem] == 9: 
                             item = self.generateItemsIntoSlots("Shell", self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64)
                         if self.map_laser[row][elem] == 10: 
-                            item = self.generateItemsIntoSlots("Mirroe", self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64)
+                            item = self.generateItemsIntoSlots("Mirror", self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64)
                         if item is not None:
                             self.entitygroup.add(item)
                             item.should_pick_up = False

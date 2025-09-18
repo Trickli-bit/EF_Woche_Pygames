@@ -134,6 +134,8 @@ while running:
         start_generation = False
 
     if maingame:
+        if trigger is not None:
+            print(trigger.x, trigger.y )
 
         floor_group.update(-Player.dx, -Player.dy, keys)
         floor_group.draw(screen)
@@ -201,7 +203,6 @@ while running:
         overlayGroup = generation.updateInventory()
 
         if trigger is not None:
-            print(trigger)
             if trigger.colliderect(Player.rect):
                 game_finished = True
 
