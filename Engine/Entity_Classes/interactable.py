@@ -4,7 +4,6 @@ import Main.generation as generation
 import Engine.Entity_Classes.collectable as collectable
 import Main.sounds as sounds
 
-
 class interactables(entities.Entity):
     def __init__(self, pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, output, input1 = "air", input2 = "air", input3 = "air", input4 = "air", fix = True, base_sprite = 0, ani_frames_count = 0, ani_animations = {}, ani_name = "", has_tool = False):
         super().__init__(pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, fix, base_sprite, ani_frames_count, ani_animations)
@@ -66,8 +65,6 @@ class interactables(entities.Entity):
 
     def update(self, dx=0, dy=0, *args):
         return super().update(dx, dy, *args)
-        
-
 
 #class resources(entities.Entity):
 #    def __init__(self, pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, drop = "air", fix = True, base_sprite = 0, ani_frames_count = 0, ani_animations = {}, ani_name = ""):
