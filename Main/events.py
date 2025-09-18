@@ -1,3 +1,4 @@
+import pygame
 import Engine.Entity_Classes.collectable as collectable
 import Player.player as player
 import Engine.Entity_Classes.npc as npc
@@ -16,15 +17,18 @@ class Collision:
 
     def collide_with_solid(self, other):
         """Überprüft Kollisionsrichtung für ein einzelnes bewegliches Objekt."""
-        other.solid_collision_direction = None
         collision_offset = 16
         coll_rect = other.rect.inflate(-collision_offset*2, -collision_offset*2)
+        collided = False
         for entity in self.objects:
             if entity.solid:
                 entity_rect = entity.rect.inflate(-collision_offset*2, -collision_offset*2)
                 if coll_rect.colliderect(entity_rect):
                     other.collition(entity)
+                    collided = True
                     break
+        if not collided:
+            other.solid_collision_direction = None
 
     def collition_with_collectable(self):
         for entity in self.objects:
@@ -43,6 +47,32 @@ class Collision:
                     entity.die(self.objects)
 
 
+    def move_out(self, other):
+        print(other.solid_collision_direction)
+        """Bewegt ein Objekt aus einer Kollision heraus."""
+        move_amount = 16
+        if other.solid_collision_direction == "up":
+            other.dy += move_amount
+        elif other.solid_collision_direction == "down":
+            other.dy -= move_amount
+        elif other.solid_collision_direction == "right":
+            other.dx -= move_amount
+        elif other.solid_collision_direction == "left":
+            other.dx += move_amount
+        elif other.solid_collision_direction == "leftup":
+            other.dx -= move_amount
+            other.dy -= move_amount
+        elif other.solid_collision_direction == "leftdown":
+            other.dx += move_amount
+            other.dy -= move_amount
+        elif other.solid_collision_direction == "rightup":
+            other.dx -= move_amount
+            other.dy += move_amount
+        elif other.solid_collision_direction == "rightdown":
+            other.dx += move_amount
+            other.dy += move_amount
+
+
     def update(self):
         """Aktualisiert alle Kollisionen für Movable Entities und Player."""
         for movable in self.movable_entities:
@@ -52,6 +82,10 @@ class Collision:
         for player in self.playerGroup:
             if hasattr(player, "rect"):
                 self.collition_with_collectable()
+        for player in self.playerGroup:
+            self.move_out(player)
+        for movable in self.movable_entities:
+            self.move_out(movable)
 
 animation_to_add = None
 
