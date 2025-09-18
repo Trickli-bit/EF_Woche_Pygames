@@ -1,5 +1,4 @@
 import Engine.entities as entities
-import Main.events
 import Main.generation as generation
 import pygame
 import Player.player as player

@@ -2,7 +2,6 @@ import pygame
 import Engine.Entity_Classes.collectable as collectable
 import Player.player as player
 import Engine.Entity_Classes.npc as npc
-import Engine.Entity_Classes.inventorySlot as inventory
 import pygame
 import Engine.Entity_Classes.Wall as wall
 import Engine.Entity_Classes.interactable as interactable
