@@ -38,12 +38,13 @@ StartAnimation = entities.Entity(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGH
 PoI = entities.Entity(settings.SCREEN_HEIGHT//2 + 50, settings.SCREEN_WIDTH//2 + 50, pygame.Rect(0,0, 64, 64), "center", (64, 64), r"Main\PoI.png", False, True, False, 0, 3, {"PoI": [0, 2, 10, True]})
 start_animation_counter = 0
 Turtle = npc.Turtle(2400, 1800, width_blocks=4, height_blocks=4)
+RecipeBook = collectable.RecipeBook(Axecrafter.pos_x+32, Axecrafter.pos_y+32)
 
 overlayGroup_2.add(vigniette, PoI)
 
 playerGroup.add(Player)
                 
-entities_group.add(Axecrafter, Turtle)
+entities_group.add(Axecrafter, RecipeBook, Turtle)
 
 animationGroup.add(StartAnimation)
 
@@ -57,8 +58,9 @@ start_generation = False
 start_startanimation = True 
 
 cooldown = 6
-BigMap = False
 Vignette = True
+BigMap = False
+Recipe = False
 cooldownM = 6
 
 running = True
@@ -128,18 +130,27 @@ while running:
             if cooldownM <= 0 and len(generation.itemField_group) > 0:
                 currentCollectable = getattr(collectable, "Torch")
                 generation.addItemToInventory(currentCollectable(5000, 5000))
+                currentCollectable = getattr(collectable, "Map")
+                generation.addItemToInventory(currentCollectable(5000, 5000))
                 cooldownM = 6
-        
-        if BigMap == False:
-            if generation.GetNumberOfItems("Map") == 0:
-                overlayGroup_2.add(inventory.InventorySlot(0, 0, pygame.Rect(0, 0, 794, 603), (238.2, 180.9), r"Engine\Entity_Classes\Sprites_Entity_Classes\MapBig.png"))
-                BigMap = True
         
         if Vignette == True:
             if generation.GetNumberOfItems("Torch") == 0:
                 overlayGroup_2.remove(vigniette)
                 overlayGroup_2.add(vignietteSmall)
                 Vignette = False
+                BigMap = False
+                Recipe = False 
+        
+        if BigMap == False:
+            if generation.GetNumberOfItems("Map") == 0:
+                overlayGroup_2.add(inventory.InventorySlot(0, settings.SCREEN_HEIGHT - 180.9, pygame.Rect(0, 0, 794, 603), (238.2, 180.9), r"Engine\Entity_Classes\Sprites_Entity_Classes\MapBig.png"))
+                BigMap = True
+
+        if Recipe == False:
+            if generation.GetNumberOfItems("RecipeBook") == 0:
+                overlayGroup_2.add(inventory.InventorySlot(18, 0, pygame.Rect(0, 0, 64, 64), (192, 192), r"Engine\Entity_Classes\Sprites_Entity_Classes\Recipe.png"))
+                Recipe = True
 
         entities_group.update(-Player.dx, -Player.dy, keys)
         entities_group.draw(screen)

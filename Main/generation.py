@@ -305,7 +305,7 @@ def addItemToInventory(item):
     if len(itemField_group) < 7 and item.function == "Item":
         inventoryCollectables[item] = item.name
         return updateInventory()
-    if len(toolField_group) < 3 and item.function == "Tool":
+    if len(toolField_group) < 4 and item.function == "Tool":
         inventoryCollectables[item] = item.name
         return updateInventory()
 
