@@ -106,5 +106,7 @@ class Mushroom(entities.Entity):
     def __init__(self, pos_x, pos_y, rect = pygame.Rect(0, 0, 64, 64), rect_attach = "topleft", scale = (192, 192), source = r"Engine\Entity_Classes\Sprites_Entity_Classes\mushroom-frame-0 (2).png", solid = False, is_spritesheet = False, fix=False, base_sprite=0, ani_frames_count=0, ani_animations={}):
         super().__init__(pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, fix, base_sprite, ani_frames_count, ani_animations)
 
-    def die(self):
+    def die(self, has_axe=False):
         self.kill()
+        if has_axe:
+            generation.addItemToInventory(collectable.Mushroom_juice(self.rect.x, self.rect.y))
