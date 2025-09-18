@@ -10,6 +10,7 @@ import sys
 import time
 import Engine.Entity_Classes.collectable as collectable
 import Main.sounds as sounds
+import Engine.Entity_Classes.npc as npc
 
 
 pygame.init()
@@ -34,13 +35,13 @@ Axecrafter = interactable.interactables(2200,1600, pygame.Rect(0, 0, 64, 64), "t
 StartAnimation = entities.Entity(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 450, 256), "center", (900, 512), r"StartAnimation.png", False, True, False, 0, 14, {"Start": [1, 13, 10, False]} )
 PoI = entities.Entity(settings.SCREEN_HEIGHT//2 + 50, settings.SCREEN_WIDTH//2 + 50, pygame.Rect(0,0, 64, 64), "center", (64, 64), r"Main\PoI.png", False, True, False, 0, 3, {"PoI": [0, 2, 10, True]})
 start_animation_counter = 0
+Turtle = npc.Turtle(2400, 1800, width_blocks=4, height_blocks=4)
 
-
-PoI.Animation.start_animation("PoI")
 
 
 overlayGroup_2.add(vigniette)
-entities_group.add(Axecrafter)
+
+>>>>>>>>> Temporary merge branch 2
 playerGroup.add(Player)
 
 animationGroup.add(StartAnimation)
@@ -57,9 +58,12 @@ maingame = False
 start_generation = False
 start_startanimation = True 
 
+cooldown = 6
 
 running = True
 while running:
+
+    
 
     
     for event in pygame.event.get():
@@ -96,10 +100,9 @@ while running:
     if start_generation:
         Map = generation.generateLandscape(floor_group, entities_group)
         Map.generateGrass()
+        Map.generateItems()
         Map.generateWall()
-        a = Map.generateItems()
-        for element in a: 
-            entities_group.add(a)
+        Map.generatePrices()
         Player.dx = settings.MIDDLE_X
         Player.dy = settings.MIDDLE_Y
 
@@ -123,6 +126,13 @@ while running:
             if hasattr(anim, "Animation") and anim.Animation.active == False:
                 anim.kill()
 
+        if keys[pygame.K_q]:
+            cooldown -= 1
+            if cooldown <= 0 and len(generation.itemField_group) > 0:
+                entities_group.add(generation.dropItemFromInventory())
+                cooldown = 6
+                
+            print("ITEMFIELD_GROUP", generation.itemField_group, cooldown > 0 and len(generation.inventoryCollectables) > 0)
 
         entities_group.update(-Player.dx, -Player.dy, keys)
         entities_group.draw(screen)
@@ -142,9 +152,10 @@ while running:
         overlayGroup.update(-Player.dx, -Player.dy, keys,)
         overlayGroup.draw(screen)
 
-        overlayGroup = generation.updateToolbar()        
+        overlayGroup = generation.updateInventory()
 
         if Player.rect.colliderect(Axecrafter.rect) and Axecrafter.has_tool == False:
+            sounds.play_crafting_axe()
             Axecrafter.interact()
 
     pygame.display.update()

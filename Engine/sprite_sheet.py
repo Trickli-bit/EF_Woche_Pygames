@@ -82,7 +82,6 @@ class SpriteSheetAnimation(SpriteSheet):
             self.current_frame += 1
             if self.current_frame >= self.current_range[1] + 1:
                 if not self.loop:
-                    print("stopping animation")
 
                     self.stop_animation(self.current_range[1])
                 self.current_frame = self.current_range[0]

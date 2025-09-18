@@ -1,6 +1,10 @@
 import pygame
 import Engine.Entity_Classes.collectable as collectable
 import Player.player as player
+import Engine.Entity_Classes.npc as npc
+import Engine.Entity_Classes.inventorySlot as inventory
+import pygame
+import Engine.Entity_Classes.Wall as wall
 
 
 class Collision:
@@ -31,6 +35,17 @@ class Collision:
             if isinstance(entity, collectable.Collectable):
                 for player in self.playerGroup:
                     entity.collide_with_player(player)
+                    
+            if isinstance(entity, npc.Turtle):
+                for player in self.playerGroup:
+                    if player.rect.colliderect(entity.rect):
+                        player.ready_to_attack = True
+                        player.attaking_objects.append(entity)
+
+            if isinstance(entity, wall.Laser_h) or isinstance(entity, wall.Laser_v):
+                if player.rect.colliderect(entity.rect):
+                    entity.die(self.objects)
+
 
     def move_out(self, other):
         print(other.solid_collision_direction)

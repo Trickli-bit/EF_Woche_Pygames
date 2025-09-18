@@ -184,6 +184,7 @@ class EntityMovable(Entity):
                 except Exception:
                     pass
 
+
     def collition(self, entity):
         """Berechnet die Kollisionsrichtung"""
 
