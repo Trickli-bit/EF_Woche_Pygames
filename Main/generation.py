@@ -270,17 +270,14 @@ class generateLandscape():
                     if self.map_laser[row][elem] == 11:
                         self.entitygroup.add(interactable.Mushroom(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64))
                     if self.map_laser[row][elem] == 21:
-                        print("CA")
                         self.entitygroup.add(interactable.interactables(self.horizontal_segment_counter * 64,self.vertical_segment_counter * 64, pygame.Rect(0, 0, 64, 64), "topleft", (128,128), r"Engine\Entity_Classes\Sprites_Entity_Classes\CraftingTableAxe.png", True, True, "Axe", "Stick", "Rock", "air", "air", False, 0, 8, {"Craft_Axe" : [0, 7, 10, False]}, "Craft_Axe"))
                     if self.map_laser[row][elem] == 22:
                         self.entitygroup.add(interactable.interactables(self.horizontal_segment_counter * 64,self.vertical_segment_counter * 64, pygame.Rect(0, 0, 64, 64), "topleft", (128,128), r"Engine\Entity_Classes\Sprites_Entity_Classes\CraftingTableTorch.png", True, True, "Torch", "Stick", "Mushroom_juice", "air", "air", False, 0, 8, {"Craft_Axe" : [0, 7, 10, False]}, "Craft_Axe"))
                     if self.map_laser[row][elem] == 23:
                         self.entitygroup.add(interactable.interactables(self.horizontal_segment_counter * 64,self.vertical_segment_counter * 64, pygame.Rect(0, 0, 64, 64), "topleft", (128,128), r"Engine\Entity_Classes\Sprites_Entity_Classes\CraftingTableMap.png", True, True, "Map", "Shell", "Rock", "Stick", "air", False, 0, 8, {"Craft_Axe" : [0, 7, 10, False]}, "Craft_Axe"))
                     if self.map_laser[row][elem] == 24:
-                        self.entitygroup.add(interactable.interactables(self.horizontal_segment_counter * 64,self.vertical_segment_counter * 64, pygame.Rect(0, 0, 64, 64), "topleft", (128,128), r"", True, True, "Mirror", "Shell", "Mushroom_juice", "air", "air", False, 0, 8, {"Craft_Axe" : [0, 7, 10, False]}, "Craft_Axe"))
-                    print(len(str(self.map_laser[row][elem])))
+                        self.entitygroup.add(interactable.interactables(self.horizontal_segment_counter * 64,self.vertical_segment_counter * 64, pygame.Rect(0, 0, 64, 64), "topleft", (128,128), r"Engine\Entity_Classes\Sprites_Entity_Classes\CarftingTableMirror.png", True, True, "Mirror", "Shell", "Mushroom_juice", "air", "air", False, 0, 8, {"Craft_Axe" : [0, 7, 10, False]}, "Craft_Axe"))
                     if len(str(self.map_laser[row][elem])) == 3:
-                        print(str(self.map_laser[row][elem])[1], str(self.map_laser[row][elem])[2])
                         self.entitygroup.add(npc.Turtle(self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64, width_blocks=int(str(self.map_laser[row][elem])[1]), height_blocks=int(str(self.map_laser[row][elem])[2])))
         return self.entitygroup
 
@@ -300,8 +297,10 @@ class generateLandscape():
                             item = self.generateItemsIntoSlots("Rock", self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64)
                         if self.map_laser[row][elem] == 7:
                             item = self.generateItemsIntoSlots("Stick", self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64)
-                        if self.map_laser[row][elem] == 9:
+                        if self.map_laser[row][elem] == 8:
                             item = self.generateItemsIntoSlots("Mushroom_juice", self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64)
+                        if self.map_laser[row][elem] == 9: 
+                            item = self.generateItemsIntoSlots("Shell", self.horizontal_segment_counter * 64, self.vertical_segment_counter * 64)
                         if item is not None:
                             self.entitygroup.add(item)
                             item.should_pick_up = False
@@ -315,6 +314,8 @@ class generateLandscape():
             item = collectable.Stick(pos_x, pos_y)
         if item == "Mushroom_juice":
             item = collectable.Mushroom_juice(pos_x, pos_y)
+        if item == "Shell":
+            item = collectable.Shell(pos_x, pos_y)
         return item
 
         

@@ -32,7 +32,6 @@ class Player(EntityMovable):
         if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
             self.dx += self.speed
         if keys[pygame.K_SPACE]:
-            print("Attack")
             self.attack()
 
         # Diagonalbewegung anpassen (optional, für gleichmäßige Geschwindigkeit)
@@ -50,7 +49,6 @@ class Player(EntityMovable):
             sounds.stop_walking_main_character()
 
     def attack(self):
-        print(self.ready_to_attack)
         if self.ready_to_attack:
             for entity in self.attaking_objects:
                 if isinstance(entity, interactable.Mushroom):
