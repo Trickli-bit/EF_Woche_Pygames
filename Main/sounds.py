@@ -31,25 +31,53 @@ channel_kill_turtle = pygame.mixer.Channel(11)
 channel_start_animation = pygame.mixer.Channel(12)
 channel_finale = pygame.mixer.Channel(13)
 
-def play_background_music(): #Hintergrundmusik (IMPLEMENTIERT)
+"""
+Hintergrundmusik (IMPLEMENTIERT)
+"""
+def play_background_music(): 
     channel_background.set_volume(0.05)
-    channel_background.play(slow_theme, loops=-1)  # Endlos
+    channel_background.play(slow_theme, loops=-1)  
 
-def play_fackelsound(): #Sound, sobald man eine Fackel in der Hand hält
+"""
+beim abauen der Pilzes (x)
+"""
+def play_pilz_abbauen():
+    channel_water.set_volume(0.1)
+    channel_water.play(pilz_abbauen)
+
+"""
+Sound, sobald man eine Fackel in der Hand hält (x)
+"""
+def play_fackelsound(): 
     channel_fackelsound.set_volume(0.1)
     channel_fackelsound.play(fackelsound)
 
-def play_bubble_pop(): #Sound für das aufsammeln von Items (IMPLEMENTIERT)
+"""
+Sound für das aufsammeln von Items (IMPLEMENTIERT)
+"""
+def play_bubble_pop(): 
     channel_bubble_pop.set_volume(0.9)
     channel_bubble_pop.play(bubble_pop)
     print("bubble_pop")
 
+"""
+Sound für das schwingen des Schwertes (IMPLEMENTIERT)
+"""
+def play_sword_slice(): 
+    channel_sword.set_volume(0.1)
+    channel_sword.play(sword_slice)
 
-def play_monkey_noise(): #Endanimation (x)
-    channel_monkey.set_volume(0.7)
+"""
+Sound für die Endanimation (x)
+"""
+def play_monkey_noise(): 
+    channel_monkey.set_volume(0.1)
     channel_monkey.play(monkey_noise)
 
-def play_walking_main_character(): #Laufsound des Hauptcharakters (IMPLEMENTIERT)
+"""
+Sound für das Laufen des Hauptcharakters (IMPLEMENTIERT)
+"""
+def play_walking_main_character(): 
     channel_walk.set_volume(0.9)
     channel_walk.play(walking_main_character, loops = -1)
     print("walking_main_character")
@@ -62,8 +90,18 @@ def play_crafting_axe(): #Sound für das craften der Axt
     channel_crafting.play(crafting_axe)
     print("crafting_axe")
 
+"""
+Sound für das craften der Fackel (x)
+"""
+def play_crafting_torche(): 
+    channel_crafting.set_volume(0.9)
+    channel_crafting.play(crafting_torche, maxtime=2000)
+    print("crafting_torche")
 
-def laser_aus(): #Sound, soblad der Laser ausgeschaltet wird (IMPLEMENTIERT)
+"""
+Sound, soblad der Laser ausgeschaltet wird (IMPLEMENTIERT)
+"""
+def laser_aus(): 
     channel_laser_aus.set_volume(0.6)
     channel_laser_aus.play(laser_aus_sound)
     print("laser_aus")
