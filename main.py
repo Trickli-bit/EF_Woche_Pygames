@@ -12,6 +12,7 @@ import time
 import Engine.Entity_Classes.collectable as collectable
 import Main.sounds as sounds
 import Engine.Entity_Classes.npc as npc
+import Engine.Entity_Classes.animations as animations
 
 
 pygame.init()
@@ -39,6 +40,7 @@ PoI = entities.Entity(settings.SCREEN_HEIGHT//2 + 50, settings.SCREEN_WIDTH//2 +
 start_animation_counter = 0
 Turtle = npc.Turtle(2400, 1800, width_blocks=4, height_blocks=4)
 RecipeBook = collectable.RecipeBook(Axecrafter.pos_x+32, Axecrafter.pos_y+32)
+
 
 overlayGroup_2.add(vigniette, PoI)
 
@@ -111,7 +113,10 @@ while running:
         addable = events.addingAnimation()
         if addable is not None:
             animationGroup.add(addable)
-            addable.Animation.start_animation("pick_up")
+            if isinstance(addable, animations.pick_up_animation):
+                addable.Animation.start_animation("pick_up")
+            if isinstance(addable, animations.interact_animation):
+                addable.Animation.start_animation("interaction")
             events.animation_to_add = None
             addable = None
 
