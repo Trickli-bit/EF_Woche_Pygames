@@ -26,7 +26,7 @@ class Grass(Floor):
         super().__init__(pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, fix, base_sprite, 6, ani_animations)
 
         # Flips the sprite if flip is enabled
-        if flip is not (False, False):
+        if flip != (False, False):
             self.image = pygame.transform.flip(self.image, flip[0], flip[1])
 
     def update(self, dx=0, dy=0, keys=[]):
