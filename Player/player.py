@@ -107,7 +107,7 @@ class Player(EntityMovable):
         self.trigger_collition.y -= self.trigger_dy * 4
 
     def attack(self):
-        """Methode um toos zu benutzen. Checkt if zu brauchendes Tool bereits eingesammelt wurde"""
+        """Methode um toos zu benutzen. Checkt if zu brauchendes Tool bereits eingesammelt wurde. (Bearbeitet mit KI)"""
         if self.ready_to_attack and sum(1 for elem in inventory.inventoryCollectables if elem.function == "Item") < 7:
             for entity in self.attaking_objects:
                 if isinstance(entity, interactable.Mushroom):
