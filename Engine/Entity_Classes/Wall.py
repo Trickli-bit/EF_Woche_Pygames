@@ -2,8 +2,9 @@ import Engine.entities as entities
 import pygame
 import Main.settings as settings
 import Engine.Entity_Classes.collectable as collectable
-import Main.inventoryManager as inventory
+import Main.generation as generation
 import Main.sounds as sounds
+import Main.inventoryManager as inventory
 
 class Wall(entities.Entity):
     def __init__(self, pos_x, pos_y, rect=pygame.Rect(0,0,64,64), rect_attach="topleft", scale=(64, 64),
@@ -56,31 +57,27 @@ class Laser_h(entities.Entity):
             amount_stick = inventory.GetNumberOfItems("Stick") + 1
             amount_rock = inventory.GetNumberOfItems("Rock") + 1
             amount_mushroom = inventory.GetNumberOfItems("Mushroom_juice") + 1
+            amount_shell = inventory.GetNumberOfItems("Shell") + 1
             amount_mirror = inventory.GetNumberOfItems("Mirror") + 1
 
-            price_stick = price_rock = price_mushroom = price_mirror = 0
+            price_stick = price_rock = price_mushroom = price_mirror = price_shell = 0
 
             for name, entity_found in self.near_items:
                 if name == "Stick": price_stick += 1
                 elif name == "Rock": price_rock += 1
                 elif name == "Mushroom_juice": price_mushroom += 1
                 elif name == "Mirror": price_mirror += 1
+                elif name == "Shell": price_shell += 1 
 
-            if price_stick <= amount_stick and price_rock <= amount_rock and price_mushroom <= amount_mushroom and price_mirror <= amount_mirror:
-                for i in range(price_stick):
-                    inventory.removeItemFromInventory("Stick")
-                for i in range(price_rock):
-                    inventory.removeItemFromInventory("Rock")
-                for i in range(price_mushroom):
-                    inventory.removeItemFromInventory("Mushroom_juice")
-                for i in range(price_mirror):
-                    inventory.removeItemFromInventory("Mirror")
+            print("Prices:", price_rock, price_stick, amount_rock, amount_stick)
+
             if (price_stick <= amount_stick and price_rock <= amount_rock and
-                price_mushroom <= amount_mushroom and price_mirror <= amount_mirror):
+                price_mushroom <= amount_mushroom and price_mirror <= amount_mirror and price_shell <= amount_shell):
                 for _ in range(price_stick): inventory.removeItemFromInventory("Stick")
                 for _ in range(price_rock): inventory.removeItemFromInventory("Rock")
                 for _ in range(price_mushroom): inventory.removeItemFromInventory("Mushroom_juice")
                 for _ in range(price_mirror): inventory.removeItemFromInventory("Mirror")
+                for _ in range(price_shell): inventory.removeItemFromInventory("Shell")
                 self.dying = True
 
                 for entity in entities:
@@ -133,22 +130,30 @@ class Laser_v(entities.Entity):
             amount_rock = inventory.GetNumberOfItems("Rock") + 1
             amount_mushroom = inventory.GetNumberOfItems("Mushroom_juice") + 1
             amount_mirror = inventory.GetNumberOfItems("Mirror") + 1
+            amount_shell = inventory.GetNumberOfItems("Shell") + 1
 
-            price_stick = price_rock = price_mushroom = price_mirror = 0
+            price_stick = price_rock = price_mushroom = price_mirror = price_shell =  0
 
             for name, entity_found in self.near_items:
                 if name == "Stick": price_stick += 1
                 elif name == "Rock": price_rock += 1
                 elif name == "Mushroom_juice": price_mushroom += 1
                 elif name == "Mirror": price_mirror += 1
+                elif name == "Shell": price_shell += 1
+
+            print("Prices:", price_rock, price_stick, price_mirror, price_shell, price_mushroom)
+            print("Able", amount_rock, amount_stick, amount_mirror, amount_shell, amount_mushroom)
 
             if (price_stick <= amount_stick and price_rock <= amount_rock and
-                price_mushroom <= amount_mushroom and price_mirror <= amount_mirror):
+                price_mushroom <= amount_mushroom and price_mirror <= amount_mirror and price_shell <= amount_shell):
+                print("price able to pay")
                 for _ in range(price_stick): inventory.removeItemFromInventory("Stick")
                 for _ in range(price_rock): inventory.removeItemFromInventory("Rock")
                 for _ in range(price_mushroom): inventory.removeItemFromInventory("Mushroom_juice")
                 for _ in range(price_mirror): inventory.removeItemFromInventory("Mirror")
+                for _ in range(price_shell): inventory.removeItemFromInventory("Shell")
                 self.dying = True
+
 
                 for entity in entities:
                     if isinstance(entity, (Laser_h, Laser_v)) and entity is not self:
