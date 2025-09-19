@@ -29,6 +29,9 @@ class Water(entities.Entity):
         if flip != (False, False):
             self.image = pygame.transform.flip(self.image, flip[0], flip[1])
 
+        if base_sprite != 0:
+            self.solid = False
+
 
 class Laser_h(entities.Entity):
     def __init__(self, pos_x, pos_y, rect=pygame.Rect(0,0,64,64), rect_attach="topleft", scale=(64, 64),
