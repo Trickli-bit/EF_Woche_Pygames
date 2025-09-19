@@ -58,7 +58,6 @@ Sound für das aufsammeln von Items (IMPLEMENTIERT)
 def play_bubble_pop(): 
     channel_bubble_pop.set_volume(0.9)
     channel_bubble_pop.play(bubble_pop)
-    print("bubble_pop")
 
 """
 Sound für das schwingen des Schwertes (IMPLEMENTIERT)
@@ -80,7 +79,6 @@ Sound für das Laufen des Hauptcharakters (IMPLEMENTIERT)
 def play_walking_main_character(): 
     channel_walk.set_volume(0.9)
     channel_walk.play(walking_main_character, loops = -1)
-    print("walking_main_character")
 
 def stop_walking_main_character():
     channel_walk.stop()
@@ -88,7 +86,6 @@ def stop_walking_main_character():
 def play_crafting_axe(): #Sound für das craften der Axt 
     channel_crafting.set_volume(0.9)
     channel_crafting.play(crafting_axe)
-    print("crafting_axe")
 
 """
 Sound für das craften der Fackel (x)
@@ -96,7 +93,6 @@ Sound für das craften der Fackel (x)
 def play_crafting_torche(): 
     channel_crafting.set_volume(0.9)
     channel_crafting.play(crafting_torche, maxtime=2000)
-    print("crafting_torche")
 
 """
 Sound, soblad der Laser ausgeschaltet wird (IMPLEMENTIERT)
@@ -104,7 +100,6 @@ Sound, soblad der Laser ausgeschaltet wird (IMPLEMENTIERT)
 def laser_aus(): 
     channel_laser_aus.set_volume(0.6)
     channel_laser_aus.play(laser_aus_sound)
-    print("laser_aus")
 
 def play_breaking_mushroom():
     channel_break_mushroom.set_volume(0.6)

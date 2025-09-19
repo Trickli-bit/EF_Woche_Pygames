@@ -143,6 +143,7 @@ while running:
 
         Map.generateWall()
         Map.generatePrices()
+        #Check for possible collidable Block for Player
         for entity_solid in entities_group:
             if entity_solid.solid:
                 floor_segments.add(entity_solid)
@@ -154,9 +155,6 @@ while running:
 
 
     #Maingame-Loop, is on through-out the game
-    if maingame:
-        if trigger is not None:
-            print(trigger.x, trigger.y )
 
         floor_group.update(-Player.dx, -Player.dy, keys)
         floor_group.draw(screen)
@@ -210,9 +208,6 @@ while running:
         entities_group.update(-Player.dx, -Player.dy, keys)
         entities_group.draw(screen)
 
-        #for entity in entities_group:
-         #   if isinstance(entity, wall.Wall):
-          #      pygame.draw.rect(screen, (255, 0, 0), entity.rect)
 
         moving_entities_group.update(-Player.dx, -Player.dy, keys)
         moving_entities_group.draw(screen)
@@ -226,8 +221,6 @@ while running:
         playerGroup.update(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, keys)
         playerGroup.draw(screen)
 
-        #for player_character in playerGroup:
-         #   pygame.draw.rect(screen, (255, 0, 0), player_character.rect)
 
         overlayGroup_2.draw(screen)
         Collition.update()
@@ -272,7 +265,6 @@ while running:
 
     if game_finished:
         sounds.stop_background_music()
-        print("finished")
         animationGroup.add(EndAnimation)
         game_finished = False
         maingame = False

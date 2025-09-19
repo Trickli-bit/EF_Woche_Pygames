@@ -73,8 +73,6 @@ class Laser_h(entities.Entity):
                 elif name == "Mirror": price_mirror += 1
                 elif name == "Shell": price_shell += 1 
 
-            print("Prices:", price_rock, price_stick, amount_rock, amount_stick)
-
             if (price_stick <= amount_stick and price_rock <= amount_rock and
                 price_mushroom <= amount_mushroom and price_mirror <= amount_mirror and price_shell <= amount_shell):
                 for _ in range(price_stick): inventory.removeItemFromInventory("Stick")
@@ -145,12 +143,8 @@ class Laser_v(entities.Entity):
                 elif name == "Mirror": price_mirror += 1
                 elif name == "Shell": price_shell += 1
 
-            print("Prices:", price_rock, price_stick, price_mirror, price_shell, price_mushroom)
-            print("Able", amount_rock, amount_stick, amount_mirror, amount_shell, amount_mushroom)
-
             if (price_stick <= amount_stick and price_rock <= amount_rock and
                 price_mushroom <= amount_mushroom and price_mirror <= amount_mirror and price_shell <= amount_shell):
-                print("price able to pay")
                 for _ in range(price_stick): inventory.removeItemFromInventory("Stick")
                 for _ in range(price_rock): inventory.removeItemFromInventory("Rock")
                 for _ in range(price_mushroom): inventory.removeItemFromInventory("Mushroom_juice")

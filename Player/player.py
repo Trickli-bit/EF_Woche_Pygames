@@ -24,8 +24,8 @@ class Player(EntityMovable):
         # Kollisions-Box Offset und Größe separat definieren
         self.collision_offset_x = 10
         self.collision_offset_y = 20
-        self.collision_width = 64
-        self.collision_height = 64
+        self.collision_width = 50
+        self.collision_height = 50
 
         # Trigger-Collision-Rect initialisieren
         self.trigger_collition = pygame.Rect(
@@ -40,10 +40,8 @@ class Player(EntityMovable):
 
 
     def checkcollition(self):
-        print(self.Wall_group)
         for element in self.Wall_group:        
              if element.rect.colliderect(self.trigger_collition):
-                 print("Collition")
                  return True
         return False
     
@@ -85,11 +83,7 @@ class Player(EntityMovable):
         self.trigger_collition.x += self.dx * 4
         self.trigger_collition.y += self.dy * 4
 
-        print(self.dx)
 
-        print(self.trigger_collition.x, self.trigger_collition.y, self.rect.x, self.rect.y)
-
-        print(self.checkcollition())
 
         if not self.checkcollition():
 
@@ -101,15 +95,9 @@ class Player(EntityMovable):
             elif not moving_now and self.is_moving:
                 sounds.stop_walking_main_character()
 
-            # Flag aktualisieren <-----------
+            # Flag aktualisieren 
             self.is_moving = moving_now
 
-
-            #if self.dx != 0 or self.dy != 0:
-                #sounds.play_walking_main_character()
-
-            #if not (self.dx != 0 or self.dy != 0):
-                #sounds.stop_walking_main_character()
 
         else:
             self.is_moving = False
@@ -119,6 +107,7 @@ class Player(EntityMovable):
         self.trigger_collition.y -= self.trigger_dy * 4
 
     def attack(self):
+        """Methode um toos zu benutzen. Checkt if zu brauchendes Tool bereits eingesammelt wurde"""
         if self.ready_to_attack and sum(1 for elem in inventory.inventoryCollectables if elem.function == "Item") < 7:
             for entity in self.attaking_objects:
                 if isinstance(entity, interactable.Mushroom):
