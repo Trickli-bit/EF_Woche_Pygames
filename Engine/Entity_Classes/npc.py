@@ -58,6 +58,8 @@ class Turtle(entites.EntityMovable):
         """Startet Todesanimation und Sound, verwandelt Turtle in ein Item."""
         if self.sound_trigger:
             self.dead_counter += 1
+            if self.dead_counter == 1:
+                inventory.addItemToInventory(collectable.Shell(self.rect.x, self.rect.y))
             self.dead = True
             if self.direction == "right":
                 self.Animation.start_animation("burning_d")
@@ -69,7 +71,6 @@ class Turtle(entites.EntityMovable):
                 self.Animation.start_animation("burning_s")
             if self.dead_counter == 120:
                 self.kill()
-                inventory.addItemToInventory(collectable.Shell(self.rect.x, self.rect.y))
         else:
             sounds.play_dying_turtle()
             self.sound_trigger = True

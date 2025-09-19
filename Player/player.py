@@ -19,11 +19,41 @@ class Player(EntityMovable):
         self.attaking_objects = []
         self.kill_go = False
         self.is_moving = False
+        self.wall_group = None
+
+        # Kollisions-Box Offset und Größe separat definieren
+        self.collision_offset_x = 10
+        self.collision_offset_y = 20
+        self.collision_width = 64
+        self.collision_height = 64
+
+        # Trigger-Collision-Rect initialisieren
+        self.trigger_collition = pygame.Rect(
+            self.rect.x + self.collision_offset_x,
+            self.rect.y + self.collision_offset_y,
+            self.collision_width,
+            self.collision_height)
+
+
+    def get_Wall_group(self, group):
+        self.Wall_group = group
+
+
+    def checkcollition(self):
+        print(self.Wall_group)
+        for element in self.Wall_group:        
+             if element.rect.colliderect(self.trigger_collition):
+                 print("Collition")
+                 return True
+        return False
+    
 
     def calculating_movement(self, keys):
 
         """ Berechnet die Bewegung basierend auf den gedrückten Tasten.
         param:\t keys (pygame.key.get_pressed()) """
+
+        collition_check = 0
 
         self.dx = self.dy = 0
         if keys[pygame.K_w] or keys[pygame.K_UP]:
@@ -39,32 +69,54 @@ class Player(EntityMovable):
             events.checkAnimations(self.interact)
             self.attack()
 
+        self.trigger_dx = self.dx
+        self.trigger_dy = self.dy
+    
+
+
 
         # Diagonalbewegung anpassen (optional, für gleichmäßige Geschwindigkeit)
         if self.dx != 0 and self.dy != 0:
             self.dx = int(self.dx / 1.4142)
             self.dy = int(self.dy / 1.4142)
 
-        wall_direction = self.solid_collision_direction
-
         moving_now = self.dx != 0 or self.dy != 0
 
-        # Laufsound nur starten, wenn Bewegung beginnt
-        if moving_now and not self.is_moving:
-            sounds.play_walking_main_character()
-        # Laufsound stoppen, wenn Bewegung endet
-        elif not moving_now and self.is_moving:
-            sounds.stop_walking_main_character()
+        self.trigger_collition.x += self.dx * 4
+        self.trigger_collition.y += self.dy * 4
 
-        # Flag aktualisieren
-        self.is_moving = moving_now
+        print(self.dx)
+
+        print(self.trigger_collition.x, self.trigger_collition.y, self.rect.x, self.rect.y)
+
+        print(self.checkcollition())
+
+        if not self.checkcollition():
 
 
-        #if self.dx != 0 or self.dy != 0:
-            #sounds.play_walking_main_character()
+            # Laufsound nur starten, wenn Bewegung beginnt
+            if moving_now and not self.is_moving:
+                sounds.play_walking_main_character()
+            # Laufsound stoppen, wenn Bewegung endet
+            elif not moving_now and self.is_moving:
+                sounds.stop_walking_main_character()
 
-        #if not (self.dx != 0 or self.dy != 0):
-            #sounds.stop_walking_main_character()
+            # Flag aktualisieren <-----------
+            self.is_moving = moving_now
+
+
+            #if self.dx != 0 or self.dy != 0:
+                #sounds.play_walking_main_character()
+
+            #if not (self.dx != 0 or self.dy != 0):
+                #sounds.stop_walking_main_character()
+
+        else:
+            self.is_moving = False
+            self.dx = 0
+            self.dy = 0
+        self.trigger_collition.x -= self.trigger_dx * 4
+        self.trigger_collition.y -= self.trigger_dy * 4
 
     def attack(self):
         if self.ready_to_attack and sum(1 for elem in inventory.inventoryCollectables if elem.function == "Item") < 7:
@@ -91,6 +143,10 @@ class Player(EntityMovable):
 
 
     def update(self, dx = 0, dy = 0, keys = None):
+
+        self.trigger_collition.x = self.rect.x + self.collision_offset_x
+        self.trigger_collition.y = self.rect.y + self.collision_offset_y
+
         """ Aktualisiert die Position und Animation des Spielers.
         param:\t keys (pygame.key.get_pressed()) """
         if keys is None:

@@ -14,6 +14,10 @@ class Wall(entities.Entity):
         super().__init__(pos_x, pos_y, rect, rect_attach, scale, source, solid, is_spritesheet, fix, base_sprite, ani_frames_count, ani_animations)
         if flip != (False, False):
             self.image = pygame.transform.flip(self.image, flip[0], flip[1])
+        
+        if base_sprite != 0:
+            self.solid = False
+        
 
 
 class Water(entities.Entity):

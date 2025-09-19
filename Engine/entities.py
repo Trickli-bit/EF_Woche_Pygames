@@ -54,11 +54,6 @@ class Entity(pygame.sprite.Sprite):
             rect.y = self.pos_y
         
     def update(self, dx = 0, dy = 0, *args):
-        """Aktualisiert die Entität.
-        Parameter: dx (float): Änderung der x-Position, dy (float): Änderung der y-Position, *args: Zusätzliche Argumente.
-        Rückgabe: Ergebnis der übergeordneten Update-Methode.
-        """
-    def update(self, dx = 0, dy = 0, *args):
         """Aktualisiert die Entität.    
         Parameter: dx (float): Änderung der x-Position, dy (float): Änderung der y-Position, *args: Zusätzliche Argumente.
         Rückgabe: Ergebnis der übergeordneten Update-Methode.
@@ -182,49 +177,7 @@ class EntityMovable(Entity):
                     pass
 
 
-    def collition(self, entity):
-        """
-        Berechnet die Kollisionsrichtung
-         und passt die Bewegungsrichtung entsprechend an.
-         Parameter: entity (Entity): Die Entität, mit der die Kollision überprüft wird
-         """
-
-        
-        if self.dx == 0 and self.dy < 0:
-            self.dy = 0
-            self.solid_collision_direction = "up"
-        
-        elif self.dx == 0 and self.dy > 0:
-            self.dy = 0
-            self.solid_collision_direction = "down"
-        
-        elif self.dx > 0 and self.dy == 0:
-            self.dx = 0
-            self.solid_collision_direction = "right"
-        
-        elif self.dx < 0 and self.dy == 0:
-            self.dx = 0
-            self.solid_collision_direction = "left"
-        
-        elif self.dx > 0 and self.dy > 0:
-            self.dx = 0
-            self.dy = 0
-            self.solid_collision_direction = "leftup"
-        
-        elif self.dx < 0 and self.dy > 0:
-            self.dx = 0
-            self.dy = 0
-            self.solid_collision_direction = "leftdown"
-        
-        elif self.dx > 0 and self.dy < 0:
-            self.dx = 0
-            self.dy = 0
-            self.solid_collision_direction = "rightup"
-        
-        elif self.dx < 0 and self.dy < 0:
-            self.dx = 0
-            self.dy = 0
-            self.solid_collision_direction = "rightdown"
+    
         
 
 

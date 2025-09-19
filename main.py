@@ -14,6 +14,7 @@ import Engine.Entity_Classes.collectable as collectable
 import Main.sounds as sounds
 import Engine.Entity_Classes.npc as npc
 import Engine.Entity_Classes.animations as animations
+import Engine.Entity_Classes.Wall as wall
 
 
 pygame.init()
@@ -31,6 +32,7 @@ playerGroup = pygame.sprite.GroupSingle()
 overlayGroup = pygame.sprite.Group()
 animationGroup = pygame.sprite.Group()
 overlayGroup_2= pygame.sprite.Group()
+floor_segments = pygame.sprite.Group()
 
 #Objects used in Main
 vigniette = entities.Entity(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), "center", (settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), r"Sprites_Main/vigniette.png",False, False, False, 0, 0, {})
@@ -48,6 +50,7 @@ animationGroup.add(StartAnimation)
 Collition = events.Collision(entities_group, moving_entities_group, playerGroup)
 
 #Main-Logic-Variables
+
 start_animation_counter = 0
 addable = True
 maingame = False
@@ -140,9 +143,12 @@ while running:
 
         Map.generateWall()
         Map.generatePrices()
+        for entity_solid in entities_group:
+            if entity_solid.solid:
+                floor_segments.add(entity_solid)
+        Player.get_Wall_group(floor_segments)
         Player.dx = settings.MIDDLE_X
         Player.dy = settings.MIDDLE_Y
-
         sounds.play_background_music()
         start_generation = False
 
@@ -190,19 +196,23 @@ while running:
         #create Map
         if BigMap == False:
             if inventory.GetNumberOfItems("Map") == 0:
-                overlayGroup_2.add(interface.InventorySlot(0, settings.SCREEN_HEIGHT - 180.9, pygame.Rect(0, 0, 794, 603), (238.2, 180.9), r"Engine\Entity_Classes\Sprites_Entity_Classes\MapBig.png"))
+                overlayGroup_2.add(interface.Interface(0, settings.SCREEN_HEIGHT - 180.9, pygame.Rect(0, 0, 794, 603), (238.2, 180.9), r"Engine\Entity_Classes\Sprites_Entity_Classes\MapBig.png"))
                 BigMap = True
 
         #create Recipie Book
         if Recipe == False:
             if inventory.GetNumberOfItems("RecipeBook") == 0:
-                overlayGroup_2.add(interface.InventorySlot(18, 0, pygame.Rect(0, 0, 64, 64), (192, 192), r"Engine\Entity_Classes\Sprites_Entity_Classes\Recipe.png"))
+                overlayGroup_2.add(interface.Interface(18, 0, pygame.Rect(0, 0, 64, 64), (192, 192), r"Engine\Entity_Classes\Sprites_Entity_Classes\Recipe.png"))
                 Recipe = True
 
         #Updating Sprite Groups
 
         entities_group.update(-Player.dx, -Player.dy, keys)
         entities_group.draw(screen)
+
+        #for entity in entities_group:
+         #   if isinstance(entity, wall.Wall):
+          #      pygame.draw.rect(screen, (255, 0, 0), entity.rect)
 
         moving_entities_group.update(-Player.dx, -Player.dy, keys)
         moving_entities_group.draw(screen)
@@ -215,6 +225,9 @@ while running:
 
         playerGroup.update(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, keys)
         playerGroup.draw(screen)
+
+        #for player_character in playerGroup:
+         #   pygame.draw.rect(screen, (255, 0, 0), player_character.rect)
 
         overlayGroup_2.draw(screen)
         Collition.update()
