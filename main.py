@@ -35,8 +35,8 @@ overlayGroup_2= pygame.sprite.Group()
 floor_segments = pygame.sprite.Group()
 
 #Objects used in Main
-vigniette = entities.Entity(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), "center", (settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), r"Sprites_Main/vigniette.png",False, False, False, 0, 0, {})
-vignietteSmall = entities.Entity(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), "center", (settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), r"Sprites_Main/Vigniette2.png",False, False, False, 0, 0, {})
+vigniette = interface.Interface(0, 0, pygame.Rect(0, 0, settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), (settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), r"Sprites_Main/vigniette.png")
+vignietteSmall = interface.Interface(0, 0, pygame.Rect(0, 0, settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), (settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), r"Sprites_Main/Vigniette2.png")
 Player = player.Player(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 64, 64), "midbottom", (80, 80), r"Player\player.png",True, True, True, 13, 21, {"walking_a": [0, 3, 5, True], "walking_d": [5, 8, 5, True], "walking_s": [10, 15, 5, True], "walking_w": [17, 19, 5, True]})
 StartAnimation = entities.Entity(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 448, 256), "center", (886, 512), r"Sprites_Main/StartAnimation.png", False, True, False, 0, 14, {"Start": [1, 13, 10, False]} )
 EndAnimation = entities.Entity(settings.SCREEN_WIDTH//2, settings.SCREEN_HEIGHT//2, pygame.Rect(0, 0, 256, 144), "center", (1024, 576), r"Sprites_Main/EndAnimation.png", False, True, False, 0, 65, {"End": [0, 64, 10, False]} )
@@ -155,6 +155,7 @@ while running:
 
 
     #Maingame-Loop, is on through-out the game
+    if maingame:
 
         floor_group.update(-Player.dx, -Player.dy, keys)
         floor_group.draw(screen)
