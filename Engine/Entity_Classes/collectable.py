@@ -31,7 +31,7 @@ class Collectable(entities.Entity):
     def collide_with_player(self, player_obj):
         """
         Eine Funktion die prüft, ob der Spieler das Collectable berührt und fügt es dem Inventar hinzu.
-        Parameter: player_obj - das Spielerobjekt, mit dem die Kollision überprüft wird
+        Parameter: player_obj - das Spielerobjekt, mit dem die Kollision überprüft wird. (Erstellt mit KI und selbst angepasst)
         """
         if self.should_pick_up and sum(1 for elem in inventory.inventoryCollectables if elem.function == "Item") < 7:
             """

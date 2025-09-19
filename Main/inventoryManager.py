@@ -57,8 +57,7 @@ def GetNumberOfItems(itemName):
     
 def updateInventory():
     """
-    Funktion, die das Inventar neu lädt
-    Parameter: Keine
+    Funktion, die das Inventar neu lädt (Bearbeitet mit KI)
     """
 
     overlayGroup = pygame.sprite.Group()
