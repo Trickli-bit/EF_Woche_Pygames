@@ -156,8 +156,6 @@ while running:
 
     #Maingame-Loop, is on through-out the game
     if maingame:
-
-    if maingame:
         
         floor_group.update(-Player.dx, -Player.dy, keys)
         floor_group.draw(screen)
