@@ -102,5 +102,5 @@ class SpriteSheetAnimation(SpriteSheet):
         """ Wird von pygame.sprite.Group() automatisch aufgerufen, um das Sprite zu aktualisieren.
         Führt update_image() aus."""
         if self.active == True:
-            self .update_image()
+            self.update_image()
         

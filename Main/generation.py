@@ -76,7 +76,7 @@ class generateLandscape():
     
     def update_tiles(self, map_):
         """
-        Diese Funktion aktualisiert die Kacheln in der Karte basierend auf den Nachbarn.
+        Diese Funktion aktualisiert die Kacheln in der Karte basierend auf den Nachbarn. Mit Hilfe von ChatGPT, bzw. CoPilot
         """
         height = len(map_) - 2
         width = max((len(r) for r in map_), default=0)

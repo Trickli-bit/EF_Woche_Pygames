@@ -35,7 +35,7 @@ channel_finale = pygame.mixer.Channel(13)
 Hintergrundmusik (IMPLEMENTIERT)
 """
 def play_background_music(): 
-    channel_background.set_volume(0.05)
+    channel_background.set_volume(0.08)
     channel_background.play(slow_theme, loops=-1)  
 
 """
